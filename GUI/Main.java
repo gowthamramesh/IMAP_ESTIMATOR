@@ -38,7 +38,7 @@ public class Main extends JFrame
 		mainPanel = SetupPanel.getMainPanel();
 		inforPanel = InformationScreen.getInforPanel();
 		estimationPanel = EstimationScreen.getEstimationPanel();
-		benefitPanel = CostBenefitEstimate.getEstimationBenefitPanel();
+		// benefitPanel = CostBenefitEstimate.getEstimationBenefitPanel();
 
 		basePanel = new JPanel();
 		contentPanel = new JPanel();
@@ -49,7 +49,7 @@ public class Main extends JFrame
 		// same font but bold
 		Font boldFont = new Font(font.getFontName(), Font.BOLD, 20);
 		myLabel.setFont(boldFont);
-		contentPanel.add(estimationPanel);
+		contentPanel.add(mainPanel);
 		JPanel labelPanel = new JPanel();
 		labelPanel.add(myLabel);
 		basePanel.add(Box.createVerticalStrut(20));

@@ -37,7 +37,7 @@ public class CostBenefitEstimate
 	private static JTextField	centerlineMilesField	= new JTextField("148");
 	private static JButton		nextButton				= new JButton("NEXT");
 	private static JButton		prevButton				= new JButton("BACK");
-	private static int			myID					= 1;
+	private static int			myID					= 2;
 	private static int			columns					= 200;
 	private static int			textFieldWidth			= 125;
 	private static JTable		benefitEstimateTable;

@@ -26,7 +26,6 @@ public class SetupPanel
 	private static JTextField			fromIntersection	= new JTextField("I-40/Exit1");
 	private static JTextField			toIntersection		= new JTextField("I-40/Exit16");
 	private static JButton				nextButton			= new JButton("NEXT");
-	private static JButton				prevButton			= new JButton("PREV");
 	private static JComboBox<String>	facilityTypeCombo	= new JComboBox<String>();
 	private static int					myID				= 0;
 	private static int					columns				= 200;
@@ -233,16 +232,6 @@ public class SetupPanel
 			}
 		});
 
-		prevButton.addActionListener(new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				Main.changePanel(2);
-			}
-		});
-		containerPanel.add(prevButton);
 		containerPanel.add(nextButton);
 		return containerPanel;
 	}

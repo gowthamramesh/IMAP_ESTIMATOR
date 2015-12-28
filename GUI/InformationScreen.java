@@ -218,7 +218,7 @@ public class InformationScreen
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Main.changePanel(3);
+				Main.changePanel(myID + 1);
 			}
 		});
 

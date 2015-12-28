@@ -26,9 +26,9 @@ public class EstimationScreen
 	private static JComboBox<String>	freevalFile			= new JComboBox<String>();
 	private static JButton				changeIncidentRate	= new JButton("...");
 	private static JButton				changeIncidentSev	= new JButton("...");
-	private static JButton				nextButton			= new JButton("SAVE INPUT FILE");
+	private static JButton				prevButton			= new JButton("BACK");
 	private static JButton				estimateCostBenefit	= new JButton("PERFORM COST BENEFIT ANALYSIS");
-	private static int					myID				= 0;
+	private static int					myID				= 2;
 	private static IncidentRateData		incidentData;
 	private static CrashRateData		crashRateData;
 	private static IncidentSeverityData	incidentSevData;
@@ -54,9 +54,9 @@ public class EstimationScreen
 		mainpanel.setPreferredSize(new Dimension(800, 400));
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
 		mainpanel.add(Box.createVerticalStrut(20));
-		mainpanel.add(getEstimationButtonPanel());
 		mainpanel.add(getSetupPanel());
-		mainpanel.add(getinfoTable());
+		mainpanel.add(getEstimationButtonPanel());
+		// mainpanel.add(getinfoTable());
 
 	}
 
@@ -210,17 +210,17 @@ public class EstimationScreen
 	private static JPanel getinfoTable()
 	{
 		JPanel containerPanel = new JPanel();
-		nextButton.addActionListener(new ActionListener()
+		prevButton.addActionListener(new ActionListener()
 		{
 
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				// Main.changePanel(myID + 1);
+				Main.changePanel(myID + 1);
 			}
 		});
 
-		containerPanel.add(nextButton);
+		containerPanel.add(prevButton);
 		return containerPanel;
 	}
 
@@ -233,10 +233,21 @@ public class EstimationScreen
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Main.changePanel(0);
+				Main.changePanel(myID + 1);
 			}
 		});
 
+		prevButton.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Main.changePanel(myID + 1);
+			}
+		});
+
+		containerPanel.add(prevButton);
 		containerPanel.add(estimateCostBenefit);
 		return containerPanel;
 	}
