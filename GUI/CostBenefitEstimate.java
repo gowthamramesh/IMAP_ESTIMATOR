@@ -70,7 +70,7 @@ public class CostBenefitEstimate
 
 	private static void estimateCostBenefit()
 	{
-		// Set data to freeval and retrive op to Freeval file parrser
+		// Set data to freeval and retrive op to Freeval file parser
 		FreevalFileParser.runFreeval();
 		computeDelaySaving();
 		calculateFuelBenefit();
@@ -97,10 +97,10 @@ public class CostBenefitEstimate
 
 	private static void calculateFuelBenefit()
 	{
-		int totalDemandVMTWith = FreevalFileParser.getTotalDemandVMTWith();
-		int totalDemandVMTWithout = FreevalFileParser.getTotalDemandVMTWithout();
-		int gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
-		int gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
+		float totalDemandVMTWith = FreevalFileParser.getTotalDemandVMTWith();
+		float totalDemandVMTWithout = FreevalFileParser.getTotalDemandVMTWithout();
+		float gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
+		float gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
 		fuelSavingsCost = (totalDemandVMTWith * gPerMileAvgSpeedWith)
 				- (totalDemandVMTWithout * gPerMileAvgSpeedWithout);
 	}
@@ -108,8 +108,8 @@ public class CostBenefitEstimate
 	private static void computeDelaySaving()
 	{
 		truckPercent = FreevalFileParser.getTruckPercentage();
-		int totVehDelayWithout = FreevalFileParser.getTotalVehDelayWithoutImap();
-		int totVehDelayWith = FreevalFileParser.getTotalVehDelayWithImap();
+		float totVehDelayWithout = FreevalFileParser.getTotalVehDelayWithoutImap();
+		float totVehDelayWith = FreevalFileParser.getTotalVehDelayWithImap();
 		delaySavings = totVehDelayWithout - totVehDelayWith;
 
 		delaySavingsCost = (delaySavings * (1 - truckPercent) * (passengerVehicle))
