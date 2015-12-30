@@ -233,6 +233,21 @@ public class EstimationScreen
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				// Assign necessary information to FreevalFileParser
+				FreevalFileParser.selectSeedFile();
+				//FreevalFileParser.setRngSeed(rngSeed);  // Activate to set random number generator seed
+				FreevalFileParser.setActiveDays(new boolean[] {true, true, true, true, true, false, false}); // Activate to set active day array
+				FreevalFileParser.setTruckPercentage(5); // Activate to set truck percentage
+				// Check before or after study
+				if (studyType.getSelectedIndex() == 0) {
+					// Before Study
+					//FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateFrequencies);
+					//FreevalFileParser.setCrashRateRatioNoIMAP(crashRateRatio);
+				} else {
+					// After study
+					//FreevalFileParser.setCrashRateFrequencies(crashRateFrequencies);
+					//FreevalFileParser.setCrashRateRatioWithIMAP(crashRateRatio);
+				}
 				Main.changePanel(myID + 1);
 			}
 		});
@@ -243,7 +258,7 @@ public class EstimationScreen
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Main.changePanel(myID + 1);
+				Main.changePanel(myID - 1);
 			}
 		});
 

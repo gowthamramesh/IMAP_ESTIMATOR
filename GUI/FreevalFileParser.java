@@ -1,19 +1,32 @@
 
 package GUI;
 
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 
-import GUI.RLHelper.summary.RLBatchRunDialog;
 import coreEngine.Seed;
 import coreEngine.Helper.CEConst;
 import coreEngine.Helper.ASCIIAdapter.ASCIISeedFileAdapter_GPMLFormat;
@@ -21,6 +34,7 @@ import coreEngine.Helper.ASCIIAdapter.ASCIISeedFileAdapter_RLFormat;
 import coreEngine.reliabilityAnalysis.ScenarioGenerator;
 import coreEngine.reliabilityAnalysis.DataStruct.DemandData;
 import coreEngine.reliabilityAnalysis.DataStruct.IncidentData;
+import coreEngine.reliabilityAnalysis.DataStruct.Scenario;
 
 public class FreevalFileParser
 {
@@ -60,9 +74,24 @@ public class FreevalFileParser
     private static float[] crashRateFrequenciesWithIMAP = new float[12];
     
     /*
+     * Incident Frequencies without IMAP
+     */
+    private static float[] incidentRatesNoIMAP = new float[12];
+    
+    /*
+     * Incident Frequencies with IMAP
+     */
+    private static float[] incidentRatesWithIMAP = new float[12];
+    
+    /*
      * Random Number Generator Seed
      */
     private static int rngSeed = -1;
+    
+    /*
+     * Identifier to specify if incident rates (as opposed) to crash rates are used
+     */
+    private static boolean incidentRatesUsed = false;
     
     /**
      * Array holding duration information for the reliability without IMAP.
@@ -90,7 +119,7 @@ public class FreevalFileParser
      * @param file File location (ASCII) of the seed facility.
      * @return
      */
-    public static boolean setSeedFacilityFileASCII(File file) {
+    private static boolean setSeedFacilityFileASCII(File file) {
     	
     	boolean success = false;
     	try {
@@ -133,7 +162,7 @@ public class FreevalFileParser
      * @param file File location (SEED) of the seed facility.
      * @return
      */
-    public static boolean setSeedFacilityFileSEED(File file) {
+    private static boolean setSeedFacilityFileSEED(File file) {
     	
     	boolean success = false;
     	String openFileName = file.getAbsolutePath();
@@ -251,8 +280,56 @@ public class FreevalFileParser
 	 * Setter for monthly crash rate frequencies array with IMAP
 	 * @param crashRateFrequencies Array of monthly crash rate frequencies.
 	 */
-	public static void setCrashRateFrequencies(float[] crashRateFrequencies) {
+	public static void setCrashRateFrequenciesWithIMAP(float[] crashRateFrequencies) {
 		FreevalFileParser.crashRateFrequenciesWithIMAP = crashRateFrequencies;
+	}
+	
+	/**
+	 * Getter for monthly crash rate frequencies array without IMAP.
+	 * @return
+	 */
+	public static float[] getIncidentFrequenciesNoIMAP() {
+		return incidentRatesNoIMAP;
+	}
+
+	/**
+	 * Setter for monthly crash rate frequencies array without IMAP
+	 * @param crashRateFrequencies Array of monthly crash rate frequencies.
+	 */
+	public static void setIncidentFrequenciesNoIMAP(float[] incidentFrequenciesNoIMAP) {
+		FreevalFileParser.incidentRatesNoIMAP = incidentFrequenciesNoIMAP;
+	}
+	
+	/**
+	 * Getter for monthly crash rate frequencies array with IMAP
+	 * @return
+	 */
+	public static float[] getIncidentFrequenciesWithIMAP() {
+		return incidentRatesWithIMAP;
+	}
+
+	/**
+	 * Setter for monthly crash rate frequencies array with IMAP
+	 * @param crashRateFrequencies Array of monthly crash rate frequencies.
+	 */
+	public static void setIncidentFrequenciesWithIMAP(float[] incidentFrequenciesWithIMAP) {
+		FreevalFileParser.incidentRatesWithIMAP = incidentFrequenciesWithIMAP;
+	}
+	
+	/**
+	 * Getter for whether or not incident rates are being used
+	 * @return
+	 */
+	public static boolean getIncidentRatesUsed() {
+		return incidentRatesUsed;
+	}
+	
+	/**
+	 * Setter for boolean value indicating whether or not incident rates (as opposed to crash rates) are being used
+	 * @param val
+	 */
+	public static void setIncidentRatesUsed(boolean val) {
+		FreevalFileParser.incidentRatesUsed = val;
 	}
 
 	/**
@@ -304,7 +381,7 @@ public class FreevalFileParser
 	 * @param dayIdx Index of day.
 	 * @param isActive Boolean value to mark whether or not it is active.
 	 */
-	public void setActiveDay(int dayIdx, boolean isActive) {
+	public static void setActiveDay(int dayIdx, boolean isActive) {
 		FreevalFileParser.activeDays[dayIdx] = isActive;
 	}
 	
@@ -313,7 +390,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationDistributionNoIMAP(int incidentType, float value) {
+	public static void setIncidentDurationDistributionNoIMAP(int incidentType, float value) {
 		durationInfoNoIMAP[incidentType][0] = value;
 	}
 	
@@ -322,7 +399,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationMeanNoIMAP(int incidentType, float value) {
+	public static void setIncidentDurationMeanNoIMAP(int incidentType, float value) {
 		durationInfoNoIMAP[incidentType][1] = value;
 	}
 	
@@ -331,7 +408,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationStdDevNoIMAP(int incidentType, float value) {
+	public static void setIncidentDurationStdDevNoIMAP(int incidentType, float value) {
 		durationInfoNoIMAP[incidentType][2] = value;
 	}
 
@@ -340,7 +417,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationMinNoIMAP(int incidentType, float value) {
+	public static void setIncidentDurationMinNoIMAP(int incidentType, float value) {
 		durationInfoNoIMAP[incidentType][3] = value;
 	}
 
@@ -349,7 +426,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationMaxNoIMAP(int incidentType, float value) {
+	public static void setIncidentDurationMaxNoIMAP(int incidentType, float value) {
 		durationInfoNoIMAP[incidentType][4] = value;
 	}
 
@@ -358,7 +435,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationDistributionWithIMAP(int incidentType, float value) {
+	public static void setIncidentDurationDistributionWithIMAP(int incidentType, float value) {
 		durationInfoWithIMAP[incidentType][0] = value;
 	}
 	
@@ -367,7 +444,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationMeanWithIMAP(int incidentType, float value) {
+	public static void setIncidentDurationMeanWithIMAP(int incidentType, float value) {
 		durationInfoWithIMAP[incidentType][1] = value;
 	}
 	
@@ -376,7 +453,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationStdDevWithIMAP(int incidentType, float value) {
+	public static void setIncidentDurationStdDevWithIMAP(int incidentType, float value) {
 		durationInfoWithIMAP[incidentType][2] = value;
 	}
 
@@ -385,7 +462,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationMinWithIMAP(int incidentType, float value) {
+	public static void setIncidentDurationMinWithIMAP(int incidentType, float value) {
 		durationInfoWithIMAP[incidentType][3] = value;
 	}
 
@@ -394,7 +471,7 @@ public class FreevalFileParser
 	 * @param incidentType 0-Shoulder, 1-1 Lane Closure, 2-2 Lane Closure, 3-3 Lane Closure, 4-4+ Lane Closure
 	 * @param value 
 	 */
-	public void setIncidentDurationMaxWithIMAP(int incidentType, float value) {
+	public static void setIncidentDurationMaxWithIMAP(int incidentType, float value) {
 		durationInfoWithIMAP[incidentType][4] = value;
 	}
 
@@ -497,7 +574,9 @@ public class FreevalFileParser
                 }
             }
         }
-		
+        seed1.singleRun(0, -1);
+        seed2.singleRun(0, -1);
+        
 		// Creating ScenarioGenerators
         if (rngSeed < 0) {  // Creating random seed if it has not been set
         	rngSeed = (int) (System.currentTimeMillis() % 1000000);
@@ -525,12 +604,18 @@ public class FreevalFileParser
 
         // Creating IncidentData
         IncidentData inc1 = new IncidentData(seed1, IncidentData.TYPE_GP);
-        inc1.setCrashRateRatio(crashRateRatioNoIMAP); // Sets the crash rate ratio
-        inc1.calcIncidentFrequenciesCR(crashRateFrequenciesNoIMAP, demand1);
-        
         IncidentData inc2 = new IncidentData(seed2, IncidentData.TYPE_GP);
-        inc2.setCrashRateRatio(crashRateRatioWithIMAP); // Sets the crash rate ratio
-        inc2.calcIncidentFrequenciesCR(crashRateFrequenciesWithIMAP, demand2);
+        
+        if (FreevalFileParser.getIncidentRatesUsed() == true) {
+        	inc1.calcIncidentFrequenciesCR(incidentRatesNoIMAP, demand1, false);
+        	inc2.calcIncidentFrequenciesCR(incidentRatesWithIMAP, demand2, false);
+        } else {
+        	inc1.setCrashRateRatio(crashRateRatioNoIMAP); // Sets the crash rate ratio
+            inc1.calcIncidentFrequenciesCR(crashRateFrequenciesNoIMAP, demand1, true);
+                    
+            inc2.setCrashRateRatio(crashRateRatioWithIMAP); // Sets the crash rate ratio
+            inc2.calcIncidentFrequenciesCR(crashRateFrequenciesWithIMAP, demand2, true);
+        }
         
         for (int incidentType = 0; incidentType < 5; incidentType++) {
 	        inc1.setIncidentDistribution(incidentType, durationInfoNoIMAP[incidentType][0]);  // Sets distribution for incident type
@@ -552,6 +637,10 @@ public class FreevalFileParser
         // Assigning Demand and incidents to Seeds and scenario generators
         seed1.setSpecifiedGPDemand(demand1.getSpecifiedDemand());  // Saves GP Demand multipliers
         seed1.setWeekdayUsed(demand1.getActiveDays());  // Saves days active
+        seed1.setGPIncidentCAF(inc1.getIncidentCAF());
+        seed1.setGPIncidentDAF(inc1.getIncidentDAF());
+        seed1.setGPIncidentSAF(inc1.getIncidentFFSAF());
+        seed1.setGPIncidentLAF(inc1.getIncidentLAF());
         sg1.setDemandDataGP(demand1); // Setting Demand Data
         sg1.setGPIncidentData(inc1);  // Setting Incident Data
         sg1.includeGPWorkZones(false);  // Turning off work zones
@@ -560,6 +649,10 @@ public class FreevalFileParser
 
         seed2.setSpecifiedGPDemand(demand2.getSpecifiedDemand());  // Saves GP Demand multipliers
         seed2.setWeekdayUsed(demand2.getActiveDays());  // Saves days active
+        seed2.setGPIncidentCAF(inc2.getIncidentCAF());
+        seed2.setGPIncidentDAF(inc2.getIncidentDAF());
+        seed2.setGPIncidentSAF(inc2.getIncidentFFSAF());
+        seed2.setGPIncidentLAF(inc2.getIncidentLAF());
         sg2.setDemandDataGP(demand2); // Setting Demand Data
         sg2.setGPIncidentData(inc2);  // Setting Incident Data
         sg2.includeGPWorkZones(false);  // Turning off work zones
@@ -567,13 +660,218 @@ public class FreevalFileParser
         sg2.includeIncidentsGP(true);  // Turning on Incidents
 
         boolean scenariosCreated1 = sg1.generateScenarios();  // Creates the scenarios
+        if (scenariosCreated1) {
+        	seed1.setRLScenarios(sg1.getGPScenario(), sg1.getMLScenario(), sg1.getScenarioInfoList());
+        } else {
+        	System.out.println("Something went wrong generating before scenarios");
+        }
         RLBatchRunDialog batchRunDialog1 = new RLBatchRunDialog(seed1, null);
         batchRunDialog1.setVisible(true);  // These two functions will run all scenarios with a progressbar
 
         boolean scenariosCreated2 = sg2.generateScenarios();  // Creates the scenarios
+        if (scenariosCreated2) {
+        	seed2.setRLScenarios(sg2.getGPScenario(), sg2.getMLScenario(), sg2.getScenarioInfoList());
+        } else {
+        	System.out.println("Something went wrong generating after scenarios");
+        }
         RLBatchRunDialog batchRunDialog2 = new RLBatchRunDialog(seed2, null);
         batchRunDialog2.setVisible(true);
 		
 	}
 
+	/**
+	 * This dialog is used to perform batch run of scenarios
+	 *
+	 * @author Shu Liu
+	 */
+	private static class RLBatchRunDialog extends javax.swing.JDialog
+	        implements PropertyChangeListener {
+
+	    /**
+	     * Invoked when task's progress property changes.
+	     */
+	    @Override
+	    public void propertyChange(PropertyChangeEvent evt) {
+	        if ("progress".equals(evt.getPropertyName())) {
+	            int progress = (Integer) evt.getNewValue();
+	            progressBar.setValue(progress);
+	        }
+	    }
+	    
+	    private javax.swing.JProgressBar progressBar;                 
+
+	    private int returnStatus = RET_CANCEL;
+
+	    /**
+	     * A return status code - returned if Cancel button has been pressed
+	     */
+	    public static final int RET_CANCEL = 0;
+	    /**
+	     * A return status code - returned if OK button has been pressed
+	     */
+	    public static final int RET_OK = 1;
+
+	    private final Seed seed;
+
+	    //private final MainWindow mainWindow;
+
+	    /**
+	     * Creates new form NewOkCancelDialog
+	     *
+	     * @param seed seed to be analyzed
+	     * @param mainWindow mainWindow for return message
+	     */
+	    public RLBatchRunDialog(Seed seed, Frame parent) {
+	        super(parent, true);
+	        initComponents();
+
+	        //set starting position
+	        this.setLocationRelativeTo(this.getRootPane());
+
+	        this.seed = seed;
+	        //this.mainWindow = mainWindow;
+
+	        // Close the dialog when Esc is pressed
+	        String cancelName = "cancel";
+	        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), cancelName);
+	        ActionMap actionMap = getRootPane().getActionMap();
+	        actionMap.put(cancelName, new AbstractAction() {
+	            public void actionPerformed(ActionEvent e) {
+	                doClose(RET_CANCEL);
+	            }
+	        });
+
+	        doRun();
+	    }
+
+	    /**
+	     * Getter for return status
+	     *
+	     * @return the return status of this dialog - one of RET_OK or RET_CANCEL
+	     */
+	    public int getReturnStatus() {
+	        return returnStatus;
+	    }
+                        
+	    private void initComponents() {
+
+	        progressBar = new javax.swing.JProgressBar();
+
+	        setTitle("Batch Run");
+	        setResizable(false);
+	        addWindowListener(new java.awt.event.WindowAdapter() {
+	            public void windowClosing(java.awt.event.WindowEvent evt) {
+	                closeDialog(evt);
+	            }
+	        });
+
+	        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+	        getContentPane().setLayout(layout);
+	        layout.setHorizontalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+	                .addContainerGap()
+	                .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+	                .addContainerGap())
+	        );
+	        layout.setVerticalGroup(
+	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	            .addGroup(layout.createSequentialGroup()
+	                .addContainerGap()
+	                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+	        );
+
+	        pack();
+	    }                       
+
+	    private void doRun() {
+	        final int start;
+	        final int end;
+
+	        try {
+	            start = 0;
+	            end = seed.getValueInt(CEConst.IDS_NUM_SCEN);
+	        } catch (Exception e) {
+	            JOptionPane.showMessageDialog(this, "Invalid scenario number",
+	                    "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        class Task extends SwingWorker<Void, Void> {
+	            /*
+	             * Main task. Executed in background thread.
+	             */
+	            @Override
+	            public Void doInBackground() {
+	                //timing starts
+	                long timingStart = new Date().getTime();
+
+	                Thread thread = new Thread(new Runnable() {
+	                    public void run() {
+	                        for (int scen = start; scen <= end; scen++) {
+	                            setProgress((scen - start) * 100 / (end - start));
+	                            if (!seed.hasValidOutput(scen, -1)) {
+	                                seed.singleRun(scen, -1);//, threadIndex);
+	                            }
+	                        }
+	                    }
+	                });
+
+	                thread.start();
+
+	                try {
+	                    thread.join();
+	                } catch (InterruptedException ex) {
+	                    Logger.getLogger(RLBatchRunDialog.class.getName()).log(Level.SEVERE, null, ex);
+	                }
+
+	                //timing ends
+	                long timingEnd = new Date().getTime();
+	                System.out.println("Batch run finished. Time cost: "
+	                        + (timingEnd - timingStart) + " ms");
+
+	                return null;
+	            }
+
+	            /*
+	             * Executed in event dispatching thread
+	             */
+	            @Override
+	            public void done() {
+	                progressBar.setString("Finish");
+	                doClose(RET_OK);
+	            }
+	        }
+
+	        try {
+	            progressBar.setStringPainted(true);
+	            progressBar.setString("Analyzing, please wait...");
+
+	            Task task = new Task();
+	            task.addPropertyChangeListener(this);
+	            task.execute();
+
+	        } catch (Exception e) {
+	            JOptionPane.showMessageDialog(this, "Error occured in batch run",
+	                    "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+
+	    /**
+	     * Closes the dialog
+	     */
+	    private void closeDialog(java.awt.event.WindowEvent evt) {                             
+	        doClose(RET_CANCEL);
+	    }                            
+
+	    private void doClose(int retStatus) {
+	        returnStatus = retStatus;
+	        setVisible(false);
+	        dispose();
+	    }
+	}
+
+	
 }

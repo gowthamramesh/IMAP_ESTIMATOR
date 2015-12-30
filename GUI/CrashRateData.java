@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -55,6 +56,14 @@ public class CrashRateData extends JDialog
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				// Assigning crash rate data to FreevalFileParser
+				FreevalFileParser.setIncidentRatesUsed(false);
+				FreevalFileParser.setCrashRateRatioNoIMAP(Float.parseFloat(crashRatioField.getText()));
+				FreevalFileParser.setCrashRateRatioWithIMAP(Float.parseFloat(crashRatioField.getText()));
+				float[] crashRateArray = new float[12];
+				Arrays.fill(crashRateArray, Float.parseFloat(crashRateField.getText()));
+				FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateArray);
+				FreevalFileParser.setCrashRateFrequenciesWithIMAP(crashRateArray);
 				crashData.dispose();
 			}
 		});

@@ -66,6 +66,41 @@ public class IncidentSeverityData extends JDialog
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				if (both.isSelected()) {
+					// Setting information for both
+					for (int i = 1; i < 6; i++) {
+						// Setting Before
+						FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
+						FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
+						FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
+						FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
+						FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 5)));
+						// Setting After
+						FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
+						FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
+						FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
+						FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
+						FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 5)));
+					}
+				} else if (before.isSelected()) {
+					// Setting information for before only
+					for (int i = 1; i < 6; i++) {
+						FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
+						FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
+						FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
+						FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
+						FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 5)));
+					}
+				} else {
+					// Setting information for after only
+					for (int i = 1; i < 6; i++) {
+						FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
+						FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
+						FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
+						FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
+						FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 5)));
+					}
+				}
 				incidentData.dispose();
 			}
 		});

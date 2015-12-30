@@ -60,6 +60,33 @@ public class IncidentRateData extends JDialog
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				// Assigning incident data to FreevalFileParser
+				if (both.isSelected()) {
+					// Create arrays
+					float[] beforeArr = new float[12];
+					float[] afterArr = new float[12];
+					for (int i = 0; i < 12; i ++) {
+						beforeArr[i] = (float) incidentTable.getValueAt(i+1, 1);
+						afterArr[i] = (float) incidentTable.getValueAt(i+1, 2);
+					}
+					FreevalFileParser.setIncidentRatesUsed(true);
+					FreevalFileParser.setIncidentFrequenciesNoIMAP(beforeArr);
+					FreevalFileParser.setIncidentFrequenciesWithIMAP(afterArr);
+				} else if (before.isSelected()) {
+					float[] beforeArr = new float[12];
+					for (int i = 0; i < 12; i ++) {
+						beforeArr[i] = (float) incidentTable.getValueAt(i+1, 1);
+					}
+					FreevalFileParser.setIncidentRatesUsed(true);
+					FreevalFileParser.setIncidentFrequenciesNoIMAP(beforeArr);
+				} else {
+					float[] afterArr = new float[12];
+					for (int i = 0; i < 12; i ++) {
+						afterArr[i] = (float) incidentTable.getValueAt(i+1, 2);
+					}
+					FreevalFileParser.setIncidentRatesUsed(true);
+					FreevalFileParser.setIncidentFrequenciesWithIMAP(afterArr);
+				}
 				incidentData.dispose();
 			}
 		});
@@ -80,12 +107,18 @@ public class IncidentRateData extends JDialog
 		Object[][] data = {
 				{ "<html><b>" + columnNames[0] + "</b></html>", "<html><b>" + columnNames[1] + "</b></html>",
 						"<html><b>" + columnNames[2] + "</b></html>" },
-				{ "<html><b>" + "JAN" + "</b></html>" }, { "<html><b>" + "FEB" + "</b></html>" },
-				{ "<html><b>" + "MAR" + "</b></html>" }, { "<html><b>" + "APR" + "</b></html>" },
-				{ "<html><b>" + "MAY" + "</b></html>" }, { "<html><b>" + "JUN" + "</b></html>" },
-				{ "<html><b>" + "JUL" + "</b></html>" }, { "<html><b>" + "AUG" + "</b></html>" },
-				{ "<html><b>" + "SEP" + "</b></html>" }, { "<html><b>" + "OCT" + "</b></html>" },
-				{ "<html><b>" + "NOV" + "</b></html>" }, { "<html><b>" + "DEC" + "</b></html>" },
+				{ "<html><b>" + "JAN" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "FEB" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "MAR" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "APR" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "MAY" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "JUN" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "JUL" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "AUG" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "SEP" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "OCT" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "NOV" + "</b></html>", 1526.0f, 1526.0f },
+				{ "<html><b>" + "DEC" + "</b></html>", 1526.0f, 1526.0f },
 
 		};
 
@@ -120,7 +153,7 @@ public class IncidentRateData extends JDialog
 		{
 			public boolean isCellEditable(int row, int column)
 			{
-				if (column < 1)
+				if (column < 1 || row == 0)
 				{
 					return false;
 				}
