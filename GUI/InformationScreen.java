@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package GUI;
 
@@ -16,25 +19,68 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class InformationScreen.
+ */
 public class InformationScreen
 {
-	private static JPanel		mainpanel;
-	private static JTextField	laborCostField			= new JTextField("15");
-	private static JTextField	truckCostField			= new JTextField("30");
-	private static JTextField	capitalCostField		= new JTextField("5000");
-	private static JComboBox	operFromHour			= new JComboBox();
-	private static JComboBox	operFromMin				= new JComboBox();
-	private static JComboBox	operToHour				= new JComboBox();
-	private static JComboBox	operToMin				= new JComboBox();
-	private static JTextField	annualOperDaysField		= new JTextField("240");
-	private static JTextField	noImapTrucksField		= new JTextField("18");
-	private static JTextField	centerlineMilesField	= new JTextField("148");
-	private static JButton		nextButton				= new JButton("NEXT");
-	private static JButton		prevButton				= new JButton("BACK");
-	private static int			myID					= 1;
-	private static int			columns					= 200;
-	private static int			textFieldWidth			= 125;
 
+	/** The mainpanel. */
+	private static JPanel mainpanel;
+
+	/** The labor cost field. */
+	private static JTextField laborCostField = new JTextField("15");
+
+	/** The truck cost field. */
+	private static JTextField truckCostField = new JTextField("30");
+
+	/** The capital cost field. */
+	private static JTextField capitalCostField = new JTextField("5000");
+
+	/** The oper from hour. */
+	private static JComboBox operFromHour = new JComboBox();
+
+	/** The oper from min. */
+	private static JComboBox operFromMin = new JComboBox();
+
+	/** The oper to hour. */
+	private static JComboBox operToHour = new JComboBox();
+
+	/** The oper to min. */
+	private static JComboBox operToMin = new JComboBox();
+
+	/** The annual oper days field. */
+	private static JTextField annualOperDaysField = new JTextField("240");
+
+	/** The no imap trucks field. */
+	private static JTextField noImapTrucksField = new JTextField("18");
+
+	/** The centerline miles field. */
+	private static JTextField centerlineMilesField = new JTextField("148");
+
+	/** The next button. */
+	private static JButton nextButton = new JButton("NEXT");
+
+	/** The prev button. */
+	private static JButton prevButton = new JButton("BACK");
+
+	/** The my id. */
+	private static int myID = 1;
+
+	/** The columns. */
+	private static int columns = 200;
+
+	/** The text field width. */
+	private static int textFieldWidth = 125;
+
+	private static JTextField fuelPrice = new JTextField("1.99");
+
+	/**
+	 * Gets the infor panel.
+	 *
+	 * @return the infor panel
+	 */
 	public static JPanel getInforPanel()
 	{
 		if (mainpanel != null)
@@ -47,6 +93,9 @@ public class InformationScreen
 		return mainpanel;
 	}
 
+	/**
+	 * Inits the comp.
+	 */
 	private static void initComp()
 	{
 		mainpanel.setPreferredSize(new Dimension(800, 400));
@@ -57,6 +106,11 @@ public class InformationScreen
 
 	}
 
+	/**
+	 * Gets the setup panel.
+	 *
+	 * @return the setup panel
+	 */
 	private static JPanel getSetupPanel()
 	{
 		GridBagConstraints c = new GridBagConstraints();
@@ -130,6 +184,15 @@ public class InformationScreen
 		c.gridy = 13;
 		setupPanel.add(Box.createVerticalStrut(15), c);
 
+		c.gridx = 0;
+		c.gridy = 14;
+		JLabel FuelPriceLabel = new JLabel("Fuel Price ($)");
+		setupPanel.add(FuelPriceLabel, c);
+
+		c.gridx = 0;
+		c.gridy = 13;
+		setupPanel.add(Box.createVerticalStrut(15), c);
+
 		// adding gap between label and field
 
 		c.gridx = 1;
@@ -141,6 +204,10 @@ public class InformationScreen
 
 		laborCostField.setColumns(150);
 		laborCostField.setMinimumSize(new Dimension(textFieldWidth, 20));
+
+		fuelPrice.setColumns(150);
+		fuelPrice.setMinimumSize(new Dimension(textFieldWidth, 20));
+
 		truckCostField.setMinimumSize(new Dimension(textFieldWidth, 20));
 		capitalCostField.setMinimumSize(new Dimension(textFieldWidth, 20));
 		annualOperDaysField.setMinimumSize(new Dimension(textFieldWidth, 20));
@@ -181,9 +248,15 @@ public class InformationScreen
 		c.gridy = 12;
 		setupPanel.add(centerlineMilesField, c);
 
+		c.gridy = 14;
+		setupPanel.add(fuelPrice, c);
+
 		return setupPanel;
 	}
 
+	/**
+	 * Populate combo box.
+	 */
 	private static void populateComboBox()
 	{
 		for (int i = 0; i < 24; i++)
@@ -209,6 +282,11 @@ public class InformationScreen
 
 	}
 
+	/**
+	 * Gets the info table.
+	 *
+	 * @return the info table
+	 */
 	private static JPanel getinfoTable()
 	{
 		JPanel containerPanel = new JPanel();
@@ -236,11 +314,26 @@ public class InformationScreen
 		return containerPanel;
 	}
 
+	/**
+	 * Gets the center line miles.
+	 *
+	 * @return the center line miles
+	 */
 	public static String getCenterLineMiles()
 	{
 		return centerlineMilesField.getText();
 	}
 
+	public static String getFuelPrice()
+	{
+		return fuelPrice.getText();
+	}
+
+	/**
+	 * Gets the operation hours.
+	 *
+	 * @return the operation hours
+	 */
 	public static String getOperationHours()
 	{
 		int noOfHours = operToHour.getSelectedIndex() - operFromHour.getSelectedIndex();
@@ -255,11 +348,21 @@ public class InformationScreen
 		return Integer.toString(noOfHours) + ":" + Integer.toString(noOfMin * 15);
 	}
 
+	/**
+	 * Gets the oper days.
+	 *
+	 * @return the oper days
+	 */
 	public static int getOperDays()
 	{
 		return Integer.parseInt(annualOperDaysField.getText());
 	}
 
+	/**
+	 * Gets the operation hours int.
+	 *
+	 * @return the operation hours int
+	 */
 	public static float getOperationHoursInt()
 	{
 		int noOfHours = operToHour.getSelectedIndex() - operFromHour.getSelectedIndex();
@@ -274,16 +377,31 @@ public class InformationScreen
 		return (noOfHours + noOfMin / 4);
 	}
 
+	/**
+	 * Gets the no trucks.
+	 *
+	 * @return the no trucks
+	 */
 	public static float getNoTrucks()
 	{
 		return Float.parseFloat(noImapTrucksField.getText());
 	}
 
+	/**
+	 * Gets the cost labor.
+	 *
+	 * @return the cost labor
+	 */
 	public static float getCostLabor()
 	{
 		return Float.parseFloat(laborCostField.getText());
 	}
 
+	/**
+	 * Gets the cost truck.
+	 *
+	 * @return the cost truck
+	 */
 	public static float getCostTruck()
 	{
 		return Float.parseFloat(truckCostField.getText());

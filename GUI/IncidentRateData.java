@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package GUI;
 
@@ -20,14 +23,31 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IncidentRateData.
+ */
 public class IncidentRateData extends JDialog
 {
+	
+	/** The incident data. */
 	private IncidentRateData	incidentData;
+	
+	/** The both. */
 	private JRadioButton		both	= new JRadioButton("Both");
+	
+	/** The before. */
 	private JRadioButton		before	= new JRadioButton("Only Before");
+	
+	/** The after. */
 	private JRadioButton		after	= new JRadioButton("Only After");
+	
+	/** The incident table. */
 	private JTable				incidentTable;
 
+	/**
+	 * Instantiates a new incident rate data.
+	 */
 	public IncidentRateData()
 	{
 		super(Main.getMainFrame());
@@ -37,6 +57,9 @@ public class IncidentRateData extends JDialog
 		initComponents();
 	}
 
+	/**
+	 * Inits the components.
+	 */
 	private void initComponents()
 	{
 		final Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -51,6 +74,11 @@ public class IncidentRateData extends JDialog
 		pack();
 	}
 
+	/**
+	 * Gets the button panel.
+	 *
+	 * @return the button panel
+	 */
 	private JPanel getButtonPanel()
 	{
 		JPanel buttonPanel = new JPanel();
@@ -94,6 +122,11 @@ public class IncidentRateData extends JDialog
 		return buttonPanel;
 	}
 
+	/**
+	 * Gets the incident table.
+	 *
+	 * @return the incident table
+	 */
 	private JPanel getIncidentTable()
 	{
 		JPanel incidentPanel = new JPanel();
@@ -193,6 +226,11 @@ public class IncidentRateData extends JDialog
 
 	}
 
+	/**
+	 * Gets the radio panel.
+	 *
+	 * @return the radio panel
+	 */
 	private JPanel getRadioPanel()
 	{
 		JPanel radioPanel = new JPanel();
@@ -286,6 +324,9 @@ public class IncidentRateData extends JDialog
 		return radioPanel;
 	}
 
+	/**
+	 * Display incident table.
+	 */
 	public void displayIncidentTable()
 	{
 		incidentData.setVisible(true);

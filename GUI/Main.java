@@ -1,38 +1,85 @@
+/*
+ * IMAP ESTIMATION TOOL
+ * 
+ * @author: Gowtham Ramesh & Joseph L Trask
+ * 
+ * @date : 01/18/16
+ * 
+ * @version: 1.0
+ */
 
 package GUI;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Main.
+ */
 public class Main extends JFrame
 {
-	private static Main		mainFrame;
-	private static JPanel	basePanel;
-	private static JPanel	mainPanel;
-	private static JPanel	inforPanel;
-	private static JPanel	estimationPanel;
-	private static JPanel	benefitPanel;
-	private static JLabel	myLabel;
-	private static int		currentPanelID	= 0;
-	private static JPanel	contentPanel;
-	private static String	title			= "IMAP COST/BENEFIT ESTIMATOR";
 
+	/** The main frame. */
+	private static Main mainFrame;
+
+	/** The base panel. */
+	private static JPanel basePanel;
+
+	/** The main panel. */
+	private static JPanel mainPanel;
+
+	/** The infor panel. */
+	private static JPanel inforPanel;
+
+	/** The estimation panel. */
+	private static JPanel estimationPanel;
+
+	/** The benefit panel. */
+	private static JPanel benefitPanel;
+
+	/** The my label. */
+	private static JLabel myLabel;
+
+	/** The current panel id. */
+	private static int currentPanelID = 0;
+
+	/** The content panel. */
+	private static JPanel contentPanel;
+
+	/** The title. */
+	private static String title = "IMAP COST/BENEFIT ESTIMATOR";
+
+	/**
+	 * Instantiates a new main.
+	 */
 	public Main()
 	{
 		this.setTitle("IMAP Benefit/Cost Estimation tool");
+		List<Image> icons = new ArrayList<>();
+		icons.add(new ImageIcon(getClass().getResource("ncdot.png")).getImage());
+		this.setIconImages(icons);
+		this.setIconImage(new ImageIcon(getClass().getResource("ncdot.png")).getImage());
 		initComponents();
 	}
 
+	/**
+	 * Inits the components.
+	 */
 	private void initComponents()
 	{
 		mainPanel = SetupPanel.getMainPanel();
@@ -67,11 +114,20 @@ public class Main extends JFrame
 
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String args[])
 	{
 		showMainForm();
 	}
 
+	/**
+	 * Show main form.
+	 */
 	private static void showMainForm()
 	{
 		// Create mainFrame in EDT thread
@@ -93,6 +149,12 @@ public class Main extends JFrame
 		});
 	}
 
+	/**
+	 * Change panel.
+	 *
+	 * @param id
+	 *            the id
+	 */
 	public static void changePanel(int id)
 	{
 		currentPanelID = id;
@@ -117,6 +179,11 @@ public class Main extends JFrame
 		basePanel.repaint();
 	}
 
+	/**
+	 * Gets the main frame.
+	 *
+	 * @return the main frame
+	 */
 	public static JFrame getMainFrame()
 	{
 		return mainFrame;

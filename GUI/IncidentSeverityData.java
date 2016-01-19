@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package GUI;
 
@@ -21,19 +24,46 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IncidentSeverityData.
+ */
 public class IncidentSeverityData extends JDialog
 {
+	
+	/** The incident data. */
 	private IncidentSeverityData	incidentData;
+	
+	/** The both. */
 	private JRadioButton			both				= new JRadioButton("Both");
+	
+	/** The before. */
 	private JRadioButton			before				= new JRadioButton("Only Before");
+	
+	/** The after. */
 	private JRadioButton			after				= new JRadioButton("Only After");
+	
+	/** The before table. */
 	private JTable					beforeTable;
+	
+	/** The after table. */
 	private JTable					afterTable;
+	
+	/** The area type val. */
 	private int						areaTypeVal			= 0;
+	
+	/** The is state wide val. */
 	private int						isStateWideVal		= 0;
+	
+	/** The after table editing. */
 	private boolean					afterTableEditing	= true;
+	
+	/** The before table editing. */
 	private boolean					beforeTableEditing	= true;
 
+	/**
+	 * Instantiates a new incident severity data.
+	 */
 	public IncidentSeverityData()
 	{
 		super(Main.getMainFrame());
@@ -43,6 +73,9 @@ public class IncidentSeverityData extends JDialog
 		initComponents();
 	}
 
+	/**
+	 * Inits the components.
+	 */
 	private void initComponents()
 	{
 		final Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -57,6 +90,11 @@ public class IncidentSeverityData extends JDialog
 		pack();
 	}
 
+	/**
+	 * Gets the button panel.
+	 *
+	 * @return the button panel
+	 */
 	private JPanel getButtonPanel()
 	{
 		JPanel buttonPanel = new JPanel();
@@ -108,6 +146,11 @@ public class IncidentSeverityData extends JDialog
 		return buttonPanel;
 	}
 
+	/**
+	 * Gets the incident table.
+	 *
+	 * @return the incident table
+	 */
 	private JPanel getIncidentTable()
 	{
 		JPanel incidentSevPanel = new JPanel();
@@ -122,6 +165,9 @@ public class IncidentSeverityData extends JDialog
 
 	}
 
+	/**
+	 * Initialize before table.
+	 */
 	private void initializeBeforeTable()
 	{
 		final String columnNames[] = new String[6];
@@ -245,6 +291,9 @@ public class IncidentSeverityData extends JDialog
 		beforeTable.setTableHeader(null);
 	}
 
+	/**
+	 * Initialize after table.
+	 */
 	private void initializeAfterTable()
 	{
 		final String columnNames[] = new String[6];
@@ -367,6 +416,11 @@ public class IncidentSeverityData extends JDialog
 		afterTable.setTableHeader(null);
 	}
 
+	/**
+	 * Gets the radio panel.
+	 *
+	 * @return the radio panel
+	 */
 	private JPanel getRadioPanel()
 	{
 		JPanel radioPanel = new JPanel();
@@ -442,6 +496,12 @@ public class IncidentSeverityData extends JDialog
 		return radioPanel;
 	}
 
+	/**
+	 * Display incident table.
+	 *
+	 * @param areaType the area type
+	 * @param isStateWide the is state wide
+	 */
 	public void displayIncidentTable(int areaType, int isStateWide)
 	{
 		areaTypeVal = areaType;
@@ -453,6 +513,9 @@ public class IncidentSeverityData extends JDialog
 		incidentData.setVisible(true);
 	}
 
+	/**
+	 * Sets the default values state wide.
+	 */
 	private void setDefaultValuesStateWide()
 	{
 		if (areaTypeVal == 0)
@@ -566,6 +629,12 @@ public class IncidentSeverityData extends JDialog
 		}
 	}
 
+	/**
+	 * Return float.
+	 *
+	 * @param val the val
+	 * @return the float
+	 */
 	public float returnFloat(Object val)
 	{
 		float value = 0;

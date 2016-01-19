@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package GUI;
 
@@ -18,12 +21,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CrashRateData.
+ */
 public class CrashRateData extends JDialog
 {
+	
+	/** The crash data. */
 	private CrashRateData	crashData;
+	
+	/** The crash ratio field. */
 	private JTextField		crashRatioField	= new JTextField("1.7");
+	
+	/** The crash rate field. */
 	private JTextField		crashRateField	= new JTextField("100");
 
+	/**
+	 * Instantiates a new crash rate data.
+	 */
 	public CrashRateData()
 	{
 		super(Main.getMainFrame());
@@ -33,6 +49,9 @@ public class CrashRateData extends JDialog
 		initComponents();
 	}
 
+	/**
+	 * Inits the components.
+	 */
 	private void initComponents()
 	{
 		final Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -47,6 +66,11 @@ public class CrashRateData extends JDialog
 		pack();
 	}
 
+	/**
+	 * Gets the button panel.
+	 *
+	 * @return the button panel
+	 */
 	private JPanel getButtonPanel()
 	{
 		JPanel buttonPanel = new JPanel();
@@ -71,6 +95,11 @@ public class CrashRateData extends JDialog
 		return buttonPanel;
 	}
 
+	/**
+	 * Gets the crash panel.
+	 *
+	 * @return the crash panel
+	 */
 	private JPanel getCrashPanel()
 	{
 		GridBagConstraints c = new GridBagConstraints();
@@ -122,6 +151,12 @@ public class CrashRateData extends JDialog
 		return setupPanel;
 	}
 
+	/**
+	 * Display crash rate data.
+	 *
+	 * @param defCrashRatio the def crash ratio
+	 * @param defaultCrashRate the default crash rate
+	 */
 	public void displayCrashRateData(float defCrashRatio, int defaultCrashRate)
 	{
 		if (defaultCrashRate != -1)

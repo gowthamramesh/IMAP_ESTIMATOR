@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package GUI;
 
@@ -22,33 +25,85 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CostBenefitEstimate.
+ */
 public class CostBenefitEstimate
 {
-	private static JPanel		mainpanel;
-	private static JTextField	laborCostField			= new JTextField("15");
-	private static JTextField	truckCostField			= new JTextField("30");
-	private static JTextField	capitalCostField		= new JTextField("5000");
-	private static JComboBox	operFromHour			= new JComboBox();
-	private static JComboBox	operFromMin				= new JComboBox();
-	private static JComboBox	operToHour				= new JComboBox();
-	private static JComboBox	operToMin				= new JComboBox();
-	private static JTextField	annualOperDaysField		= new JTextField("240");
-	private static JTextField	noImapTrucksField		= new JTextField("18");
-	private static JTextField	centerlineMilesField	= new JTextField("148");
-	private static JButton		nextButton				= new JButton("NEXT");
-	private static JButton		prevButton				= new JButton("BACK");
-	private static int			myID					= 2;
-	private static int			columns					= 200;
-	private static int			textFieldWidth			= 125;
-	private static JTable		benefitEstimateTable;
-	private static float		passengerVehicle		= (float) 16.79;
-	private static float		commercialVehicle		= (float) 86.81;
-	private static float		truckPercent			= 5;
-	private static float		delaySavings			= 0;
-	private static float		delaySavingsCost		= 0;
-	private static float		fuelSavingsCost			= 0;
-	private static float		imapOperationCost		= 0;
 
+	/** The mainpanel. */
+	private static JPanel mainpanel;
+
+	/** The labor cost field. */
+	private static JTextField laborCostField = new JTextField("15");
+
+	private static JTextField fuelPrice = new JTextField("1.99");
+
+	/** The truck cost field. */
+	private static JTextField truckCostField = new JTextField("30");
+
+	/** The capital cost field. */
+	private static JTextField capitalCostField = new JTextField("5000");
+
+	/** The oper to min. */
+
+	/** The annual oper days field. */
+	private static JTextField annualOperDaysField = new JTextField("240");
+
+	/** The no imap trucks field. */
+	private static JTextField noImapTrucksField = new JTextField("18");
+
+	/** The centerline miles field. */
+	private static JTextField centerlineMilesField = new JTextField("148");
+
+	/** The next button. */
+	private static JButton nextButton = new JButton("NEXT");
+
+	/** The prev button. */
+	private static JButton prevButton = new JButton("BACK");
+
+	/** The my id. */
+	private static int myID = 2;
+
+	/** The text field width. */
+	private static int textFieldWidth = 125;
+
+	/** The benefit estimate table. */
+	private static JTable benefitEstimateTable;
+
+	/** The passenger vehicle. */
+	private static float passengerVehicle = (float) 16.79;
+
+	/** The commercial vehicle. */
+	private static float commercialVehicle = (float) 86.81;
+
+	/** The truck percent. */
+	private static float truckPercent = 5;
+
+	/** The delay savings. */
+	private static float delaySavings = 0;
+
+	/** The delay savings cost. */
+	private static float delaySavingsCost = 0;
+
+	/** The fuel savings cost. */
+	private static double fuelSavingsCost = 0;
+
+	/** The fuel savings. */
+	private static double fuelSavings = 0;
+
+	/** The imap operation cost. */
+	private static float imapOperationCost = 0;
+
+	/**
+	 * Gets the estimation benefit panel.
+	 *
+	 * @return the estimation benefit panel
+	 */
 	public static JPanel getEstimationBenefitPanel()
 	{
 		mainpanel = new JPanel();
@@ -56,6 +111,9 @@ public class CostBenefitEstimate
 		return mainpanel;
 	}
 
+	/**
+	 * Inits the comp.
+	 */
 	private static void initComp()
 	{
 		estimateCostBenefit();
@@ -68,15 +126,57 @@ public class CostBenefitEstimate
 
 	}
 
+	/**
+	 * Gallon per mile for light veh.
+	 *
+	 * @param speed
+	 *            the speed
+	 * @return the double
+	 */
+	private static double gallonPerMileForLightVeh(double speed)
+	{
+		double y = 0;
+		if (speed < 50)
+		{
+			y = Math.pow((0.3197 * speed), (-0.615));
+		}
+		else
+		{
+			y = Math.pow((0.009 * speed), (0.3337));
+		}
+		return y;
+	}
+
+	/**
+	 * Gallon per mile for truck veh.
+	 *
+	 * @param speed
+	 *            the speed
+	 * @return the double
+	 */
+	private static double gallonPerMileForTruckVeh(double speed)
+	{
+		double y = 0;
+		y = Math.pow((1.0662 * speed), (-0.483));
+		return y;
+	}
+
+	/**
+	 * Estimate cost benefit.
+	 */
 	private static void estimateCostBenefit()
 	{
 		// Set data to freeval and retrive op to Freeval file parser
 		FreevalFileParser.runFreeval();
 		computeDelaySaving();
+		calculateFuelSaving();
 		calculateFuelBenefit();
 		calculateIMapOperationCost();
 	}
 
+	/**
+	 * Calculate i map operation cost.
+	 */
 	private static void calculateIMapOperationCost()
 	{
 		float CT = 30;
@@ -95,16 +195,34 @@ public class CostBenefitEstimate
 
 	}
 
+	/**
+	 * Calculate fuel benefit.
+	 */
 	private static void calculateFuelBenefit()
+	{
+		System.out.println(Float.parseFloat(InformationScreen.getFuelPrice()));
+		fuelSavingsCost = fuelSavings * Float.parseFloat(InformationScreen.getFuelPrice());
+	}
+
+	/**
+	 * Calculate fuel saving.
+	 */
+	private static void calculateFuelSaving()
 	{
 		float totalDemandVMTWith = FreevalFileParser.getTotalDemandVMTWith();
 		float totalDemandVMTWithout = FreevalFileParser.getTotalDemandVMTWithout();
+		truckPercent = FreevalFileParser.getTruckPercentage();
 		float gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
 		float gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
-		fuelSavingsCost = (totalDemandVMTWith * gPerMileAvgSpeedWith)
-				- (totalDemandVMTWithout * gPerMileAvgSpeedWithout);
+		fuelSavings = ((totalDemandVMTWithout * gallonPerMileForTruckVeh(gPerMileAvgSpeedWithout) * truckPercent)
+				+ (totalDemandVMTWithout * gallonPerMileForLightVeh(gPerMileAvgSpeedWithout) * (1 - truckPercent)))
+				- ((totalDemandVMTWith * gallonPerMileForTruckVeh(gPerMileAvgSpeedWith) * truckPercent)
+						+ (totalDemandVMTWith * gallonPerMileForLightVeh(gPerMileAvgSpeedWith) * (1 - truckPercent)));
 	}
 
+	/**
+	 * Compute delay saving.
+	 */
 	private static void computeDelaySaving()
 	{
 		truckPercent = FreevalFileParser.getTruckPercentage();
@@ -117,6 +235,11 @@ public class CostBenefitEstimate
 
 	}
 
+	/**
+	 * Gets the cost benefit estimation table.
+	 *
+	 * @return the cost benefit estimation table
+	 */
 	private static JPanel getCostBenefitEstimationTable()
 	{
 		JPanel benefitTablePanel = new JPanel();
@@ -127,8 +250,9 @@ public class CostBenefitEstimate
 		columnNames[1] = "VALUE";
 
 		Object[][] data = { { "DELAY SAVINGS (beh-hr)", delaySavings },
-				{ "DELAY SAVING BENEFITS ($)", delaySavingsCost }, { "FUEL SAVINGS ($)", fuelSavingsCost },
-				{ "OPER. COSTS ($)", imapOperationCost }, { "B/C RATIO", (delaySavingsCost / imapOperationCost) } };
+				{ "DELAY SAVING BENEFITS ($)", delaySavingsCost }, { "FUEL SAVINGS (GAL)", fuelSavings },
+				{ "FUEL SAVINGS BENEFIT ($)", fuelSavingsCost }, { "OPER. COSTS ($)", imapOperationCost },
+				{ "B/C RATIO", (delaySavingsCost / imapOperationCost) } };
 
 		// Create a new table instance
 
@@ -186,6 +310,11 @@ public class CostBenefitEstimate
 
 	}
 
+	/**
+	 * Gets the setup panel.
+	 *
+	 * @return the setup panel
+	 */
 	private static JPanel getSetupPanel()
 	{
 		GridBagConstraints c = new GridBagConstraints();
@@ -266,6 +395,11 @@ public class CostBenefitEstimate
 		return setupPanel;
 	}
 
+	/**
+	 * Gets the info table.
+	 *
+	 * @return the info table
+	 */
 	private static JPanel getinfoTable()
 	{
 		JPanel containerPanel = new JPanel();

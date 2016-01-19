@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package GUI;
 
@@ -16,23 +19,60 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EstimationScreen.
+ */
 public class EstimationScreen
 {
-	private static JPanel				mainpanel;
-	private static JComboBox<String>	areaType			= new JComboBox<String>();
-	private static JComboBox<String>	studyType			= new JComboBox<String>();
-	private static JComboBox<String>	incidentRate		= new JComboBox<String>();
-	private static JComboBox<String>	incidentSeverity	= new JComboBox<String>();
-	private static JComboBox<String>	freevalFile			= new JComboBox<String>();
-	private static JButton				changeIncidentRate	= new JButton("...");
-	private static JButton				changeIncidentSev	= new JButton("...");
-	private static JButton				prevButton			= new JButton("BACK");
-	private static JButton				estimateCostBenefit	= new JButton("PERFORM COST BENEFIT ANALYSIS");
-	private static int					myID				= 2;
-	private static IncidentRateData		incidentData;
-	private static CrashRateData		crashRateData;
-	private static IncidentSeverityData	incidentSevData;
 
+	/** The mainpanel. */
+	private static JPanel mainpanel;
+
+	/** The area type. */
+	private static JComboBox<String> areaType = new JComboBox<String>();
+
+	/** The study type. */
+	private static JComboBox<String> studyType = new JComboBox<String>();
+
+	/** The incident rate. */
+	private static JComboBox<String> incidentRate = new JComboBox<String>();
+
+	/** The incident severity. */
+	private static JComboBox<String> incidentSeverity = new JComboBox<String>();
+
+	/** The freeval file. */
+	private static JComboBox<String> freevalFile = new JComboBox<String>();
+
+	/** The change incident rate. */
+	private static JButton changeIncidentRate = new JButton("...");
+
+	/** The change incident sev. */
+	private static JButton changeIncidentSev = new JButton("...");
+
+	/** The prev button. */
+	private static JButton prevButton = new JButton("BACK");
+
+	/** The estimate cost benefit. */
+	private static JButton estimateCostBenefit = new JButton("PERFORM COST BENEFIT ANALYSIS");
+
+	/** The my id. */
+	private static int myID = 2;
+
+	/** The incident data. */
+	private static IncidentRateData incidentData;
+
+	/** The crash rate data. */
+	private static CrashRateData crashRateData;
+
+	/** The incident sev data. */
+	private static IncidentSeverityData incidentSevData;
+
+	/**
+	 * Gets the estimation panel.
+	 *
+	 * @return the estimation panel
+	 */
 	public static JPanel getEstimationPanel()
 	{
 		if (mainpanel != null)
@@ -45,6 +85,9 @@ public class EstimationScreen
 		return mainpanel;
 	}
 
+	/**
+	 * Inits the comp.
+	 */
 	private static void initComp()
 	{
 		incidentData = new IncidentRateData();
@@ -60,6 +103,11 @@ public class EstimationScreen
 
 	}
 
+	/**
+	 * Gets the setup panel.
+	 *
+	 * @return the setup panel
+	 */
 	private static JPanel getSetupPanel()
 	{
 		GridBagConstraints c = new GridBagConstraints();
@@ -104,12 +152,12 @@ public class EstimationScreen
 
 		c.gridx = 0;
 		c.gridy = 7;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		// setupPanel.add(Box.createVerticalStrut(15), c);
 
 		c.gridx = 0;
 		c.gridy = 8;
 		JLabel annualDaysLabel = new JLabel("Freeval file selection");
-		setupPanel.add(annualDaysLabel, c);
+		// setupPanel.add(annualDaysLabel, c);
 
 		c.gridx = 0;
 		c.gridy = 9;
@@ -147,11 +195,14 @@ public class EstimationScreen
 		setupPanel.add(incidentSevPanel, c);
 
 		c.gridy = 8;
-		setupPanel.add(freevalFile, c);
+		// setupPanel.add(freevalFile, c);
 
 		return setupPanel;
 	}
 
+	/**
+	 * Populate combo box.
+	 */
 	private static void populateComboBox()
 	{
 		areaType.addItem("Urban");
@@ -207,6 +258,11 @@ public class EstimationScreen
 
 	}
 
+	/**
+	 * Gets the info table.
+	 *
+	 * @return the info table
+	 */
 	private static JPanel getinfoTable()
 	{
 		JPanel containerPanel = new JPanel();
@@ -224,6 +280,11 @@ public class EstimationScreen
 		return containerPanel;
 	}
 
+	/**
+	 * Gets the estimation button panel.
+	 *
+	 * @return the estimation button panel
+	 */
 	private static JPanel getEstimationButtonPanel()
 	{
 		JPanel containerPanel = new JPanel();
@@ -234,19 +295,33 @@ public class EstimationScreen
 			public void actionPerformed(ActionEvent e)
 			{
 				// Assign necessary information to FreevalFileParser
-				FreevalFileParser.selectSeedFile();
-				//FreevalFileParser.setRngSeed(rngSeed);  // Activate to set random number generator seed
-				FreevalFileParser.setActiveDays(new boolean[] {true, true, true, true, true, false, false}); // Activate to set active day array
-				FreevalFileParser.setTruckPercentage(5); // Activate to set truck percentage
+				boolean selectSeedFile = FreevalFileParser.selectSeedFile();
+				if (!selectSeedFile)
+				{
+					return;
+				}
+				// FreevalFileParser.setRngSeed(rngSeed); // Activate to set
+				// random number generator seed
+				FreevalFileParser.setActiveDays(new boolean[] { true, true, true, true, true, false, false }); // Activate
+																												// to
+																												// set
+																												// active
+																												// day
+																												// array
+				FreevalFileParser.setTruckPercentage(5); // Activate to set
+															// truck percentage
 				// Check before or after study
-				if (studyType.getSelectedIndex() == 0) {
+				if (studyType.getSelectedIndex() == 0)
+				{
 					// Before Study
-					//FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateFrequencies);
-					//FreevalFileParser.setCrashRateRatioNoIMAP(crashRateRatio);
-				} else {
+					// FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateFrequencies);
+					// FreevalFileParser.setCrashRateRatioNoIMAP(crashRateRatio);
+				}
+				else
+				{
 					// After study
-					//FreevalFileParser.setCrashRateFrequencies(crashRateFrequencies);
-					//FreevalFileParser.setCrashRateRatioWithIMAP(crashRateRatio);
+					// FreevalFileParser.setCrashRateFrequencies(crashRateFrequencies);
+					// FreevalFileParser.setCrashRateRatioWithIMAP(crashRateRatio);
 				}
 				Main.changePanel(myID + 1);
 			}

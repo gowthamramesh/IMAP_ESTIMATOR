@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package GUI;
 
@@ -16,21 +19,54 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SetupPanel.
+ */
 public class SetupPanel
 {
+	
+	/** The mainpanel. */
 	private static JPanel				mainpanel;
+	
+	/** The file name. */
 	private static JTextField			fileName			= new JTextField("I40Raleigh");
+	
+	/** The facility type. */
 	private static JTextField			facilityType		= new JTextField("40");
+	
+	/** The division type. */
 	private static JComboBox<String>	divisionType		= new JComboBox<String>();
+	
+	/** The County. */
 	private static JTextField			County				= new JTextField("Wake");
+	
+	/** The from intersection. */
 	private static JTextField			fromIntersection	= new JTextField("I-40/Exit1");
+	
+	/** The to intersection. */
 	private static JTextField			toIntersection		= new JTextField("I-40/Exit16");
+	
+	/** The next button. */
 	private static JButton				nextButton			= new JButton("NEXT");
+	
+	/** The facility type combo. */
 	private static JComboBox<String>	facilityTypeCombo	= new JComboBox<String>();
+	
+	/** The my id. */
 	private static int					myID				= 0;
+	
+	/** The columns. */
 	private static int					columns				= 200;
+	
+	/** The text field width. */
 	private static int					textFieldWidth		= 220;
 
+	/**
+	 * Gets the main panel.
+	 *
+	 * @return the main panel
+	 */
 	public static JPanel getMainPanel()
 	{
 		if (mainpanel != null)
@@ -43,6 +79,9 @@ public class SetupPanel
 		return mainpanel;
 	}
 
+	/**
+	 * Inits the comp.
+	 */
 	private static void initComp()
 	{
 		mainpanel.setPreferredSize(new Dimension(800, 400));
@@ -53,6 +92,11 @@ public class SetupPanel
 
 	}
 
+	/**
+	 * Gets the setup panel.
+	 *
+	 * @return the setup panel
+	 */
 	private static JPanel getSetupPanel()
 	{
 		GridBagConstraints c = new GridBagConstraints();
@@ -219,6 +263,11 @@ public class SetupPanel
 		return setupPanel;
 	}
 
+	/**
+	 * Gets the info table.
+	 *
+	 * @return the info table
+	 */
 	private static JPanel getinfoTable()
 	{
 		JPanel containerPanel = new JPanel();
@@ -236,6 +285,11 @@ public class SetupPanel
 		return containerPanel;
 	}
 
+	/**
+	 * Gets the facility data.
+	 *
+	 * @return the facility data
+	 */
 	public static String getFacilityData()
 	{
 		String facilityData = facilityTypeCombo.getSelectedItem().toString() + " " + facilityType.getText() + " from "
@@ -243,6 +297,11 @@ public class SetupPanel
 		return facilityData;
 	}
 
+	/**
+	 * Gets the county.
+	 *
+	 * @return the county
+	 */
 	public static String getCounty()
 	{
 		return County.getText();
