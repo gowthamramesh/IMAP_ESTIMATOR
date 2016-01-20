@@ -647,7 +647,11 @@ public class FreevalFileParser
 	public static float getTotalVehDelayWithoutImap()
 	{
 
-		return seed1.getValueFloat(CEConst.IDS_SP_VHD, 0, 0, 0, -1);
+		float total_VHD = 0;
+		for (int scen = 0; scen < seed1.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
+			total_VHD+= seed1.getValueFloat(CEConst.IDS_SP_VHD, 0, 0, scen+1, -1);
+		}
+		return total_VHD/seed1.getValueInt(CEConst.IDS_NUM_SCEN);
 	}
 
 	/**
@@ -657,7 +661,11 @@ public class FreevalFileParser
 	 */
 	public static float getTotalVehDelayWithImap()
 	{
-		return seed2.getValueFloat(CEConst.IDS_SP_VHD, 0, 0, 0, -1);
+		float total_VHD = 0;
+		for (int scen = 0; scen < seed2.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
+			total_VHD+= seed2.getValueFloat(CEConst.IDS_SP_VHD, 0, 0, scen+1, -1);
+		}
+		return total_VHD/seed2.getValueInt(CEConst.IDS_NUM_SCEN);
 	}
 
 	/**
@@ -678,11 +686,37 @@ public class FreevalFileParser
 			{
 				for (int per = 0; per < seed.getValueInt(CEConst.IDS_NUM_PERIOD); per++)
 				{
-					outputVal += seed.getValueFloat(identifier, seg, per, scen, -1);
+					outputVal += seed.getValueFloat(identifier, seg, per, scen+1, -1);
 				}
 			}
 		}
 		return outputVal;
+	}
+	
+	
+	/**
+	 * Getter for a particular average output across all reliability scenarios for a reliability analysis.
+	 *
+	 * @param seed
+	 *            Seed Facility to extract the output from.
+	 * @param identifier
+	 *            String identifier (from CEConst) specifying the output.
+	 * @return the total output from seed
+	 */
+	private static float getAverageRLOutputFromSeed(Seed seed, String identifier)
+	{
+		float outputVal = 0.0f;
+		for (int scen = 0; scen < seed.getValueInt(CEConst.IDS_NUM_SCEN); scen++)
+		{
+			for (int seg = 0; seg < seed.getValueInt(CEConst.IDS_NUM_SEGMENT); seg++)
+			{
+				for (int per = 0; per < seed.getValueInt(CEConst.IDS_NUM_PERIOD); per++)
+				{
+					outputVal += seed.getValueFloat(identifier, seg, per, scen+1, -1);
+				}
+			}
+		}
+		return outputVal/seed.getValueInt(CEConst.IDS_NUM_SCEN);
 	}
 
 	/**
@@ -692,7 +726,11 @@ public class FreevalFileParser
 	 */
 	public static float getTotalDemandVMTWithout()
 	{
-		return seed1.getValueFloat(CEConst.IDS_SP_VMTD, 0, 0, 0, -1);
+		float total_VMTD = 0;
+		for (int scen = 0; scen < seed1.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
+			total_VMTD+= seed1.getValueFloat(CEConst.IDS_SP_VMTD, 0, 0, scen+1, -1);
+		}
+		return total_VMTD/seed1.getValueInt(CEConst.IDS_NUM_SCEN);
 	}
 
 	/**
@@ -702,7 +740,11 @@ public class FreevalFileParser
 	 */
 	public static float getTotalDemandVMTWith()
 	{
-		return seed2.getValueFloat(CEConst.IDS_SP_VMTD, 0, 0, 0, -1);
+		float total_VMTD = 0;
+		for (int scen = 0; scen < seed2.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
+			total_VMTD+= seed2.getValueFloat(CEConst.IDS_SP_VMTD, 0, 0, scen+1, -1);
+		}
+		return total_VMTD/seed2.getValueInt(CEConst.IDS_NUM_SCEN);
 	}
 
 	/**
@@ -712,7 +754,11 @@ public class FreevalFileParser
 	 */
 	public static float getgPerMileAvgSpeedWithout()
 	{
-		return seed1.getValueFloat(CEConst.IDS_SP_SPACE_MEAN_SPEED, 0, 0, 0, -1);
+		float total_SMS = 0;
+		for (int scen = 0; scen < seed1.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
+			total_SMS+= seed1.getValueFloat(CEConst.IDS_SP_SPACE_MEAN_SPEED, 0, 0, scen+1, -1);
+		}
+		return total_SMS/seed1.getValueInt(CEConst.IDS_NUM_SCEN);
 	}
 
 	/**
@@ -722,7 +768,11 @@ public class FreevalFileParser
 	 */
 	public static float getgPerMileAvgSpeedWith()
 	{
-		return seed2.getValueFloat(CEConst.IDS_SP_SPACE_MEAN_SPEED, 0, 0, 0, -1);
+		float total_SMS = 0;
+		for (int scen = 0; scen < seed2.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
+			total_SMS+= seed2.getValueFloat(CEConst.IDS_SP_SPACE_MEAN_SPEED, 0, 0, scen+1, -1);
+		}
+		return total_SMS/seed2.getValueInt(CEConst.IDS_NUM_SCEN);
 	}
 
 	/**
