@@ -186,7 +186,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 14;
-		JLabel FuelPriceLabel = new JLabel("Fuel Price ($)");
+		JLabel FuelPriceLabel = new JLabel("Fuel Price ($ per GAL)");
 		setupPanel.add(FuelPriceLabel, c);
 
 		c.gridx = 0;

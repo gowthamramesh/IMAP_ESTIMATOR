@@ -189,4 +189,40 @@ public class Main extends JFrame
 		return mainFrame;
 	}
 
+	/**
+	 * Return float.
+	 *
+	 * @param val
+	 *            the val
+	 * @return the float
+	 */
+	public static float returnFloat(Object val)
+	{
+		float value = 0;
+		if (val instanceof Float)
+		{
+			value = (float) val;
+
+		}
+		else if (val instanceof String)
+		{
+			if (((String) val).trim().length() == 0)
+			{
+				value = 0;
+			}
+			else
+			{
+				value = Float.parseFloat((String) val);
+			}
+		}
+		else if (val instanceof Integer)
+		{
+			value = (int) val;
+		}
+		else if (val instanceof Double)
+		{
+			value = (float) (double) val;
+		}
+		return value;
+	}
 }

@@ -192,7 +192,7 @@ public class CostBenefitEstimate
 		OD = InformationScreen.getOperDays();
 
 		imapOperationCost = (CT + CL) * NT * OH * OD;
-
+		imapOperationCost = imapOperationCost / 2; // Unidirectional
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class CostBenefitEstimate
 	{
 		float totalDemandVMTWith = FreevalFileParser.getTotalDemandVMTWith();
 		float totalDemandVMTWithout = FreevalFileParser.getTotalDemandVMTWithout();
-		truckPercent = FreevalFileParser.getTruckPercentage();
+		truckPercent = FreevalFileParser.getTruckPercentage() / 100;
 		float gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
 		float gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
 		fuelSavings = ((totalDemandVMTWithout * gallonPerMileForTruckVeh(gPerMileAvgSpeedWithout) * truckPercent)
@@ -225,7 +225,7 @@ public class CostBenefitEstimate
 	 */
 	private static void computeDelaySaving()
 	{
-		truckPercent = FreevalFileParser.getTruckPercentage();
+		truckPercent = FreevalFileParser.getTruckPercentage() / 100;
 		float totVehDelayWithout = FreevalFileParser.getTotalVehDelayWithoutImap();
 		float totVehDelayWith = FreevalFileParser.getTotalVehDelayWithImap();
 		delaySavings = totVehDelayWithout - totVehDelayWith;
@@ -249,7 +249,7 @@ public class CostBenefitEstimate
 		columnNames[0] = "SAVINGS";
 		columnNames[1] = "VALUE";
 
-		Object[][] data = { { "DELAY SAVINGS (beh-hr)", delaySavings },
+		Object[][] data = { { "DELAY SAVINGS (veh-hr)", delaySavings },
 				{ "DELAY SAVING BENEFITS ($)", delaySavingsCost }, { "FUEL SAVINGS (GAL)", fuelSavings },
 				{ "FUEL SAVINGS BENEFIT ($)", fuelSavingsCost }, { "OPER. COSTS ($)", imapOperationCost },
 				{ "B/C RATIO", (delaySavingsCost / imapOperationCost) } };

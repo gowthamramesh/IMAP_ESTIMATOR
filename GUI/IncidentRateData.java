@@ -29,21 +29,21 @@ import javax.swing.table.TableCellEditor;
  */
 public class IncidentRateData extends JDialog
 {
-	
+
 	/** The incident data. */
-	private IncidentRateData	incidentData;
-	
+	private IncidentRateData incidentData;
+
 	/** The both. */
-	private JRadioButton		both	= new JRadioButton("Both");
-	
+	private JRadioButton both = new JRadioButton("Both");
+
 	/** The before. */
-	private JRadioButton		before	= new JRadioButton("Only Before");
-	
+	private JRadioButton before = new JRadioButton("Only Before");
+
 	/** The after. */
-	private JRadioButton		after	= new JRadioButton("Only After");
-	
+	private JRadioButton after = new JRadioButton("Only After");
+
 	/** The incident table. */
-	private JTable				incidentTable;
+	private JTable incidentTable;
 
 	/**
 	 * Instantiates a new incident rate data.
@@ -89,28 +89,36 @@ public class IncidentRateData extends JDialog
 			public void actionPerformed(ActionEvent e)
 			{
 				// Assigning incident data to FreevalFileParser
-				if (both.isSelected()) {
+				if (both.isSelected())
+				{
 					// Create arrays
 					float[] beforeArr = new float[12];
 					float[] afterArr = new float[12];
-					for (int i = 0; i < 12; i ++) {
-						beforeArr[i] = (float) incidentTable.getValueAt(i+1, 1);
-						afterArr[i] = (float) incidentTable.getValueAt(i+1, 2);
+					for (int i = 0; i < 12; i++)
+					{
+						beforeArr[i] = Main.returnFloat(incidentTable.getValueAt(i + 1, 1));
+						afterArr[i] = Main.returnFloat(incidentTable.getValueAt(i + 1, 2));
 					}
 					FreevalFileParser.setIncidentRatesUsed(true);
 					FreevalFileParser.setIncidentFrequenciesNoIMAP(beforeArr);
 					FreevalFileParser.setIncidentFrequenciesWithIMAP(afterArr);
-				} else if (before.isSelected()) {
+				}
+				else if (before.isSelected())
+				{
 					float[] beforeArr = new float[12];
-					for (int i = 0; i < 12; i ++) {
-						beforeArr[i] = (float) incidentTable.getValueAt(i+1, 1);
+					for (int i = 0; i < 12; i++)
+					{
+						beforeArr[i] = Main.returnFloat(incidentTable.getValueAt(i + 1, 1));
 					}
 					FreevalFileParser.setIncidentRatesUsed(true);
 					FreevalFileParser.setIncidentFrequenciesNoIMAP(beforeArr);
-				} else {
+				}
+				else
+				{
 					float[] afterArr = new float[12];
-					for (int i = 0; i < 12; i ++) {
-						afterArr[i] = (float) incidentTable.getValueAt(i+1, 2);
+					for (int i = 0; i < 12; i++)
+					{
+						afterArr[i] = Main.returnFloat(incidentTable.getValueAt(i + 1, 2));
 					}
 					FreevalFileParser.setIncidentRatesUsed(true);
 					FreevalFileParser.setIncidentFrequenciesWithIMAP(afterArr);
