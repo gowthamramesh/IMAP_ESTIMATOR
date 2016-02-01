@@ -98,6 +98,8 @@ public class CostBenefitEstimate
 
 	/** The imap operation cost. */
 	private static float imapOperationCost = 0;
+	
+	private static int annualDaysOfOperation = 0;
 
 	/**
 	 * Gets the estimation benefit panel.
@@ -168,6 +170,7 @@ public class CostBenefitEstimate
 	{
 		// Set data to freeval and retrive op to Freeval file parser
 		FreevalFileParser.runFreeval();
+		annualDaysOfOperation = InformationScreen.getOperDays();
 		computeDelaySaving();
 		calculateFuelSaving();
 		calculateFuelBenefit();
@@ -249,7 +252,7 @@ public class CostBenefitEstimate
 		columnNames[0] = "SAVINGS";
 		columnNames[1] = "VALUE";
 
-		Object[][] data = { { "DELAY SAVINGS (veh-hr)", delaySavings },
+		Object[][] data = {{"ANNUAL DAYS OF OPERATION", annualDaysOfOperation}, { "DELAY SAVINGS (veh-hr)", delaySavings },
 				{ "DELAY SAVING BENEFITS ($)", delaySavingsCost }, { "FUEL SAVINGS (GAL)", fuelSavings },
 				{ "FUEL SAVINGS BENEFIT ($)", fuelSavingsCost }, { "OPER. COSTS ($)", imapOperationCost },
 				{ "B/C RATIO", (delaySavingsCost / imapOperationCost) } };

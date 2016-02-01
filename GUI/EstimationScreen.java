@@ -96,7 +96,7 @@ public class EstimationScreen
 
 		mainpanel.setPreferredSize(new Dimension(800, 400));
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
-		mainpanel.add(Box.createVerticalStrut(20));
+		mainpanel.add(Box.createVerticalStrut(50));
 		mainpanel.add(getSetupPanel());
 		mainpanel.add(getEstimationButtonPanel());
 		// mainpanel.add(getinfoTable());
@@ -115,7 +115,7 @@ public class EstimationScreen
 
 		JPanel setupPanel = new JPanel();
 		setupPanel.setLayout(new GridBagLayout());
-		setupPanel.setBorder(BorderFactory.createTitledBorder("Estimation Information"));
+		setupPanel.setBorder(BorderFactory.createTitledBorder("Benefit Cost Parameters"));
 		setupPanel.setMaximumSize(new Dimension(800, 300));
 
 		c.gridx = 0;
@@ -138,7 +138,7 @@ public class EstimationScreen
 
 		c.gridx = 0;
 		c.gridy = 4;
-		JLabel capitalCostLabel = new JLabel("Incident rate or crash rate");
+		JLabel capitalCostLabel = new JLabel("Incident rate or crash rate(per 100 M VMT)");
 		setupPanel.add(capitalCostLabel, c);
 
 		c.gridx = 0;
@@ -147,7 +147,7 @@ public class EstimationScreen
 
 		c.gridx = 0;
 		c.gridy = 6;
-		JLabel operHoursLabel = new JLabel("Incident severity and duration");
+		JLabel operHoursLabel = new JLabel("Source of incident severity and duration characteristics");
 		setupPanel.add(operHoursLabel, c);
 
 		c.gridx = 0;
@@ -208,8 +208,8 @@ public class EstimationScreen
 		areaType.addItem("Urban");
 		areaType.addItem("Rural");
 
-		studyType.addItem("Before Study");
-		studyType.addItem("After Study");
+		studyType.addItem("B/C for existing deployment");
+		studyType.addItem("B/C for proposed deployment");
 
 		incidentRate.addItem("Site Specific - Incident Rate");
 		incidentRate.addItem("Site Specific - Crash Rate");

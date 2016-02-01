@@ -104,7 +104,7 @@ public class SetupPanel
 
 		JPanel setupPanel = new JPanel();
 		setupPanel.setLayout(new GridBagLayout());
-		setupPanel.setBorder(BorderFactory.createTitledBorder("Setup Information"));
+		setupPanel.setBorder(BorderFactory.createTitledBorder("General Setup Information"));
 		setupPanel.setMaximumSize(new Dimension(800, 400));
 
 		c.gridx = 0;

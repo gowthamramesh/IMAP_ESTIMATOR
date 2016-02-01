@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,7 +37,7 @@ public class InformationScreen
 	private static JTextField truckCostField = new JTextField("30");
 
 	/** The capital cost field. */
-	private static JTextField capitalCostField = new JTextField("5000");
+	private static JTextField capitalCostField = new JTextField("0");
 
 	/** The oper from hour. */
 	private static JComboBox operFromHour = new JComboBox();
@@ -76,6 +77,10 @@ public class InformationScreen
 
 	private static JTextField fuelPrice = new JTextField("1.99");
 
+	private static JCheckBox	weekday	= new JCheckBox("Weekday");
+	private static JCheckBox	weekend	= new JCheckBox("Weekend");
+	private static JCheckBox	holiday	= new JCheckBox("Holiday");
+
 	/**
 	 * Gets the infor panel.
 	 *
@@ -100,7 +105,6 @@ public class InformationScreen
 	{
 		mainpanel.setPreferredSize(new Dimension(800, 400));
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
-		mainpanel.add(Box.createVerticalStrut(10));
 		mainpanel.add(getSetupPanel());
 		mainpanel.add(getinfoTable());
 
@@ -141,7 +145,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 4;
-		JLabel capitalCostLabel = new JLabel("Capital cost/hr ($)");
+		JLabel capitalCostLabel = new JLabel("Other fixed costs ($)");
 		setupPanel.add(capitalCostLabel, c);
 
 		c.gridx = 0;
@@ -168,8 +172,8 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 10;
-		JLabel imapTrucksLabel = new JLabel("Number of IMAP trucks");
-		setupPanel.add(imapTrucksLabel, c);
+		JLabel excludeLabel = new JLabel("Include ");
+		setupPanel.add(excludeLabel, c);
 
 		c.gridx = 0;
 		c.gridy = 11;
@@ -177,8 +181,8 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 12;
-		JLabel centerlineLabel = new JLabel("Centerline miles");
-		setupPanel.add(centerlineLabel, c);
+		JLabel imapTrucksLabel = new JLabel("Number of deployed IMAP trucks");
+		setupPanel.add(imapTrucksLabel, c);
 
 		c.gridx = 0;
 		c.gridy = 13;
@@ -186,11 +190,20 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 14;
+		JLabel centerlineLabel = new JLabel("Centerline miles");
+		setupPanel.add(centerlineLabel, c);
+
+		c.gridx = 0;
+		c.gridy = 15;
+		setupPanel.add(Box.createVerticalStrut(15), c);
+
+		c.gridx = 0;
+		c.gridy = 16;
 		JLabel FuelPriceLabel = new JLabel("Fuel Price ($ per GAL)");
 		setupPanel.add(FuelPriceLabel, c);
 
 		c.gridx = 0;
-		c.gridy = 13;
+		c.gridy = 17;
 		setupPanel.add(Box.createVerticalStrut(15), c);
 
 		// adding gap between label and field
@@ -243,12 +256,22 @@ public class InformationScreen
 		setupPanel.add(annualOperDaysField, c);
 
 		c.gridy = 10;
-		setupPanel.add(noImapTrucksField, c);
+		JPanel excludePanel = new JPanel();
+		excludePanel.setLayout(new BoxLayout(excludePanel, BoxLayout.X_AXIS));
+		excludePanel.add(weekend);
+		excludePanel.add(holiday);
+		excludePanel.add(weekday);
+		weekday.setSelected(true);
+
+		setupPanel.add(excludePanel, c);
 
 		c.gridy = 12;
-		setupPanel.add(centerlineMilesField, c);
+		setupPanel.add(noImapTrucksField, c);
 
 		c.gridy = 14;
+		setupPanel.add(centerlineMilesField, c);
+
+		c.gridy = 16;
 		setupPanel.add(fuelPrice, c);
 
 		return setupPanel;
@@ -355,7 +378,20 @@ public class InformationScreen
 	 */
 	public static int getOperDays()
 	{
-		return Integer.parseInt(annualOperDaysField.getText());
+		int operDays = 0;
+		if (weekday.isSelected())
+		{
+			operDays += 232;
+		}
+		if (weekend.isSelected())
+		{
+			operDays += 96;
+		}
+		if (holiday.isSelected())
+		{
+			operDays += 8;
+		}
+		return operDays;
 	}
 
 	/**

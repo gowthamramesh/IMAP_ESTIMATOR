@@ -1240,4 +1240,10 @@ public class FreevalFileParser
 		}
 	}
 
+	public static int getAnnualDaysOfOperation()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
