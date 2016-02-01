@@ -98,7 +98,7 @@ public class CostBenefitEstimate
 
 	/** The imap operation cost. */
 	private static float imapOperationCost = 0;
-	
+
 	private static int annualDaysOfOperation = 0;
 
 	/**
@@ -252,10 +252,10 @@ public class CostBenefitEstimate
 		columnNames[0] = "SAVINGS";
 		columnNames[1] = "VALUE";
 
-		Object[][] data = {{"ANNUAL DAYS OF OPERATION", annualDaysOfOperation}, { "DELAY SAVINGS (veh-hr)", delaySavings },
-				{ "DELAY SAVING BENEFITS ($)", delaySavingsCost }, { "FUEL SAVINGS (GAL)", fuelSavings },
-				{ "FUEL SAVINGS BENEFIT ($)", fuelSavingsCost }, { "OPER. COSTS ($)", imapOperationCost },
-				{ "B/C RATIO", (delaySavingsCost / imapOperationCost) } };
+		Object[][] data = { { "ANNUAL DAYS OF OPERATION", annualDaysOfOperation },
+				{ "DELAY SAVINGS (veh-hr)", delaySavings }, { "DELAY SAVING BENEFITS ($)", delaySavingsCost },
+				{ "FUEL SAVINGS (GAL)", fuelSavings }, { "FUEL SAVINGS BENEFIT ($)", fuelSavingsCost },
+				{ "OPER. COSTS ($)", imapOperationCost }, { "B/C RATIO", (delaySavingsCost / imapOperationCost) } };
 
 		// Create a new table instance
 
@@ -426,7 +426,7 @@ public class CostBenefitEstimate
 			}
 		});
 		containerPanel.add(prevButton);
-		containerPanel.add(nextButton);
+		// containerPanel.add(nextButton);
 		return containerPanel;
 	}
 }

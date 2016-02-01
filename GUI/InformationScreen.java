@@ -164,11 +164,11 @@ public class InformationScreen
 		c.gridx = 0;
 		c.gridy = 8;
 		JLabel annualDaysLabel = new JLabel("Annual days of operation");
-		setupPanel.add(annualDaysLabel, c);
+		// setupPanel.add(annualDaysLabel, c);
 
 		c.gridx = 0;
 		c.gridy = 9;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(0), c);
 
 		c.gridx = 0;
 		c.gridy = 10;
@@ -253,7 +253,7 @@ public class InformationScreen
 		setupPanel.add(timePanel, c);
 
 		c.gridy = 8;
-		setupPanel.add(annualOperDaysField, c);
+		// setupPanel.add(annualOperDaysField, c);
 
 		c.gridy = 10;
 		JPanel excludePanel = new JPanel();
