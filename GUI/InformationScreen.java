@@ -77,7 +77,7 @@ public class InformationScreen
 
 	private static JTextField fuelPrice = new JTextField("1.99");
 
-	private static JCheckBox	weekday	= new JCheckBox("Weekday");
+	private static JCheckBox	weekday	= new JCheckBox("Workday");
 	private static JCheckBox	weekend	= new JCheckBox("Weekend");
 	private static JCheckBox	holiday	= new JCheckBox("Holiday");
 
@@ -441,5 +441,21 @@ public class InformationScreen
 	public static float getCostTruck()
 	{
 		return Float.parseFloat(truckCostField.getText());
+	}
+	
+	public static boolean[] getDaysActive() {
+		boolean[] daysActive = new boolean[7];
+		daysActive[0] = weekday.isSelected();  // Monday
+		daysActive[1] = weekday.isSelected();  // Tuesday
+		daysActive[2] = weekday.isSelected();  // Wednesday
+		daysActive[3] = weekday.isSelected();  // Thursday
+		daysActive[4] = weekday.isSelected();  // Friday
+		daysActive[5] = weekend.isSelected();  // Saturday
+		daysActive[6] = weekend.isSelected();  // Sunday
+		return daysActive;
+	}
+	
+	public static boolean getHolidaysIncluded() {
+		return holiday.isSelected();
 	}
 }

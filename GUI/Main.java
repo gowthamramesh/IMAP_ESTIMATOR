@@ -70,10 +70,10 @@ public class Main extends JFrame
 	public Main()
 	{
 		this.setTitle("IMAP Benefit/Cost Estimation tool");
-		List<Image> icons = new ArrayList<>();
-		icons.add(new ImageIcon(getClass().getResource("ncdot.png")).getImage());
-		this.setIconImages(icons);
-		this.setIconImage(new ImageIcon(getClass().getResource("ncdot.png")).getImage());
+		//List<Image> icons = new ArrayList<>();
+		//icons.add(new ImageIcon(getClass().getResource("ncdot.png")).getImage());
+		//this.setIconImages(icons);
+		//this.setIconImage(new ImageIcon(getClass().getResource("ncdot.png")).getImage());
 		initComponents();
 	}
 

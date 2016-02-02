@@ -12,13 +12,18 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -32,6 +37,7 @@ import javax.swing.filechooser.FileFilter;
 
 import coreEngine.Seed;
 import coreEngine.Helper.CEConst;
+import coreEngine.Helper.CEDate;
 import coreEngine.Helper.ASCIIAdapter.ASCIISeedFileAdapter_GPMLFormat;
 import coreEngine.Helper.ASCIIAdapter.ASCIISeedFileAdapter_RLFormat;
 import coreEngine.reliabilityAnalysis.ScenarioGenerator;
@@ -57,6 +63,11 @@ public class FreevalFileParser
 	 * Seed to hold Reliability run with IMAP
 	 */
 	private static Seed seed2; // With Imap
+	
+	/**
+	 * Year in which the IMAP analysis is to take place
+	 */
+	private static int year = 2016;
 
 	/** The truck percentage. */
 	/*
@@ -136,6 +147,14 @@ public class FreevalFileParser
 	 * Wednesday, 3 - Thursday, 4 - Friday, 5 - Saturday, 6 - Sunday
 	 */
 	private static boolean[] activeDays = new boolean[7];
+	
+	/**
+	 * Boolean value indicating whether or not holidays are included the reliability analysis.
+	 * Default value is false.
+	 */
+	private static boolean includeHolidays = false;
+	
+	private static final DecimalFormat formatter2 = new DecimalFormat("#,###.00");
 
 	/**
 	 * Method to open the seed facility from a ASCII (.txt) file.
@@ -498,6 +517,14 @@ public class FreevalFileParser
 	{
 		FreevalFileParser.activeDays[dayIdx] = isActive;
 	}
+	
+	/**
+	 * Setter to indicate whether or not holidays should be included.
+	 * @param includeHolidays True if holidays should be included, false otherwise
+	 */
+	public static void setHolidaysIncluded(boolean includeHolidays) {
+		FreevalFileParser.includeHolidays = includeHolidays;
+	}
 
 	/**
 	 * Setter for incident distribution value (0-100) without IMAP.
@@ -651,7 +678,7 @@ public class FreevalFileParser
 		for (int scen = 0; scen < seed1.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
 			total_VHD+= seed1.getValueFloat(CEConst.IDS_SP_VHD, 0, 0, scen+1, -1);
 		}
-		return total_VHD/seed1.getValueInt(CEConst.IDS_NUM_SCEN);
+		return total_VHD;
 	}
 
 	/**
@@ -665,7 +692,7 @@ public class FreevalFileParser
 		for (int scen = 0; scen < seed2.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
 			total_VHD+= seed2.getValueFloat(CEConst.IDS_SP_VHD, 0, 0, scen+1, -1);
 		}
-		return total_VHD/seed2.getValueInt(CEConst.IDS_NUM_SCEN);
+		return total_VHD;
 	}
 
 	/**
@@ -730,7 +757,7 @@ public class FreevalFileParser
 		for (int scen = 0; scen < seed1.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
 			total_VMTD+= seed1.getValueFloat(CEConst.IDS_SP_VMTD, 0, 0, scen+1, -1);
 		}
-		return total_VMTD/seed1.getValueInt(CEConst.IDS_NUM_SCEN);
+		return total_VMTD;
 	}
 
 	/**
@@ -744,7 +771,7 @@ public class FreevalFileParser
 		for (int scen = 0; scen < seed2.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
 			total_VMTD+= seed2.getValueFloat(CEConst.IDS_SP_VMTD, 0, 0, scen+1, -1);
 		}
-		return total_VMTD/seed2.getValueInt(CEConst.IDS_NUM_SCEN);
+		return total_VMTD;
 	}
 
 	/**
@@ -773,6 +800,76 @@ public class FreevalFileParser
 			total_SMS+= seed2.getValueFloat(CEConst.IDS_SP_SPACE_MEAN_SPEED, 0, 0, scen+1, -1);
 		}
 		return total_SMS/seed2.getValueInt(CEConst.IDS_NUM_SCEN);
+	}
+	
+	private static ArrayList<CEDate> getHolidayList() {
+		// Determining MLK Day (3rd Monday of January)
+		int dayCount = 0;
+		int dayIdx = 1;
+		while (dayCount != 3) {
+			if (CEDate.dayOfWeek(dayIdx, 1, year) == 0) {
+				dayCount++;
+			}
+			dayIdx++;
+		}
+		CEDate mlkDay = new CEDate(year, 1, dayIdx);
+		
+		// Determining Memorial Day (Last Monday of May)
+		dayCount = 0;
+		dayIdx = 31;
+		while (dayCount != 1) {
+			if (CEDate.dayOfWeek(dayIdx, 5, year) == 0) {
+				dayCount++;
+			}
+			dayIdx--;
+		}
+		CEDate memorialDay = new CEDate(year, 5, dayIdx);
+		
+		// Determining Labor Day (1st Monday of September)
+		dayCount = 0;
+		dayIdx = 1;
+		while (dayCount != 1) {
+			if (CEDate.dayOfWeek(dayIdx, 9, year) == 0) {
+				dayCount++;
+			}
+			dayIdx++;
+		}
+		CEDate laborDay = new CEDate(year, 9, dayIdx);
+		
+		// Determining Thanksgiving Thursday (4th Thursday of November)
+		dayCount = 0;
+		dayIdx = 1;
+		while (dayCount != 4) {
+			if (CEDate.dayOfWeek(dayIdx, 11, year) == 3) {
+				dayCount++;
+			}
+			dayIdx++;
+		}
+		CEDate thanksgivingThu = new CEDate(year, 11, dayIdx);
+		
+		
+		// Determining Thanksgiving Friday
+		dayCount = 0;
+		dayIdx = 1;
+		while (dayCount != 4) {
+			if (CEDate.dayOfWeek(dayIdx, 11, year) == 4) {
+				dayCount++;
+			}
+			dayIdx++;
+		}
+		CEDate thanksgivingFri = new CEDate(year, 11, dayIdx);
+		
+		ArrayList<CEDate>  holidays = new ArrayList<CEDate>();
+		holidays.add(new CEDate(year, 1,1));  // New Years
+		holidays.add(mlkDay);   // MLK Day
+		holidays.add(memorialDay);   // Memorial Day
+		holidays.add(new CEDate(year, 7,4));   // Independence Day
+		holidays.add(laborDay);   // Labor Day
+		holidays.add(thanksgivingThu);   // Thanksgiving (Thur)
+		holidays.add(thanksgivingFri);   // Thanksgiving (Fri)
+		holidays.add(new CEDate(year, 12,25));   // Christmas
+		
+		return holidays;
 	}
 
 	/**
@@ -812,9 +909,11 @@ public class FreevalFileParser
 			}
 		}
 		seed1.singleRun(0, -1);
+		seed1.cleanScenarios();
 		seed2.singleRun(0, -1);
-
+		seed2.cleanScenarios();
 		// Creating ScenarioGenerators
+		rngSeed=520175;
 		if (rngSeed < 0)
 		{ // Creating random seed if it has not been set
 			rngSeed = (int) (System.currentTimeMillis() % 1000000);
@@ -833,7 +932,7 @@ public class FreevalFileParser
 		{
 			demand1.setDayActive(dayIdx, activeDays[dayIdx]); // Monday = 0,
 																// Sunday = 6
-		}
+		}		
 		demand1.useUrbanDefaults();
 
 		DemandData demand2 = new DemandData(seed2, DemandData.TYPE_GP);
@@ -858,7 +957,12 @@ public class FreevalFileParser
 			inc1.setCrashRateRatio(crashRateRatioNoIMAP); // Sets the crash rate
 															// ratio
 			inc1.calcIncidentFrequenciesCR(crashRateFrequenciesNoIMAP, demand1, true);
-
+			//float[] a = inc1.getIncidentFrequencyArr();
+			//String s = "";
+			//for (int i = 0; i < a.length; i++) {
+			//	s=s+String.format("%.2f", a[i])+",";
+			//}
+			//System.out.println(s);
 			inc2.setCrashRateRatio(crashRateRatioWithIMAP); // Sets the crash
 															// rate ratio
 			inc2.calcIncidentFrequenciesCR(crashRateFrequenciesWithIMAP, demand2, true);
@@ -949,10 +1053,16 @@ public class FreevalFileParser
 																	// Demand
 																	// multipliers
 		seed1.setWeekdayUsed(demand1.getActiveDays()); // Saves days active
+		if (!includeHolidays) {
+			seed1.setDayExcluded(FreevalFileParser.getHolidayList());
+		}
 		seed1.setGPIncidentCAF(inc1.getIncidentCAF());
 		seed1.setGPIncidentDAF(inc1.getIncidentDAF());
 		seed1.setGPIncidentSAF(inc1.getIncidentFFSAF());
 		seed1.setGPIncidentLAF(inc1.getIncidentLAF());
+		seed1.setGPIncidentDistribution(inc1.getIncidentDistribution());
+		seed1.setGPIncidentDuration(inc1.getIncidentDurationInfo());
+		seed1.setGPIncidentFrequency(inc1.getIncidentFrequencyArr());
 		sg1.setDemandDataGP(demand1); // Setting Demand Data
 		sg1.setGPIncidentData(inc1); // Setting Incident Data
 		sg1.includeGPWorkZones(false); // Turning off work zones
@@ -963,10 +1073,16 @@ public class FreevalFileParser
 																	// Demand
 																	// multipliers
 		seed2.setWeekdayUsed(demand2.getActiveDays()); // Saves days active
+		if (!includeHolidays) {
+			seed2.setDayExcluded(FreevalFileParser.getHolidayList());
+		}
 		seed2.setGPIncidentCAF(inc2.getIncidentCAF());
 		seed2.setGPIncidentDAF(inc2.getIncidentDAF());
 		seed2.setGPIncidentSAF(inc2.getIncidentFFSAF());
 		seed2.setGPIncidentLAF(inc2.getIncidentLAF());
+		seed2.setGPIncidentDistribution(inc2.getIncidentDistribution());
+		seed2.setGPIncidentDuration(inc2.getIncidentDurationInfo());
+		seed2.setGPIncidentFrequency(inc2.getIncidentFrequencyArr());
 		sg2.setDemandDataGP(demand2); // Setting Demand Data
 		sg2.setGPIncidentData(inc2); // Setting Incident Data
 		sg2.includeGPWorkZones(false); // Turning off work zones
@@ -999,6 +1115,18 @@ public class FreevalFileParser
 		}
 		RLBatchRunDialog batchRunDialog2 = new RLBatchRunDialog(seed2, null);
 		batchRunDialog2.setVisible(true);
+		
+		// Debug outputs
+		//System.out.println("Seed 1 # Scen: " + String.valueOf(seed1.getValueInt(CEConst.IDS_NUM_SCEN)));
+		//System.out.println("Seed 2 # Scen: " + String.valueOf(seed2.getValueInt(CEConst.IDS_NUM_SCEN)));
+		//System.out.println("Seed 1 Total VHD: " + formatter2.format(FreevalFileParser.getTotalVehDelayWithoutImap()));
+		//System.out.println("Seed 2 Total VHD: " + formatter2.format(FreevalFileParser.getTotalVehDelayWithImap()));
+		//System.out.println("Seed 1 Avg SMS: " + formatter2.format(FreevalFileParser.getgPerMileAvgSpeedWithout()));
+		//System.out.println("Seed 2 Avg SMS: " + formatter2.format(FreevalFileParser.getgPerMileAvgSpeedWith()));
+		
+		//saveAsSeed(seed2);
+		
+		rngSeed = -1;
 
 	}
 
@@ -1245,5 +1373,36 @@ public class FreevalFileParser
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public static String saveAsSeed(Seed seed) {
+        if (seed == null) {
+            JOptionPane.showMessageDialog(null, "No seed is selected", "Error", JOptionPane.ERROR_MESSAGE);
+            return "Fail to save seed";
+        }
+        try {
+            JFileChooser seedFileChooser = new JFileChooser();
+            int option = seedFileChooser.showSaveDialog(null);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                String saveFileName = seedFileChooser.getSelectedFile().getAbsolutePath();
+                if (!saveFileName.endsWith(".seed")) {
+                    saveFileName += ".seed";
+                }
+                //save seed to file
+
+                FileOutputStream fos = new FileOutputStream(saveFileName);
+                GZIPOutputStream gzos = new GZIPOutputStream(fos);
+                ObjectOutputStream oos = new ObjectOutputStream(gzos);
+                oos.writeObject(seed);
+                oos.close();
+                seed.setValue(CEConst.IDS_SEED_FILE_NAME, saveFileName);
+                return "Seed saved to " + seed.getValueString(CEConst.IDS_SEED_FILE_NAME);
+            } else {
+                return "Save cancelled by user";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Fail to save seed " + e.toString();
+        }
+    }
 
 }

@@ -11,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -100,7 +101,11 @@ public class CostBenefitEstimate
 	private static float imapOperationCost = 0;
 
 	private static int annualDaysOfOperation = 0;
+	
+	private static final DecimalFormat formatter0 = new DecimalFormat("#,###");
 
+	private static final DecimalFormat formatter2 = new DecimalFormat("#,###.00");
+	
 	/**
 	 * Gets the estimation benefit panel.
 	 *
@@ -193,9 +198,11 @@ public class CostBenefitEstimate
 		NT = InformationScreen.getNoTrucks();
 		OH = InformationScreen.getOperationHoursInt();
 		OD = InformationScreen.getOperDays();
+		
+		//System.out.println(String.valueOf(CT) + ","+String.valueOf(CL) + ","+String.valueOf(NT) + ","+String.valueOf(OH) + ","+String.valueOf(OD));
 
 		imapOperationCost = (CT + CL) * NT * OH * OD;
-		imapOperationCost = imapOperationCost / 2; // Unidirectional
+		//imapOperationCost = imapOperationCost / 2; // Unidirectional
 	}
 
 	/**
@@ -253,9 +260,9 @@ public class CostBenefitEstimate
 		columnNames[1] = "VALUE";
 
 		Object[][] data = { { "ANNUAL DAYS OF OPERATION", annualDaysOfOperation },
-				{ "DELAY SAVINGS (veh-hr)", delaySavings }, { "DELAY SAVING BENEFITS ($)", delaySavingsCost },
-				{ "FUEL SAVINGS (GAL)", fuelSavings }, { "FUEL SAVINGS BENEFIT ($)", fuelSavingsCost },
-				{ "OPER. COSTS ($)", imapOperationCost }, { "B/C RATIO", (delaySavingsCost / imapOperationCost) } };
+				{ "DELAY SAVINGS (veh-hr)", formatter0.format(delaySavings) }, { "DELAY SAVING BENEFITS ($)", formatter0.format(delaySavingsCost) },
+				{ "FUEL SAVINGS (GAL)", formatter0.format(fuelSavings) }, { "FUEL SAVINGS BENEFIT ($)", formatter0.format(fuelSavingsCost) },
+				{ "OPER. COSTS ($)", formatter0.format(imapOperationCost) }, { "B/C RATIO", formatter2.format((delaySavingsCost / imapOperationCost)) } };
 
 		// Create a new table instance
 

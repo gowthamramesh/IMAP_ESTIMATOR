@@ -302,12 +302,8 @@ public class EstimationScreen
 				}
 				// FreevalFileParser.setRngSeed(rngSeed); // Activate to set
 				// random number generator seed
-				FreevalFileParser.setActiveDays(new boolean[] { true, true, true, true, true, false, false }); // Activate
-																												// to
-																												// set
-																												// active
-																												// day
-																												// array
+				FreevalFileParser.setActiveDays(InformationScreen.getDaysActive()); // Setting active days
+				FreevalFileParser.setHolidaysIncluded(InformationScreen.getHolidaysIncluded());
 				FreevalFileParser.setTruckPercentage(5); // Activate to set
 															// truck percentage
 				// Check before or after study

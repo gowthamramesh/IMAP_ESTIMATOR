@@ -104,40 +104,20 @@ public class IncidentSeverityData extends JDialog
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				if (both.isSelected()) {
-					// Setting information for both
-					for (int i = 1; i < 6; i++) {
-						// Setting Before
-						FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
-						FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
-						FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
-						FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
-						FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 5)));
-						// Setting After
-						FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
-						FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
-						FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
-						FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
-						FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 5)));
-					}
-				} else if (before.isSelected()) {
-					// Setting information for before only
-					for (int i = 1; i < 6; i++) {
-						FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
-						FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
-						FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
-						FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
-						FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 5)));
-					}
-				} else {
-					// Setting information for after only
-					for (int i = 1; i < 6; i++) {
-						FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
-						FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
-						FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
-						FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
-						FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 5)));
-					}
+				// Setting information for both
+				for (int i = 1; i < 6; i++) {
+					// Setting Before
+					FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
+					FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
+					FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
+					FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
+					FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, Math.max(returnFloat(beforeTable.getValueAt(i, 5)), returnFloat(beforeTable.getValueAt(i, 2))));
+					// Setting After
+					FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
+					FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
+					FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
+					FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
+					FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, Math.max(returnFloat(afterTable.getValueAt(i, 5)), returnFloat(afterTable.getValueAt(i, 2))));
 				}
 				incidentData.dispose();
 			}
@@ -520,112 +500,113 @@ public class IncidentSeverityData extends JDialog
 	{
 		if (areaTypeVal == 0)
 		{
-			beforeTable.getModel().setValueAt(52.9, 1, 1);
-			beforeTable.getModel().setValueAt(74.2, 1, 2);
-			beforeTable.getModel().setValueAt(70.1, 1, 3);
-			beforeTable.getModel().setValueAt(15.0, 1, 4);
-			beforeTable.getModel().setValueAt(214.4, 1, 5);
-			beforeTable.getModel().setValueAt(38.1, 2, 1);
-			beforeTable.getModel().setValueAt(62.3, 2, 2);
-			beforeTable.getModel().setValueAt(68.9, 2, 3);
-			beforeTable.getModel().setValueAt(15.0, 2, 4);
-			beforeTable.getModel().setValueAt(200.2, 2, 5);
-			beforeTable.getModel().setValueAt(7.5, 3, 1);
-			beforeTable.getModel().setValueAt(83.2, 3, 2);
-			beforeTable.getModel().setValueAt(88.2, 3, 3);
-			beforeTable.getModel().setValueAt(15.0, 3, 4);
-			beforeTable.getModel().setValueAt(259.6, 3, 5);
-			beforeTable.getModel().setValueAt(1.2, 4, 1);
-			beforeTable.getModel().setValueAt(91.6, 4, 2);
-			beforeTable.getModel().setValueAt(87.7, 4, 3);
-			beforeTable.getModel().setValueAt(15.0, 4, 4);
-			beforeTable.getModel().setValueAt(267.0, 4, 5);
-			beforeTable.getModel().setValueAt(0.3, 5, 1);
-			beforeTable.getModel().setValueAt(172.7, 5, 2);
-			beforeTable.getModel().setValueAt(171.8, 5, 3);
-			beforeTable.getModel().setValueAt(15.0, 5, 4);
-			beforeTable.getModel().setValueAt(516.3, 5, 5);
 
-			afterTable.getModel().setValueAt(52.9, 1, 1);
-			afterTable.getModel().setValueAt(97.2, 1, 2);
-			afterTable.getModel().setValueAt(88.3, 1, 3);
+			beforeTable.getModel().setValueAt(52.9, 1, 1);
+			beforeTable.getModel().setValueAt(97.2, 1, 2);
+			beforeTable.getModel().setValueAt(88.3, 1, 3);
+			beforeTable.getModel().setValueAt(15.0, 1, 4);
+			beforeTable.getModel().setValueAt(273.9, 1, 5);
+			beforeTable.getModel().setValueAt(38.1, 2, 1);
+			beforeTable.getModel().setValueAt(81.6, 2, 2);
+			beforeTable.getModel().setValueAt(86.8, 2, 3);
+			beforeTable.getModel().setValueAt(15.0, 2, 4);
+			beforeTable.getModel().setValueAt(255.2, 2, 5);
+			beforeTable.getModel().setValueAt(7.5, 3, 1);
+			beforeTable.getModel().setValueAt(109.0, 3, 2);
+			beforeTable.getModel().setValueAt(111.1, 3, 3);
+			beforeTable.getModel().setValueAt(15.0, 3, 4);
+			beforeTable.getModel().setValueAt(331.3, 3, 5);
+			beforeTable.getModel().setValueAt(1.2, 4, 1);
+			beforeTable.getModel().setValueAt(120.0, 4, 2);
+			beforeTable.getModel().setValueAt(110.5, 4, 3);
+			beforeTable.getModel().setValueAt(15.0, 4, 4);
+			beforeTable.getModel().setValueAt(341.0, 4, 5);
+			beforeTable.getModel().setValueAt(0.3, 5, 1);
+			beforeTable.getModel().setValueAt(226.2, 5, 2);
+			beforeTable.getModel().setValueAt(216.5, 5, 3);
+			beforeTable.getModel().setValueAt(15.0, 5, 4);
+			beforeTable.getModel().setValueAt(600.0, 5, 5);
+			
+			afterTable.getModel().setValueAt(52.9, 1, 1); // 52.9
+			afterTable.getModel().setValueAt(74.2, 1, 2);
+			afterTable.getModel().setValueAt(70.1, 1, 3);
 			afterTable.getModel().setValueAt(15.0, 1, 4);
-			afterTable.getModel().setValueAt(273.9, 1, 5);
+			afterTable.getModel().setValueAt(214.4, 1, 5);
 			afterTable.getModel().setValueAt(38.1, 2, 1);
-			afterTable.getModel().setValueAt(81.6, 2, 2);
-			afterTable.getModel().setValueAt(86.8, 2, 3);
+			afterTable.getModel().setValueAt(62.3, 2, 2);
+			afterTable.getModel().setValueAt(68.9, 2, 3);
 			afterTable.getModel().setValueAt(15.0, 2, 4);
-			afterTable.getModel().setValueAt(255.2, 2, 5);
+			afterTable.getModel().setValueAt(200.2, 2, 5);
 			afterTable.getModel().setValueAt(7.5, 3, 1);
-			afterTable.getModel().setValueAt(109.0, 3, 2);
-			afterTable.getModel().setValueAt(111.1, 3, 3);
+			afterTable.getModel().setValueAt(83.2, 3, 2);
+			afterTable.getModel().setValueAt(88.2, 3, 3);
 			afterTable.getModel().setValueAt(15.0, 3, 4);
-			afterTable.getModel().setValueAt(331.3, 3, 5);
+			afterTable.getModel().setValueAt(259.6, 3, 5);
 			afterTable.getModel().setValueAt(1.2, 4, 1);
-			afterTable.getModel().setValueAt(120.0, 4, 2);
-			afterTable.getModel().setValueAt(110.5, 4, 3);
+			afterTable.getModel().setValueAt(91.6, 4, 2);
+			afterTable.getModel().setValueAt(87.7, 4, 3);
 			afterTable.getModel().setValueAt(15.0, 4, 4);
-			afterTable.getModel().setValueAt(341.0, 4, 5);
+			afterTable.getModel().setValueAt(267.0, 4, 5);
 			afterTable.getModel().setValueAt(0.3, 5, 1);
-			afterTable.getModel().setValueAt(226.2, 5, 2);
-			afterTable.getModel().setValueAt(216.5, 5, 3);
+			afterTable.getModel().setValueAt(172.7, 5, 2);
+			afterTable.getModel().setValueAt(171.8, 5, 3);
 			afterTable.getModel().setValueAt(15.0, 5, 4);
-			afterTable.getModel().setValueAt(600.0, 5, 5);
+			afterTable.getModel().setValueAt(516.3, 5, 5);
 
 		}
 		else
 		{
 			beforeTable.getModel().setValueAt(37.4, 1, 1);
-			beforeTable.getModel().setValueAt(89.9, 1, 2);
-			beforeTable.getModel().setValueAt(96.2, 1, 3);
+			beforeTable.getModel().setValueAt(177.1, 1, 2);
+			beforeTable.getModel().setValueAt(150.1, 1, 3);
 			beforeTable.getModel().setValueAt(15.0, 1, 4);
-			beforeTable.getModel().setValueAt(214.4, 1, 5);
+			beforeTable.getModel().setValueAt(477.2, 1, 5);
 			beforeTable.getModel().setValueAt(52.5, 2, 1);
-			beforeTable.getModel().setValueAt(91.8, 2, 2);
-			beforeTable.getModel().setValueAt(116.4, 2, 3);
+			beforeTable.getModel().setValueAt(180.8, 2, 2);
+			beforeTable.getModel().setValueAt(181.6, 2, 3);
 			beforeTable.getModel().setValueAt(15.0, 2, 4);
-			beforeTable.getModel().setValueAt(200.2, 2, 5);
+			beforeTable.getModel().setValueAt(544.0, 2, 5);
 			beforeTable.getModel().setValueAt(8.8, 3, 1);
-			beforeTable.getModel().setValueAt(102.3, 3, 2);
-			beforeTable.getModel().setValueAt(116.3, 3, 3);
+			beforeTable.getModel().setValueAt(201.5, 3, 2);
+			beforeTable.getModel().setValueAt(181.4, 3, 3);
 			beforeTable.getModel().setValueAt(15.0, 3, 4);
-			beforeTable.getModel().setValueAt(259.6, 3, 5);
+			beforeTable.getModel().setValueAt(564.4, 3, 5);
 			beforeTable.getModel().setValueAt(1.4, 4, 1);
-			beforeTable.getModel().setValueAt(142.0, 4, 2);
-			beforeTable.getModel().setValueAt(153.4, 4, 3);
+			beforeTable.getModel().setValueAt(279.7, 4, 2);
+			beforeTable.getModel().setValueAt(239.3, 4, 3);
 			beforeTable.getModel().setValueAt(15.0, 4, 4);
-			beforeTable.getModel().setValueAt(267.0, 4, 5);
+			beforeTable.getModel().setValueAt(600.0, 4, 5);
 			beforeTable.getModel().setValueAt(0.0, 5, 1);
-			beforeTable.getModel().setValueAt(142.0, 5, 2);
-			beforeTable.getModel().setValueAt(153.4, 5, 3);
+			beforeTable.getModel().setValueAt(279.7, 5, 2);
+			beforeTable.getModel().setValueAt(239.9, 5, 3);
 			beforeTable.getModel().setValueAt(15.0, 5, 4);
-			beforeTable.getModel().setValueAt(516.3, 5, 5);
-
+			beforeTable.getModel().setValueAt(600.0, 5, 5);
+			
 			afterTable.getModel().setValueAt(37.4, 1, 1);
-			afterTable.getModel().setValueAt(177.1, 1, 2);
-			afterTable.getModel().setValueAt(150.1, 1, 3);
+			afterTable.getModel().setValueAt(89.9, 1, 2);
+			afterTable.getModel().setValueAt(96.2, 1, 3);
 			afterTable.getModel().setValueAt(15.0, 1, 4);
-			afterTable.getModel().setValueAt(477.2, 1, 5);
+			afterTable.getModel().setValueAt(214.4, 1, 5);
 			afterTable.getModel().setValueAt(52.5, 2, 1);
-			afterTable.getModel().setValueAt(180.8, 2, 2);
-			afterTable.getModel().setValueAt(181.6, 2, 3);
+			afterTable.getModel().setValueAt(91.8, 2, 2);
+			afterTable.getModel().setValueAt(116.4, 2, 3);
 			afterTable.getModel().setValueAt(15.0, 2, 4);
-			afterTable.getModel().setValueAt(544.0, 2, 5);
+			afterTable.getModel().setValueAt(200.2, 2, 5);
 			afterTable.getModel().setValueAt(8.8, 3, 1);
-			afterTable.getModel().setValueAt(201.5, 3, 2);
-			afterTable.getModel().setValueAt(181.4, 3, 3);
+			afterTable.getModel().setValueAt(102.3, 3, 2);
+			afterTable.getModel().setValueAt(116.3, 3, 3);
 			afterTable.getModel().setValueAt(15.0, 3, 4);
-			afterTable.getModel().setValueAt(564.4, 3, 5);
+			afterTable.getModel().setValueAt(259.6, 3, 5);
 			afterTable.getModel().setValueAt(1.4, 4, 1);
-			afterTable.getModel().setValueAt(279.7, 4, 2);
-			afterTable.getModel().setValueAt(239.3, 4, 3);
+			afterTable.getModel().setValueAt(142.0, 4, 2);
+			afterTable.getModel().setValueAt(153.4, 4, 3);
 			afterTable.getModel().setValueAt(15.0, 4, 4);
-			afterTable.getModel().setValueAt(600.0, 4, 5);
+			afterTable.getModel().setValueAt(267.0, 4, 5);
 			afterTable.getModel().setValueAt(0.0, 5, 1);
-			afterTable.getModel().setValueAt(279.7, 5, 2);
-			afterTable.getModel().setValueAt(239.9, 5, 3);
+			afterTable.getModel().setValueAt(142.0, 5, 2);
+			afterTable.getModel().setValueAt(153.4, 5, 3);
 			afterTable.getModel().setValueAt(15.0, 5, 4);
-			afterTable.getModel().setValueAt(600.0, 5, 5);
+			afterTable.getModel().setValueAt(516.3, 5, 5);
 		}
 	}
 
