@@ -132,6 +132,10 @@ public class CostBenefitEstimate
 		mainpanel.add(getinfoTable());
 
 	}
+	
+	public static void setTruckPercent(float truckPercent) {
+		CostBenefitEstimate.truckPercent = truckPercent;
+	}
 
 	/**
 	 * Gallon per mile for light veh.

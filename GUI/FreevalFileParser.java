@@ -878,42 +878,25 @@ public class FreevalFileParser
 	 */
 	public static void runFreeval()
 	{
-		// Setting truck % for both facilities.
-		for (int per = 0; per < seed1.getValueInt(CEConst.IDS_NUM_PERIOD); per++)
-		{
-			seed1.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_MAINLINE, truckPercentage, 0, per); // First
-																									// segment
-																									// only
-			seed2.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_MAINLINE, truckPercentage, 0, per); // First
-																									// segment
-																									// only
-			for (int seg = 1; seg < seed1.getValueInt(CEConst.IDS_NUM_SEGMENT); seg++)
-			{
-				if (seed1.getValueInt(CEConst.IDS_SEGMENT_TYPE, seg) == CEConst.SEG_TYPE_ONR)
-				{
-					seed1.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_ONR, truckPercentage, seg, per);
-					seed2.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_ONR, truckPercentage, seg, per);
-				}
-				if (seed1.getValueInt(CEConst.IDS_SEGMENT_TYPE, seg) == CEConst.SEG_TYPE_OFR)
-				{
-					seed1.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_OFR, truckPercentage, seg, per);
-					seed2.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_OFR, truckPercentage, seg, per);
-				}
-				if (seed1.getValueInt(CEConst.IDS_SEGMENT_TYPE, seg) == CEConst.SEG_TYPE_W)
-				{
-					seed1.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_OFR, truckPercentage, seg, per);
-					seed1.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_ONR, truckPercentage, seg, per);
-					seed2.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_OFR, truckPercentage, seg, per);
-					seed2.setValue(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_ONR, truckPercentage, seg, per);
-				}
-			}
-		}
+		
 		seed1.singleRun(0, -1);
 		seed1.cleanScenarios();
 		seed2.singleRun(0, -1);
 		seed2.cleanScenarios();
+		
+		// Extracting Truck % (demand-weighted average across all periods)
+		float truckPct = 0.0f;
+		float totalDemand = 0;
+		for (int per = 0; per < seed1.getValueInt(CEConst.IDS_NUM_PERIOD); per++) {
+			truckPct += seed1.getValueFloat(CEConst.IDS_TRUCK_SINGLE_UNIT_PCT_MAINLINE, 0, per, 0, -1) * seed1.getValueInt(CEConst.IDS_MAIN_DEMAND_VEH, 0, per, 0, -1);
+			totalDemand += seed1.getValueInt(CEConst.IDS_MAIN_DEMAND_VEH, 0, per, 0, -1);
+		}
+		truckPct = truckPct/totalDemand;
+		System.out.println("Truck Pct: " + String.format("%.2f", truckPct));
+		
+		CostBenefitEstimate.setTruckPercent(truckPct);
+		
 		// Creating ScenarioGenerators
-		rngSeed=520175;
 		if (rngSeed < 0)
 		{ // Creating random seed if it has not been set
 			rngSeed = (int) (System.currentTimeMillis() % 1000000);
