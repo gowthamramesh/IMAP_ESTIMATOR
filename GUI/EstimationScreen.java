@@ -337,4 +337,17 @@ public class EstimationScreen
 		containerPanel.add(estimateCostBenefit);
 		return containerPanel;
 	}
+	
+	public static String getAreaType() {
+		return areaType.getSelectedItem().toString();
+	}
+	
+	public static String getStudyType() {
+		return studyType.getSelectedItem().toString();
+	}
+	
+	public static String getIncidentRateType() {
+		return incidentRate.getSelectedItem().toString();
+	}
+	
 }

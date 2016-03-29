@@ -226,12 +226,16 @@ public class CostBenefitEstimate
 		float totalDemandVMTWith = FreevalFileParser.getTotalDemandVMTWith();
 		float totalDemandVMTWithout = FreevalFileParser.getTotalDemandVMTWithout();
 		truckPercent = FreevalFileParser.getTruckPercentage() / 100;
-		float gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
-		float gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
-		fuelSavings = ((totalDemandVMTWithout * gallonPerMileForTruckVeh(gPerMileAvgSpeedWithout) * truckPercent)
-				+ (totalDemandVMTWithout * gallonPerMileForLightVeh(gPerMileAvgSpeedWithout) * (1 - truckPercent)))
-				- ((totalDemandVMTWith * gallonPerMileForTruckVeh(gPerMileAvgSpeedWith) * truckPercent)
-						+ (totalDemandVMTWith * gallonPerMileForLightVeh(gPerMileAvgSpeedWith) * (1 - truckPercent)));
+		//float gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
+		//float gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
+		float gPerMileTotalRLSpeedWith = FreevalFileParser.getgPerMileTotalSpeedWith();
+		float gPerMileTotalRLSpeedWithout = FreevalFileParser.getgPerMileTotalSpeedWithout();
+		fuelSavings = ((totalDemandVMTWithout * gallonPerMileForTruckVeh(gPerMileTotalRLSpeedWithout) * truckPercent)
+				+ (totalDemandVMTWithout * gallonPerMileForLightVeh(gPerMileTotalRLSpeedWithout) * (1 - truckPercent)))
+				- ((totalDemandVMTWith * gallonPerMileForTruckVeh(gPerMileTotalRLSpeedWith) * truckPercent)
+						+ (totalDemandVMTWith * gallonPerMileForLightVeh(gPerMileTotalRLSpeedWith) * (1 - truckPercent)));
+		
+		
 	}
 
 	/**
@@ -439,5 +443,29 @@ public class CostBenefitEstimate
 		containerPanel.add(prevButton);
 		// containerPanel.add(nextButton);
 		return containerPanel;
+	}
+	
+	public static String getDelaySavingsString() {
+		return formatter0.format(delaySavings);
+	}
+	
+	public static String getDelaySavingsBenefitString() {
+		return formatter2.format(delaySavingsCost);
+	}
+	
+	public static String getFuelSavingsString() {
+		return formatter0.format(fuelSavings);
+	}
+	
+	public static String getFuelSavingsBenefitString() {
+		return formatter2.format(fuelSavingsCost);
+	}
+	
+	public static String getOperationCostString() {
+		return formatter2.format(imapOperationCost);
+	}
+	
+	public static String getBCRatioString() {
+		return formatter2.format((delaySavingsCost / imapOperationCost));
 	}
 }

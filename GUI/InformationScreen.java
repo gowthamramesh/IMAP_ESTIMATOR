@@ -443,6 +443,15 @@ public class InformationScreen
 		return Float.parseFloat(truckCostField.getText());
 	}
 	
+	/**
+	 * Gets the other fixed costs.
+	 *
+	 * @return the fixed costs
+	 */
+	public static float getOtherFixedCosts() {
+		return Float.parseFloat(capitalCostField.getText());
+	}
+	
 	public static boolean[] getDaysActive() {
 		boolean[] daysActive = new boolean[7];
 		daysActive[0] = weekday.isSelected();  // Monday
@@ -457,5 +466,17 @@ public class InformationScreen
 	
 	public static boolean getHolidaysIncluded() {
 		return holiday.isSelected();
+	}
+	
+	public static String getOperationHoursString() {
+		return operFromHour.getSelectedItem().toString()+":"+operFromMin.getSelectedItem().toString()
+				+"," +
+				operToHour.getSelectedItem().toString()+":"+operToMin.getSelectedItem().toString();
+	}
+	
+	public static String getDaysIncludedString() {
+		return (weekday.isSelected() ? "Workdays," : "")
+			+ (weekend.isSelected() ? "Weekends," : "")
+			+ (holiday.isSelected() ? "Holidays," : "");
 	}
 }

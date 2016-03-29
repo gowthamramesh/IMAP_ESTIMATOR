@@ -306,4 +306,40 @@ public class SetupPanel
 	{
 		return County.getText();
 	}
+	
+	/**
+	 * Gets the facility type.
+	 *
+	 * @return the facility type
+	 */
+	public static String getFacilityType() {
+		return facilityTypeCombo.getSelectedItem().toString() + " " + facilityType.getText();
+	}
+	
+	/**
+	 * Gets the division.
+	 *
+	 * @return the division
+	 */
+	public static String getDivisionString() {
+		return divisionType.getSelectedItem().toString();
+	}
+	
+	/**
+	 * Gets the road from.
+	 *
+	 * @return the road from
+	 */
+	public static String getRoadFrom() {
+		return fromIntersection.getText();
+	}
+	
+	/**
+	 * Gets the road to.
+	 *
+	 * @return the road to
+	 */
+	public static String getRoadTo() {
+		return toIntersection.getText();
+	}
 }
