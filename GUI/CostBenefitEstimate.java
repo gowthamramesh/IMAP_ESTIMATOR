@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import javax.swing.filechooser.FileFilter;
 import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
@@ -18,7 +20,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -66,7 +70,14 @@ public class CostBenefitEstimate
 
 	/** The prev button. */
 	private static JButton prevButton = new JButton("BACK");
-
+	
+	/** The overall summary report button. */
+	private static JButton reportButton = new JButton("CREATE REPORT");
+	
+	private static JButton beforeReportButton = new JButton("RL OUTPUT BEFORE IMAP");
+	
+	private static JButton afterReportButton = new JButton("RL OUTPUT WITH IMAP");
+	
 	/** The my id. */
 	private static int myID = 2;
 
@@ -144,16 +155,16 @@ public class CostBenefitEstimate
 	 *            the speed
 	 * @return the double
 	 */
-	private static double gallonPerMileForLightVeh(double speed)
+	public static double gallonPerMileForLightVeh(double speed)
 	{
 		double y = 0;
 		if (speed < 50)
 		{
-			y = Math.pow((0.3197 * speed), (-0.615));
+			y = 0.3197 *Math.pow((speed), (-0.615));
 		}
 		else
 		{
-			y = Math.pow((0.009 * speed), (0.3337));
+			y = 0.009 *Math.pow((speed), (0.3337));
 		}
 		return y;
 	}
@@ -165,10 +176,10 @@ public class CostBenefitEstimate
 	 *            the speed
 	 * @return the double
 	 */
-	private static double gallonPerMileForTruckVeh(double speed)
+	public static double gallonPerMileForTruckVeh(double speed)
 	{
 		double y = 0;
-		y = Math.pow((1.0662 * speed), (-0.483));
+		y = 1.0662 *Math.pow((speed), (-0.483));
 		return y;
 	}
 
@@ -440,32 +451,150 @@ public class CostBenefitEstimate
 				Main.changePanel(1);
 			}
 		});
+		
+		reportButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				FileFilter csvFilter = new FileFilter() {
+					@Override
+					public boolean accept(File f) {
+						return f.getName().endsWith(".csv");
+					}
+					
+					@Override
+					public String getDescription() {
+						return ".csv files";
+					}
+				};
+				fc.setFileFilter(csvFilter);
+				int fileSelected = fc.showSaveDialog(null);
+				if (fileSelected == JFileChooser.APPROVE_OPTION) {
+					boolean success = FreevalFileParser.createSummaryReport(fc.getSelectedFile());
+					if (success) {
+						JOptionPane.showMessageDialog(null,
+								"<HTML>Report generated successfully. File saved at:<br>"
+								+fc.getSelectedFile().getAbsolutePath() + (fc.getSelectedFile().getAbsolutePath().endsWith(".csv") ? "" : ".csv"), 
+								"Report Created",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"<HTML>Something went wrong while generating the report.  If overwriting<br>"
+								+ "an existing file, please make sure the file is closed before proceeding.", 
+								"Report Creator Failed",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				
+			}
+		});
+		
+		beforeReportButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				FileFilter csvFilter = new FileFilter() {
+					@Override
+					public boolean accept(File f) {
+						return f.getName().endsWith(".csv");
+					}
+					
+					@Override
+					public String getDescription() {
+						return ".csv files";
+					}
+				};
+				fc.setFileFilter(csvFilter);
+				int fileSelected = fc.showSaveDialog(null);
+				if (fileSelected == JFileChooser.APPROVE_OPTION) {
+					boolean success = FreevalFileParser.createBeforeIMAPRLOutput(fc.getSelectedFile());
+					if (success) {
+						JOptionPane.showMessageDialog(null,
+								"<HTML>Report generated successfully. File saved at:<br>"
+								+fc.getSelectedFile().getAbsolutePath() + (fc.getSelectedFile().getAbsolutePath().endsWith(".csv") ? "" : ".csv"), 
+								"Report Created",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"<HTML>Something went wrong while generating the report.  If overwriting<br>"
+								+ "an existing file, please make sure the file is closed before proceeding.", 
+								"Report Creator Failed",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+			
+		});
+		
+		afterReportButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				FileFilter csvFilter = new FileFilter() {
+					@Override
+					public boolean accept(File f) {
+						return f.getName().endsWith(".csv");
+					}
+					
+					@Override
+					public String getDescription() {
+						return ".csv files";
+					}
+				};
+				fc.setFileFilter(csvFilter);
+				int fileSelected = fc.showSaveDialog(null);
+				if (fileSelected == JFileChooser.APPROVE_OPTION) {
+					boolean success = FreevalFileParser.createAfterIMAPRLOutput(fc.getSelectedFile());
+					if (success) {
+						JOptionPane.showMessageDialog(null,
+								"<HTML>Report generated successfully. File saved at:<br>"
+								+ fc.getSelectedFile().getAbsolutePath() + (fc.getSelectedFile().getAbsolutePath().endsWith(".csv") ? "" : ".csv"), 
+								"Report Created",
+								JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"<HTML>Something went wrong while generating the report.  If overwriting<br>"
+								+ "an existing file, please make sure the file is closed before proceeding.", 
+								"Report Creator Failed",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+			
+		});
+		
 		containerPanel.add(prevButton);
+		containerPanel.add(reportButton);
+		containerPanel.add(beforeReportButton);
+		containerPanel.add(afterReportButton);
 		// containerPanel.add(nextButton);
 		return containerPanel;
 	}
 	
 	public static String getDelaySavingsString() {
-		return formatter0.format(delaySavings);
+		return String.format("%.2f", delaySavings);
 	}
 	
 	public static String getDelaySavingsBenefitString() {
-		return formatter2.format(delaySavingsCost);
+		return String.format("%.2f", delaySavingsCost);
 	}
 	
 	public static String getFuelSavingsString() {
-		return formatter0.format(fuelSavings);
+		return String.format("%.2f", fuelSavings);
 	}
 	
 	public static String getFuelSavingsBenefitString() {
-		return formatter2.format(fuelSavingsCost);
+		return String.format("%.2f", fuelSavingsCost);
 	}
 	
 	public static String getOperationCostString() {
-		return formatter2.format(imapOperationCost);
+		return String.format("%.2f", imapOperationCost);
 	}
 	
 	public static String getBCRatioString() {
-		return formatter2.format((delaySavingsCost / imapOperationCost));
+		return String.format("%.2f", (delaySavingsCost / imapOperationCost));
 	}
 }

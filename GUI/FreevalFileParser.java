@@ -48,7 +48,10 @@ import coreEngine.Helper.ASCIIAdapter.ASCIISeedFileAdapter_RLFormat;
 import coreEngine.reliabilityAnalysis.ScenarioGenerator;
 import coreEngine.reliabilityAnalysis.DataStruct.DemandData;
 import coreEngine.reliabilityAnalysis.DataStruct.IncidentData;
+import coreEngine.reliabilityAnalysis.DataStruct.IncidentEvent;
 import coreEngine.reliabilityAnalysis.DataStruct.Scenario;
+import coreEngine.reliabilityAnalysis.DataStruct.WeatherEvent;
+import coreEngine.reliabilityAnalysis.DataStruct.WorkZone;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -923,7 +926,7 @@ public class FreevalFileParser
 			totalDemand += seed1.getValueInt(CEConst.IDS_MAIN_DEMAND_VEH, 0, per, 0, -1);
 		}
 		truckPct = truckPct/totalDemand;
-		System.out.println("Truck Pct: " + String.format("%.2f", truckPct));
+		System.out.println("Truck Pct: " + formatter2.format( truckPct));
 		
 		CostBenefitEstimate.setTruckPercent(truckPct);
 		
@@ -974,7 +977,7 @@ public class FreevalFileParser
 			//float[] a = inc1.getIncidentFrequencyArr();
 			//String s = "";
 			//for (int i = 0; i < a.length; i++) {
-			//	s=s+String.format("%.2f", a[i])+",";
+			//	s=s+formatter2.format( a[i])+",";
 			//}
 			//System.out.println(s);
 			inc2.setCrashRateRatio(crashRateRatioWithIMAP); // Sets the crash
@@ -1419,35 +1422,6 @@ public class FreevalFileParser
         }
     }
 	
-	public static boolean createBeforeCSVFile(File file) {
-		return createCSVOutputFile(file, "Before - No IMAP", seed1);
-	}
-	
-	public static boolean createAfterCSVFile(File file) {
-		return createCSVOutputFile(file, "After - With IMAP", seed2);
-	}
-	
-	private static boolean createCSVOutputFile(File file, String fileTitleLine, Seed seed) {
-		try {
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(fileTitleLine+"\rn");
-			bw.write("Scenario,VMT,Space Mean Speed, TTI, PTI, Fuel Use\rn");
-			for (int scen = 0; scen < seed1.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
-				bw.write(String.valueOf(scen+1)
-						+ "," + String.format("%.2f", seed.getValueFloat(CEConst.IDS_VMTD, 0, 0, scen+1, -1))
-						+ "," + String.format("%.2f", seed.getValueFloat(CEConst.IDS_SP_SPACE_MEAN_SPEED, 0, 0, scen+1, -1))
-						+ "," + String.format("%.2f", seed.getValueFloat(CEConst.IDS_TRAVEL_TIME_INDEX, 0, 0, scen+1, -1))
-						+ "," + String.format("%.2f", seed.getValueFloat(CEConst.IDS_VMTD, 0, 0, scen+1, -1))
-						+ "," + String.format("%.2f", seed.getValueFloat(CEConst.IDS_VMTD, 0, 0, scen+1, -1))
-						+ "\rn");
-			}
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
-	}
-	
 	public static boolean createSummaryReport(File file) {
 		// Collecting Summary Information
 		String fileName = "";  // TODO: Add File Name
@@ -1456,11 +1430,11 @@ public class FreevalFileParser
 		String county = SetupPanel.getCounty();
 		String roadFrom = SetupPanel.getRoadFrom(); // New
 		String roadTo = SetupPanel.getRoadTo(); // New
-		String laborCost = String.format("%.2f", InformationScreen.getCostLabor());
-		String truckOpCost = String.format("%.2f", InformationScreen.getCostTruck());
-		String fixedCost = String.format("%.2f", InformationScreen.getOtherFixedCosts());  // New
+		String laborCost = formatter2.format(InformationScreen.getCostLabor());
+		String truckOpCost = formatter2.format(InformationScreen.getCostTruck());
+		String fixedCost = formatter2.format(InformationScreen.getOtherFixedCosts());  // New
 		String hoursOp1 = InformationScreen.getOperationHoursString();  // New
-		String hoursOp2 = String.format("%.2f",  InformationScreen.getOperationHoursInt());
+		String hoursOp2 = formatter2.format(InformationScreen.getOperationHoursInt());
 		String includeStr = InformationScreen.getDaysIncludedString(); // New
 		String centerlineMiles = InformationScreen.getCenterLineMiles();
 		String fuelPrice = InformationScreen.getFuelPrice();
@@ -1468,160 +1442,180 @@ public class FreevalFileParser
 		String studyType = EstimationScreen.getStudyType(); // New
 		String incidentRateType = EstimationScreen.getIncidentRateType();  // New
 		String incidentRatesLine1 = "Month,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec";
-		String incidentRatesLine2 = "No IMAP," + String.format("%.2f",incidentRatesNoIMAP[0])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[1])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[2])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[3])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[4])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[5])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[6])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[7])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[8])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[9])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[10])
-				+ "," + String.format("%.2f",incidentRatesNoIMAP[11]);
-		String incidentRatesLine3 = "With IMAP," + String.format("%.2f",incidentRatesWithIMAP[0])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[1])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[2])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[3])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[4])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[5])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[6])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[7])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[8])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[9])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[10])
-				+ "," + String.format("%.2f",incidentRatesWithIMAP[11]);
-		String crashRate = String.format("%.2f", crashRateFrequenciesNoIMAP[0]); 
-		String incCrashRatio = String.format("%.2f", crashRateRatioNoIMAP);  
-		String shoulderInfo = String.format(".2f", durationInfoNoIMAP[0][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoNoIMAP[0][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[0][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[0][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[0][4]) // Max Duration
-				+ " , ," // Blank Column
-				+ "," + String.format(".2f", durationInfoWithIMAP[0][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoWithIMAP[0][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[0][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[0][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[0][4]); // Max Duration
-		String onelcInfo = String.format(".2f", durationInfoNoIMAP[1][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoNoIMAP[1][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[1][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[1][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[1][4]) // Max Duration
-				+ " , ," // Blank Column
-				+ "," + String.format(".2f", durationInfoWithIMAP[1][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoWithIMAP[1][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[1][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[1][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[1][4]); // Max Duration
-		String twolcInfo = String.format(".2f", durationInfoNoIMAP[2][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoNoIMAP[2][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[2][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[2][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[2][4]) // Max Duration
-				+ " , ," // Blank Column
-				+ "," + String.format(".2f", durationInfoWithIMAP[2][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoWithIMAP[2][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[2][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[2][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[2][4]); // Max Duration
-		String threelcInfo = String.format(".2f", durationInfoNoIMAP[3][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoNoIMAP[3][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[3][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[3][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[3][4]) // Max Duration
-				+ " , ," // Blank Column
-				+ "," + String.format(".2f", durationInfoWithIMAP[3][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoWithIMAP[3][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[3][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[3][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[3][4]); // Max Duration
-		String fourlcInfo = String.format(".2f", durationInfoNoIMAP[4][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoNoIMAP[4][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[4][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[4][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoNoIMAP[4][4]) // Max Duration
-				+ " , ," // Blank Column
-				+ "," + String.format(".2f", durationInfoWithIMAP[4][0])  // Distribution
-				+ "," + String.format(".2f", durationInfoWithIMAP[4][1]) // Mean Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[4][2]) // StdDev Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[4][3]) // Minimum Duration
-				+ "," + String.format(".2f", durationInfoWithIMAP[4][4]); // Max Duration
+		String incidentRatesLine2 = "No IMAP," + String.format("%.2f", incidentRatesNoIMAP[0])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[1])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[2])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[3])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[4])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[5])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[6])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[7])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[8])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[9])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[10])
+				+ "," + String.format("%.2f", incidentRatesNoIMAP[11]);
+		String incidentRatesLine3 = "With IMAP," + String.format("%.2f", incidentRatesWithIMAP[0])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[1])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[2])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[3])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[4])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[5])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[6])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[7])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[8])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[9])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[10])
+				+ "," + String.format("%.2f", incidentRatesWithIMAP[11]);
+		String crashRate = formatter2.format( crashRateFrequenciesNoIMAP[0]); 
+		String incCrashRatio = formatter2.format( crashRateRatioNoIMAP);  
+		String shoulderInfo = formatter2.format(durationInfoNoIMAP[0][0])  // Distribution
+				+ "," + formatter2.format(durationInfoNoIMAP[0][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[0][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[0][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[0][4]) // Max Duration
+				+ " ," // Blank Column
+				+ "," + formatter2.format(durationInfoWithIMAP[0][0])  // Distribution
+				+ "," + formatter2.format(durationInfoWithIMAP[0][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[0][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[0][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[0][4]); // Max Duration
+		String onelcInfo = formatter2.format( durationInfoNoIMAP[1][0])  // Distribution
+				+ "," + formatter2.format(durationInfoNoIMAP[1][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[1][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[1][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[1][4]) // Max Duration
+				+ " ," // Blank Column
+				+ "," + formatter2.format(durationInfoWithIMAP[1][0])  // Distribution
+				+ "," + formatter2.format(durationInfoWithIMAP[1][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[1][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[1][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[1][4]); // Max Duration
+		String twolcInfo = formatter2.format(durationInfoNoIMAP[2][0])  // Distribution
+				+ "," + formatter2.format(durationInfoNoIMAP[2][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[2][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[2][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[2][4]) // Max Duration
+				+ " ," // Blank Column
+				+ "," + formatter2.format(durationInfoWithIMAP[2][0])  // Distribution
+				+ "," + formatter2.format(durationInfoWithIMAP[2][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[2][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[2][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[2][4]); // Max Duration
+		String threelcInfo = formatter2.format(durationInfoNoIMAP[3][0])  // Distribution
+				+ "," + formatter2.format(durationInfoNoIMAP[3][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[3][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[3][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[3][4]) // Max Duration
+				+ " ," // Blank Column
+				+ "," + formatter2.format(durationInfoWithIMAP[3][0])  // Distribution
+				+ "," + formatter2.format(durationInfoWithIMAP[3][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[3][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[3][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[3][4]); // Max Duration
+		String fourlcInfo = formatter2.format(durationInfoNoIMAP[4][0])  // Distribution
+				+ "," + formatter2.format(durationInfoNoIMAP[4][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[4][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[4][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoNoIMAP[4][4]) // Max Duration
+				+ " ," // Blank Column
+				+ "," + formatter2.format(durationInfoWithIMAP[4][0])  // Distribution
+				+ "," + formatter2.format(durationInfoWithIMAP[4][1]) // Mean Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[4][2]) // StdDev Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[4][3]) // Minimum Duration
+				+ "," + formatter2.format(durationInfoWithIMAP[4][4]); // Max Duration
 		String delaySavings = CostBenefitEstimate.getDelaySavingsString(); // New
 		String delaySavingsBenefit = CostBenefitEstimate.getDelaySavingsBenefitString(); // New
 		String fuelSavings = CostBenefitEstimate.getFuelSavingsString(); // New
 		String fuelSavingsBenefit = CostBenefitEstimate.getFuelSavingsBenefitString(); // New
 		String operationCost = CostBenefitEstimate.getOperationCostString(); // New
 		String bcRatio = CostBenefitEstimate.getBCRatioString(); // New
-		String beforeTTIString = "";
-		String beforePTIString = "";
-		String afterTTIString = "";
-		String afterPTIString = "";
+		RLSummary rlNoImap = computeRLSummaryOutput(seed1);
+		String beforeRLSummaryString = formatter2.format(rlNoImap.meanTTI) 
+				+ "," + formatter2.format(rlNoImap.semiSTD)
+				+ "," + formatter2.format(rlNoImap.p50)
+				+ "," + formatter2.format(rlNoImap.p80)
+				+ "," + formatter2.format(rlNoImap.p95)
+				+ "," + formatter2.format(rlNoImap.misery)
+				+ "," + formatter2.format(rlNoImap.vmtat2)
+				+ "\n";
+		RLSummary rlWithImap = computeRLSummaryOutput(seed2);
+		String afterRLSummaryString = formatter2.format(rlWithImap.meanTTI) 
+				+ "," + formatter2.format(rlWithImap.semiSTD)
+				+ "," + formatter2.format(rlWithImap.p50)
+				+ "," + formatter2.format(rlWithImap.p80)
+				+ "," + formatter2.format(rlWithImap.p95)
+				+ "," + formatter2.format(rlWithImap.misery)
+				+ "," + formatter2.format(rlWithImap.vmtat2)
+				+ "\n";
 		
 		// Writing Summary File
 		try {
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			String csvFileName = file.getAbsolutePath();
+			if (!csvFileName.endsWith(".csv")) {
+                csvFileName += ".csv";
+            }
+			FileWriter fw = new FileWriter(csvFileName);
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("IMAP Estimation Tool Summary Report\rn");
+			bw.write("IMAP Estimation Tool Summary Report\n");
 			// General Information
-			bw.write("General Information\rn");
-			bw.write("File Name,"+fileName+"\rn");
-			bw.write("Facility Type,"+facilityType+"\rn");
-			bw.write("Division,"+division+"\rn");
-			bw.write("County,"+county+"\rn");
-			bw.write("Road,From,"+roadFrom+"\rn");
-			bw.write(",To,"+roadTo+"\rn");
-			bw.write("\rn");
+			bw.write("General Information\n");
+			bw.write("File Name,"+fileName+"\n");
+			bw.write("Facility Type,"+facilityType+"\n");
+			bw.write("Division,"+division+"\n");
+			bw.write("County,"+county+"\n");
+			bw.write("Road,From,"+roadFrom+"\n");
+			bw.write(",To,"+roadTo+"\n");
+			bw.write("\n");
 			// Cost Information
-			bw.write("Cost Information"+"\rn");
-			bw.write("Cost for Labor ($),"+laborCost+"\rn");
-			bw.write("Cost for Truck Operation/hr ($),"+truckOpCost+"\rn");
-			bw.write("Other Fixed Costs ($),"+fixedCost+"\rn");
-			bw.write("Hours of Operation (hr),"+hoursOp1+"\rn");
-			bw.write("Hours of Operation (hr),"+hoursOp2+"\rn");
-			bw.write("Include,"+includeStr+"\rn");
-			bw.write("Number of Scenarios Generated,"+String.valueOf(seed1.getValueInt(CEConst.IDS_NUM_SCEN))+"\rn");
-			bw.write("Centerline Miles,"+centerlineMiles+"\rn");
-			bw.write("Fuel Price ($ per GAL),"+fuelPrice+"\rn");
-			bw.write("\rn");
+			bw.write("Cost Information"+"\n");
+			bw.write("Cost for Labor ($),"+laborCost+"\n");
+			bw.write("Cost for Truck Operation/hr ($),"+truckOpCost+"\n");
+			bw.write("Other Fixed Costs ($),"+fixedCost+"\n");
+			bw.write("Hours of Operation (hr),"+hoursOp1+"\n");
+			bw.write("Hours of Operation (hr),"+hoursOp2+"\n");
+			bw.write("Include,"+includeStr+"\n");
+			bw.write("Number of Scenarios Generated,"+String.valueOf(seed1.getValueInt(CEConst.IDS_NUM_SCEN))+"\n");
+			bw.write("Centerline Miles,"+centerlineMiles+"\n");
+			bw.write("Fuel Price ($ per GAL),"+fuelPrice+"\n");
+			bw.write("\n");
 			// Benefit Cost Parameters
-			bw.write("Benefit Cost Parameters\rn");
-			bw.write("Area Type,"+areaType+"\rn");
-			bw.write("Study Type,"+studyType+"\rn");
-			bw.write("Incident Rate,"+incidentRateType+"\rn");
+			bw.write("Benefit Cost Parameters\n");
+			bw.write("Area Type,"+areaType+"\n");
+			bw.write("Study Type,"+studyType+"\n");
+			bw.write("Incident Rate,"+incidentRateType+"\n");
 			if (incidentRatesUsed) {
-				bw.write(incidentRatesLine1 + "\rn");
-				bw.write(incidentRatesLine2 + "\rn");
-				bw.write(incidentRatesLine3 + "\rn");
+				bw.write(incidentRatesLine1 + "\n");
+				bw.write(incidentRatesLine2 + "\n");
+				bw.write(incidentRatesLine3 + "\n");
 			} else {
-				bw.write("Crash Rate,"+crashRate+"\rn");
-				bw.write("Incident/Crash Ratio,"+incCrashRatio+"\rn");
+				bw.write("Crash Rate,"+crashRate+"\n");
+				bw.write("Incident/Crash Ratio,"+incCrashRatio+"\n");
 			}
-			bw.write(""+"\rn");
+			bw.write(""+"\n");
 			// Source of Incident Severity and Duration Characteristics
-			bw.write("Source of Incident Severity and Duration Characteristics"+"\rn");
-			bw.write(""+"\rn");
-			bw.write("Before, , , , , , ,After"+"\rn");
-			bw.write("Incident Severity,Distribution,Mean Duration,StDev Duration,Min Duration,Max Duration, ,Distribution,Mean Duration,StDev Duration,Min Duration,Max Duration"+"\rn");
-			bw.write("Shoulder Closure,"+shoulderInfo+"\rn");
-			bw.write("One Lane Closure,"+onelcInfo+"\rn");
-			bw.write("Two Lane Closure,"+twolcInfo+"\rn");
-			bw.write("Three Lane Closure,"+threelcInfo+"\rn");
-			bw.write("Four Lane Closure,"+fourlcInfo+"\rn");
-			bw.write(""+"\rn");
+			bw.write("Source of Incident Severity and Duration Characteristics"+"\n");
+			bw.write(""+"\n");
+			bw.write("Before, , , , , , ,After"+"\n");
+			bw.write("Incident Severity,Distribution,Mean Duration,StDev Duration,Min Duration,Max Duration, ,Distribution,Mean Duration,StDev Duration,Min Duration,Max Duration"+"\n");
+			bw.write("Shoulder Closure,"+shoulderInfo+"\n");
+			bw.write("One Lane Closure,"+onelcInfo+"\n");
+			bw.write("Two Lane Closure,"+twolcInfo+"\n");
+			bw.write("Three Lane Closure,"+threelcInfo+"\n");
+			bw.write("Four Lane Closure,"+fourlcInfo+"\n");
+			bw.write(""+"\n");
 			// Outputs
-			bw.write("Outputs"+"\rn");
-			bw.write("Reliability Summary,Before,After\rn");
-			bw.write("TTI," + beforeTTIString + "," + afterTTIString +"\rn");
-			bw.write("PTI," + beforePTIString + "," + afterPTIString +"\rn");
-			bw.write("Delay Savings (veh-hr),"+delaySavings+"\rn");
-			bw.write("Delay Savings Benefit ($),"+delaySavingsBenefit+"\rn");
-			bw.write("Fuel Savings (GAL),"+fuelSavings+"\rn");
-			bw.write("Fuel Savings Benefit ($),"+fuelSavingsBenefit+"\rn");
-			bw.write("Operation Cost ($),"+operationCost+"\rn");
-			bw.write("B/C Ratio,"+bcRatio+ "\rn");
+			bw.write("Outputs"+"\n");
+			bw.write("Reliability Summary,Mean TTI,Semi Std Dev,50th Percentile, 80th Percentile, PTI (95th), Misery Index, VMT at TTI>2\n");
+			bw.write("Before IMAP," + beforeRLSummaryString +"\n");
+			bw.write("With IMAP," + afterRLSummaryString +"\n");
+			bw.write("Delay Savings (veh-hr),"+delaySavings+"\n");
+			bw.write("Delay Savings Benefit ($),"+delaySavingsBenefit+"\n");
+			bw.write("Fuel Savings (GAL),"+fuelSavings+"\n");
+			bw.write("Fuel Savings Benefit ($),"+fuelSavingsBenefit+"\n");
+			bw.write("Operation Cost ($),"+operationCost+"\n");
+			bw.write("B/C Ratio,"+bcRatio+ "\n");
+			
+			bw.close();
 			
 		} catch (IOException e) {
 			return false;
@@ -1704,6 +1698,110 @@ public class FreevalFileParser
         res.vmtat2 = VMT2Count;
         
         return res;
+	}
+	
+	public static boolean createBeforeIMAPRLOutput(File file) {
+		return createRLOutputFile(file, seed1);
+	}
+	
+	public static boolean createAfterIMAPRLOutput(File file) {
+		return createRLOutputFile(file, seed2);
+	}
+	
+	private static boolean createRLOutputFile(File file, Seed seed) {
+		
+		//Extract data from seed
+		String[] csvHeader = new String[]{
+		        "Scenario #", "Analysis Period #", "Probability", "TTI",
+		        "max d/c ratio", "Total Queue length at end of time interval (ft)",
+		        "Total Denied Entry Queue Length (ft)", "Total On-Ramp queue (veh)",
+		        "Freeway mainline delay (min)", //"System delay-- includes on-ramps  (min)",
+		        "VMTD Veh-miles / interval  (Demand)", "VMTV Veh-miles / interval (Volume served)",
+		        "VHT travel / interval (hrs)", "VHD  delay /interval  (hrs)",
+		        "Number of Scenario Weather Events",
+		        "Number of Weather Events Active in AP",
+		        "Number of Scenario Incidents (GP)",
+		        "Number of Incidents Active in AP",
+		        "Number of Scenario Work Zones",
+		        "Number of Work Zones Active in AP",
+		        "Average Space Mean Speed",
+		        "Fuel Use"}; //21 items for now
+        String[][] resultData = new String[seed.getValueInt(CEConst.IDS_NUM_SCEN) * seed.getValueInt(CEConst.IDS_NUM_PERIOD)][csvHeader.length];
+        for (int scen = 1; scen <= seed.getValueInt(CEConst.IDS_NUM_SCEN); scen++) {
+            for (int period = 0; period < seed.getValueInt(CEConst.IDS_NUM_PERIOD); period++) {
+                int row = (scen - 1) * seed.getValueInt(CEConst.IDS_NUM_PERIOD) + period;
+                resultData[row][0] = Integer.toString(scen);
+                resultData[row][1] = Integer.toString(period + 1);
+                resultData[row][2] = Float.toString(seed.getValueFloat(CEConst.IDS_SCEN_PROB, 0, 0, scen, -1) / seed.getValueInt(CEConst.IDS_NUM_PERIOD));
+                resultData[row][3] = seed.getValueString(CEConst.IDS_P_TTI, 0, period, scen, -1);
+                resultData[row][4] = seed.getValueString(CEConst.IDS_P_MAX_DC, 0, period, scen, -1);
+                resultData[row][5] = seed.getValueString(CEConst.IDS_P_TOTAL_MAIN_QUEUE_LENGTH_FT, 0, period, scen, -1);
+                resultData[row][6] = seed.getValueString(CEConst.IDS_P_TOTAL_DENY_QUEUE_VEH, 0, period, scen, -1);
+                resultData[row][7] = seed.getValueString(CEConst.IDS_P_TOTAL_ON_QUEUE_VEH, 0, period, scen, -1);
+                resultData[row][8] = seed.getValueString(CEConst.IDS_P_MAIN_DELAY, 0, period, scen, -1);
+                resultData[row][9] = seed.getValueString(CEConst.IDS_P_VMTD, 0, period, scen, -1);
+                resultData[row][10] = seed.getValueString(CEConst.IDS_P_VMTV, 0, period, scen, -1);
+                resultData[row][11] = seed.getValueString(CEConst.IDS_P_VHT, 0, period, scen, -1);
+                resultData[row][12] = seed.getValueString(CEConst.IDS_P_VHD, 0, period, scen, -1);
+                resultData[row][13] = String.valueOf(seed.getRLScenarioInfo().get(scen).getNumberOfWeatherEvents());
+                int evtCounter = 0;
+                if (seed.getRLScenarioInfo().get(scen).hasWeatherEvent()) {
+                    for (WeatherEvent event : seed.getRLScenarioInfo().get(scen).getWeatherEventList()) {
+                        evtCounter += event.checkActiveInPeriod(period) ? 1 : 0;
+                    }
+                }
+                resultData[row][14] = String.valueOf(evtCounter);
+                resultData[row][15] = String.valueOf(seed.getRLScenarioInfo().get(scen).getNumberOfGPIncidentEvents());
+                evtCounter = 0;
+                if (seed.getRLScenarioInfo().get(scen).hasIncidentGP()) {
+                    for (IncidentEvent event : seed.getRLScenarioInfo().get(scen).getGPIncidentEventList()) {
+                        evtCounter += event.checkActiveInPeriod(period) ? 1 : 0;
+                    }
+                }
+                resultData[row][16] = String.valueOf(evtCounter);
+                resultData[row][17] = String.valueOf(seed.getRLScenarioInfo().get(scen).getNumberOfWorkZones());
+                evtCounter = 0;
+                if (seed.getRLScenarioInfo().get(scen).hasWorkZone()) {
+                    for (WorkZone event : seed.getRLScenarioInfo().get(scen).getWorkZoneEventList()) {
+                        evtCounter += event.isActiveIn(period) ? 1 : 0;
+                    }
+                }
+                resultData[row][18] = String.valueOf(evtCounter);
+                resultData[row][19] = String.valueOf(seed.getValueFloat(CEConst.IDS_P_SPACE_MEAN_SPEED, 0, period, scen, -1));
+                resultData[row][20] = String.valueOf(
+                		(seed.getValueFloat(CEConst.IDS_P_VMTD, 0, period, scen, -1) * truckPercentage/100.0f
+                				* CostBenefitEstimate.gallonPerMileForTruckVeh(seed.getValueFloat(CEConst.IDS_P_SPACE_MEAN_SPEED, 0, period, scen, -1)))
+        				+ (seed.getValueFloat(CEConst.IDS_P_VMTD, 0, period, scen, -1) * (1 - truckPercentage/100.0f)
+        						* CostBenefitEstimate.gallonPerMileForLightVeh(seed.getValueFloat(CEConst.IDS_P_SPACE_MEAN_SPEED, 0, period, scen, -1)))
+                		);
+            }
+        }
+		
+		try {
+			String csvFileName = file.getAbsolutePath();
+			if (!csvFileName.endsWith(".csv")) {
+                csvFileName += ".csv";
+            }
+			FileWriter fw = new FileWriter(csvFileName);
+			BufferedWriter bw = new BufferedWriter(fw);
+			for (String str : csvHeader) {
+				bw.write(str);
+				bw.write(",");
+			}
+			bw.write("\n");
+			for (String[] strRow : resultData) {
+				for (String str : strRow) {
+					bw.write(str);
+					bw.write(",");
+				}
+				bw.write("\n");
+			}
+			
+			bw.close();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 	
 	private static class RLResult implements Comparable {
