@@ -55,10 +55,10 @@ public class InformationScreen
 	private static JTextField annualOperDaysField = new JTextField("240");
 
 	/** The no imap trucks field. */
-	private static JTextField noImapTrucksField = new JTextField("18");
+	private static JTextField noImapTrucksField = new JTextField("1");
 
 	/** The centerline miles field. */
-	private static JTextField centerlineMilesField = new JTextField("148");
+	private static JTextField centerlineMilesField = new JTextField("12");
 
 	/** The next button. */
 	private static JButton nextButton = new JButton("NEXT");
@@ -470,7 +470,7 @@ public class InformationScreen
 	
 	public static String getOperationHoursString() {
 		return operFromHour.getSelectedItem().toString()+":"+operFromMin.getSelectedItem().toString()
-				+"," +
+				+"-" +
 				operToHour.getSelectedItem().toString()+":"+operToMin.getSelectedItem().toString();
 	}
 	

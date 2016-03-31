@@ -342,4 +342,8 @@ public class SetupPanel
 	public static String getRoadTo() {
 		return toIntersection.getText();
 	}
+	
+	public static String getFileName() {
+		return fileName.getText();
+	}
 }

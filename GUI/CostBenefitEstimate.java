@@ -237,14 +237,31 @@ public class CostBenefitEstimate
 		float totalDemandVMTWith = FreevalFileParser.getTotalDemandVMTWith();
 		float totalDemandVMTWithout = FreevalFileParser.getTotalDemandVMTWithout();
 		truckPercent = FreevalFileParser.getTruckPercentage() / 100;
-		//float gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
-		//float gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
-		float gPerMileTotalRLSpeedWith = FreevalFileParser.getgPerMileTotalSpeedWith();
-		float gPerMileTotalRLSpeedWithout = FreevalFileParser.getgPerMileTotalSpeedWithout();
-		fuelSavings = ((totalDemandVMTWithout * gallonPerMileForTruckVeh(gPerMileTotalRLSpeedWithout) * truckPercent)
-				+ (totalDemandVMTWithout * gallonPerMileForLightVeh(gPerMileTotalRLSpeedWithout) * (1 - truckPercent)))
-				- ((totalDemandVMTWith * gallonPerMileForTruckVeh(gPerMileTotalRLSpeedWith) * truckPercent)
-						+ (totalDemandVMTWith * gallonPerMileForLightVeh(gPerMileTotalRLSpeedWith) * (1 - truckPercent)));
+		float gPerMileAvgSpeedWith = FreevalFileParser.getgPerMileAvgSpeedWith();
+		float gPerMileAvgSpeedWithout = FreevalFileParser.getgPerMileAvgSpeedWithout();
+		//float gPerMileTotalRLSpeedWith = FreevalFileParser.getgPerMileTotalSpeedWith();
+		//float gPerMileTotalRLSpeedWithout = FreevalFileParser.getgPerMileTotalSpeedWithout();
+		fuelSavings = 0;
+		float noIMAPScenAvgSMS, noIMAPScenVMTD, withIMAPScenAvgSMS, withIMAPScenVMTD;
+		float noIMAPScenPerAvgSMS, noIMAPScenPerVMTD, withIMAPScenPerAvgSMS, withIMAPScenPerVMTD;
+		double beforeFuel, withIMAPFuel;
+		for (int scen = 1; scen <= FreevalFileParser.getNumberScenarios(); scen++) {  // Index starts at 1 (and not 0) to correctly access scenarios (0 is base scenario, not an RL scenario)
+			//noIMAPScenAvgSMS = FreevalFileParser.getScenarioAvgSMSBeforeIMAP(scen);
+			//noIMAPScenVMTD = FreevalFileParser.getScenarioVMTDBeforeIMAP(scen);
+			//withIMAPScenAvgSMS = FreevalFileParser.getScenarioAvgSMSWithIMAP(scen);
+			//withIMAPScenVMTD = FreevalFileParser.getScenarioVMTDWithIMAP(scen);
+			for (int period = 0; period < FreevalFileParser.getNumberPeriods(); period++) {
+				noIMAPScenPerAvgSMS = FreevalFileParser.getScenarioPeriodAvgSMSBeforeIMAP(scen, period);
+				noIMAPScenPerVMTD = FreevalFileParser.getScenarioPeriodVMTDBeforeIMAP(scen, period);
+				withIMAPScenPerAvgSMS = FreevalFileParser.getScenarioPeriodAvgSMSWithIMAP(scen, period);
+				withIMAPScenPerVMTD = FreevalFileParser.getScenarioPeriodVMTDWithIMAP(scen, period);
+				beforeFuel = ((noIMAPScenPerVMTD * gallonPerMileForTruckVeh(noIMAPScenPerAvgSMS) * truckPercent)
+						+ (noIMAPScenPerVMTD * gallonPerMileForLightVeh(noIMAPScenPerAvgSMS) * (1 - truckPercent)));
+				withIMAPFuel = ((withIMAPScenPerVMTD * gallonPerMileForTruckVeh(withIMAPScenPerAvgSMS) * truckPercent)
+						+ (withIMAPScenPerVMTD * gallonPerMileForLightVeh(withIMAPScenPerAvgSMS) * (1 - truckPercent)));
+				fuelSavings += beforeFuel - withIMAPFuel;
+			}
+		}
 		
 		
 	}
@@ -456,16 +473,15 @@ public class CostBenefitEstimate
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
-				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				FileFilter csvFilter = new FileFilter() {
 					@Override
 					public boolean accept(File f) {
-						return f.getName().endsWith(".csv");
+						return f.isDirectory() ||  f.getName().endsWith(".txt");
 					}
 					
 					@Override
 					public String getDescription() {
-						return ".csv files";
+						return ".txt files";
 					}
 				};
 				fc.setFileFilter(csvFilter);
@@ -475,7 +491,7 @@ public class CostBenefitEstimate
 					if (success) {
 						JOptionPane.showMessageDialog(null,
 								"<HTML>Report generated successfully. File saved at:<br>"
-								+fc.getSelectedFile().getAbsolutePath() + (fc.getSelectedFile().getAbsolutePath().endsWith(".csv") ? "" : ".csv"), 
+								+fc.getSelectedFile().getAbsolutePath() + (fc.getSelectedFile().getAbsolutePath().endsWith(".txt") ? "" : ".txt"), 
 								"Report Created",
 								JOptionPane.INFORMATION_MESSAGE);
 					} else {
@@ -494,11 +510,10 @@ public class CostBenefitEstimate
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
-				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				FileFilter csvFilter = new FileFilter() {
 					@Override
 					public boolean accept(File f) {
-						return f.getName().endsWith(".csv");
+						return f.isDirectory() ||  f.getName().endsWith(".csv");
 					}
 					
 					@Override
@@ -532,11 +547,10 @@ public class CostBenefitEstimate
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
-				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				FileFilter csvFilter = new FileFilter() {
 					@Override
 					public boolean accept(File f) {
-						return f.getName().endsWith(".csv");
+						return f.isDirectory() ||  f.getName().endsWith(".csv");
 					}
 					
 					@Override
