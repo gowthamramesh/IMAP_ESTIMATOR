@@ -99,13 +99,13 @@ public class Main extends JFrame
 		contentPanel.add(mainPanel);
 		JPanel labelPanel = new JPanel();
 		labelPanel.add(myLabel);
-		basePanel.add(Box.createVerticalStrut(20));
+		basePanel.add(Box.createVerticalStrut(10));
 		basePanel.add(labelPanel);
 		basePanel.add(contentPanel);
 		basePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().add(basePanel);
-		setPreferredSize(new Dimension(800, 500));
+		setPreferredSize(new Dimension(800, 450));
 		final Toolkit toolkit = Toolkit.getDefaultToolkit();
 		final Dimension screenSize = toolkit.getScreenSize();
 		setLocation(screenSize.width / 2 - 400, screenSize.height / 2 - 250);

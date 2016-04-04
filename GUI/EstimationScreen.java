@@ -94,7 +94,7 @@ public class EstimationScreen
 		crashRateData = new CrashRateData();
 		incidentSevData = new IncidentSeverityData();
 
-		mainpanel.setPreferredSize(new Dimension(800, 400));
+		mainpanel.setPreferredSize(new Dimension(700, 400));
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
 		mainpanel.add(Box.createVerticalStrut(50));
 		mainpanel.add(getSetupPanel());

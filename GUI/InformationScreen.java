@@ -103,7 +103,7 @@ public class InformationScreen
 	 */
 	private static void initComp()
 	{
-		mainpanel.setPreferredSize(new Dimension(800, 400));
+		mainpanel.setPreferredSize(new Dimension(900, 400));
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
 		mainpanel.add(getSetupPanel());
 		mainpanel.add(getinfoTable());
@@ -123,7 +123,7 @@ public class InformationScreen
 		JPanel setupPanel = new JPanel();
 		setupPanel.setLayout(new GridBagLayout());
 		setupPanel.setBorder(BorderFactory.createTitledBorder("Estimation Information"));
-		setupPanel.setMaximumSize(new Dimension(800, 300));
+		setupPanel.setMaximumSize(new Dimension(700, 300));
 
 		c.gridx = 0;
 		c.gridy = 0;
@@ -368,7 +368,7 @@ public class InformationScreen
 			noOfMin = 4 + noOfMin;
 
 		}
-		return Integer.toString(noOfHours) + ":" + Integer.toString(noOfMin * 15);
+		return String.format("%.2f",(noOfHours + (noOfMin * 15 / 60.0f)));
 	}
 
 	/**
@@ -469,14 +469,15 @@ public class InformationScreen
 	}
 	
 	public static String getOperationHoursString() {
-		return operFromHour.getSelectedItem().toString()+":"+operFromMin.getSelectedItem().toString()
+		return operFromHour.getSelectedItem().toString()+":"+(operFromMin.getSelectedItem().toString().equalsIgnoreCase("0") ? "00" : operFromMin.getSelectedItem().toString())
 				+"-" +
-				operToHour.getSelectedItem().toString()+":"+operToMin.getSelectedItem().toString();
+				operToHour.getSelectedItem().toString()+":"+(operToMin.getSelectedItem().toString().equalsIgnoreCase("0") ? "00" : operToMin.getSelectedItem().toString());
 	}
 	
 	public static String getDaysIncludedString() {
-		return (weekday.isSelected() ? "Workdays," : "")
+		String includeStr = (weekday.isSelected() ? "Workdays," : "")
 			+ (weekend.isSelected() ? "Weekends," : "")
 			+ (holiday.isSelected() ? "Holidays," : "");
+		return includeStr.substring(0,includeStr.length()-1);
 	}
 }

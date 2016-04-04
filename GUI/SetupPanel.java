@@ -84,7 +84,7 @@ public class SetupPanel
 	 */
 	private static void initComp()
 	{
-		mainpanel.setPreferredSize(new Dimension(800, 400));
+		mainpanel.setPreferredSize(new Dimension(700, 350));
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
 		mainpanel.add(Box.createVerticalStrut(30));
 		mainpanel.add(getSetupPanel());
@@ -105,7 +105,7 @@ public class SetupPanel
 		JPanel setupPanel = new JPanel();
 		setupPanel.setLayout(new GridBagLayout());
 		setupPanel.setBorder(BorderFactory.createTitledBorder("General Setup Information"));
-		setupPanel.setMaximumSize(new Dimension(800, 400));
+		setupPanel.setMaximumSize(new Dimension(700, 300));
 
 		c.gridx = 0;
 		c.gridy = 0;
