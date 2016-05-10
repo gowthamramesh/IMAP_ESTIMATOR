@@ -326,15 +326,15 @@ public class CostBenefitEstimate
 		double fuelSavingsCostPerVMT = fuelSavingsPerVMT * Float.parseFloat(InformationScreen.getFuelPrice());
 		
 		Object[][] data = { 
-				{ "ANNUAL DAYS OF OPERATION", annualDaysOfOperation },
-				{ "DELAY SAVINGS (veh-hr)", formatter0.format(delaySavings) },
-				{ "DELAY SAVINGS BENEFITS ($)", formatter0.format(delaySavingsCost) },
+				{ "Annual Days of Operation", annualDaysOfOperation },
+				{ "Delay Savings (veh-hr)", formatter0.format(delaySavings) },
+				{ "Delay Savings Benefit ($)", formatter0.format(delaySavingsCost) },
 				//{ "FUEL CONSUMPTION IMPACT (GAL)", formatter0.format(fuelSavings) },
-				{ "FUEL COST IMPACT ($)", formatter0.format(fuelSavingsCost) },
+				{ "Fuel Cost Impact ($)", formatter0.format(fuelSavingsCost) },
 				//{ "FUEL CONSUMPTION IMPACT PER VMT (GAL)", formatter2.format(fuelSavingsPerVMT) },
 				//{ "FUEL COST IMPACT PER VMT ($)", formatter2.format(fuelSavingsCostPerVMT) },
-				{ "OPER. COSTS ($)", formatter0.format(imapOperationCost) },
-				{ "B/C RATIO", formatter2.format((delaySavingsCost / imapOperationCost)) } };
+				{ "Oper. Costs ($)", formatter0.format(imapOperationCost) },
+				{ "B/C Ratio", formatter2.format((delaySavingsCost / imapOperationCost)) } };
 		
 		Object[][] fuelData = {
 				{" ","<HTML><b>VMTV (veh-mi)","<HTML><b>Fuel Used (gal)", "<HTML><b>MPG"},

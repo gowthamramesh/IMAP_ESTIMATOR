@@ -7,6 +7,7 @@ package GUI;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -77,9 +78,16 @@ public class InformationScreen
 
 	private static JTextField fuelPrice = new JTextField("1.99");
 
-	private static JCheckBox	weekday	= new JCheckBox("Workday");
-	private static JCheckBox	weekend	= new JCheckBox("Weekend");
-	private static JCheckBox	holiday	= new JCheckBox("Holiday");
+	//private static JCheckBox	weekday	= new JCheckBox("Workday");
+	//private static JCheckBox	weekend	= new JCheckBox("Weekend");
+	private static JCheckBox	monday  = new JCheckBox("Monday");
+	private static JCheckBox	tuesday = new JCheckBox("Tuesday");
+	private static JCheckBox	wednesday = new JCheckBox("Wednesday");
+	private static JCheckBox	thursday = new JCheckBox("Thursday");
+	private static JCheckBox	friday  = new JCheckBox("Friday");
+	private static JCheckBox	saturday = new JCheckBox("Saturday");
+	private static JCheckBox	sunday  = new JCheckBox("Sunday");
+	private static JCheckBox	holiday	= new JCheckBox("Holidays");
 
 	/**
 	 * Gets the infor panel.
@@ -124,6 +132,8 @@ public class InformationScreen
 		setupPanel.setLayout(new GridBagLayout());
 		setupPanel.setBorder(BorderFactory.createTitledBorder("Estimation Information"));
 		setupPanel.setMaximumSize(new Dimension(700, 300));
+		
+		int strutsize = 7;
 
 		c.gridx = 0;
 		c.gridy = 0;
@@ -132,7 +142,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 1;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		c.gridx = 0;
 		c.gridy = 2;
@@ -141,7 +151,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 3;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		c.gridx = 0;
 		c.gridy = 4;
@@ -150,7 +160,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 5;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		c.gridx = 0;
 		c.gridy = 6;
@@ -159,7 +169,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 7;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		c.gridx = 0;
 		c.gridy = 8;
@@ -172,12 +182,12 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 10;
-		JLabel excludeLabel = new JLabel("Include ");
+		JLabel excludeLabel = new JLabel("Days Included");
 		setupPanel.add(excludeLabel, c);
 
 		c.gridx = 0;
 		c.gridy = 11;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		c.gridx = 0;
 		c.gridy = 12;
@@ -186,7 +196,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 13;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		c.gridx = 0;
 		c.gridy = 14;
@@ -195,7 +205,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 15;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		c.gridx = 0;
 		c.gridy = 16;
@@ -204,7 +214,7 @@ public class InformationScreen
 
 		c.gridx = 0;
 		c.gridy = 17;
-		setupPanel.add(Box.createVerticalStrut(15), c);
+		setupPanel.add(Box.createVerticalStrut(strutsize), c);
 
 		// adding gap between label and field
 
@@ -257,11 +267,24 @@ public class InformationScreen
 
 		c.gridy = 10;
 		JPanel excludePanel = new JPanel();
-		excludePanel.setLayout(new BoxLayout(excludePanel, BoxLayout.X_AXIS));
-		excludePanel.add(weekend);
+		excludePanel.setLayout(new GridLayout(3,3));
+		excludePanel.add(monday);
+		excludePanel.add(tuesday);
+		excludePanel.add(wednesday);
+		excludePanel.add(thursday);
+		excludePanel.add(friday);
+		excludePanel.add(saturday);
+		excludePanel.add(sunday);
 		excludePanel.add(holiday);
-		excludePanel.add(weekday);
-		weekday.setSelected(true);
+		//excludePanel.add(weekday);
+		//weekday.setSelected(true);
+		monday.setSelected(true);
+		tuesday.setSelected(true);
+		wednesday.setSelected(true);
+		thursday.setSelected(true);
+		friday.setSelected(true);
+		//monday.setSelected(true);
+		//monday.setSelected(true);
 
 		setupPanel.add(excludePanel, c);
 
@@ -379,17 +402,37 @@ public class InformationScreen
 	public static int getOperDays()
 	{
 		int operDays = 0;
-		if (weekday.isSelected())
+		if (monday.isSelected())
 		{
-			operDays += 232;
+			operDays += 48;
 		}
-		if (weekend.isSelected())
+		if (tuesday.isSelected())
 		{
-			operDays += 96;
+			operDays += 48;
 		}
-		if (holiday.isSelected())
+		if (wednesday.isSelected())
 		{
-			operDays += 8;
+			operDays += 48;
+		}
+		if (thursday.isSelected())
+		{
+			operDays += 48;
+		}
+		if (friday.isSelected())
+		{
+			operDays += 48;
+		}
+		if (saturday.isSelected())
+		{
+			operDays += 48;
+		}
+		if (sunday.isSelected())
+		{
+			operDays += 48;
+		}
+		if (!holiday.isSelected())
+		{
+			operDays -= 8;
 		}
 		return operDays;
 	}
@@ -454,13 +497,13 @@ public class InformationScreen
 	
 	public static boolean[] getDaysActive() {
 		boolean[] daysActive = new boolean[7];
-		daysActive[0] = weekday.isSelected();  // Monday
-		daysActive[1] = weekday.isSelected();  // Tuesday
-		daysActive[2] = weekday.isSelected();  // Wednesday
-		daysActive[3] = weekday.isSelected();  // Thursday
-		daysActive[4] = weekday.isSelected();  // Friday
-		daysActive[5] = weekend.isSelected();  // Saturday
-		daysActive[6] = weekend.isSelected();  // Sunday
+		daysActive[0] = monday.isSelected();  // Monday
+		daysActive[1] = tuesday.isSelected();  // Tuesday
+		daysActive[2] = wednesday.isSelected();  // Wednesday
+		daysActive[3] = thursday.isSelected();  // Thursday
+		daysActive[4] = friday.isSelected();  // Friday
+		daysActive[5] = saturday.isSelected();  // Saturday
+		daysActive[6] = sunday.isSelected();  // Sunday
 		return daysActive;
 	}
 	
@@ -475,8 +518,13 @@ public class InformationScreen
 	}
 	
 	public static String getDaysIncludedString() {
-		String includeStr = (weekday.isSelected() ? "Workdays," : "")
-			+ (weekend.isSelected() ? "Weekends," : "")
+		String includeStr = (monday.isSelected() ? "Monday," : "")
+			+ (tuesday.isSelected() ? "Tuesday," : "")
+			+ (wednesday.isSelected() ? "Wednesday," : "")
+			+ (thursday.isSelected() ? "Thursday," : "")
+			+ (friday.isSelected() ? "Friday," : "")
+			+ (saturday.isSelected() ? "Saturday," : "")
+			+ (sunday.isSelected() ? "Sunday," : "")
 			+ (holiday.isSelected() ? "Holidays," : "");
 		return includeStr.substring(0,includeStr.length()-1);
 	}
