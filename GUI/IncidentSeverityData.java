@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -61,6 +62,8 @@ public class IncidentSeverityData extends JDialog
 	
 	/** The before table editing. */
 	private boolean					beforeTableEditing	= true;
+	
+	private DecimalFormat formatter2 = new DecimalFormat("#,##0.00");
 
 	/**
 	 * Instantiates a new incident severity data.
@@ -105,28 +108,21 @@ public class IncidentSeverityData extends JDialog
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				// Setting information for before
-				if (both.isSelected() || before.isSelected()) {
-					for (int i = 1; i < 6; i++) {
-						// Setting Before
-						FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
-						FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
-						FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
-						FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
-						FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, Math.max(returnFloat(beforeTable.getValueAt(i, 5)), returnFloat(beforeTable.getValueAt(i, 2))));
-					}
-				}
-				
-				// Setting information for after
-				if (both.isSelected() || after.isSelected()) {
-					for (int i = 1; i < 6; i++) {
-						// Setting After
-						FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
-						FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
-						FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
-						FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
-						FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, Math.max(returnFloat(afterTable.getValueAt(i, 5)), returnFloat(afterTable.getValueAt(i, 2))));
-					}
+				// Setting information for both
+				for (int i = 1; i < 6; i++) {
+					// Setting Before
+					FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
+					FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
+					FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
+					FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
+					FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, Math.max(returnFloat(beforeTable.getValueAt(i, 5)), returnFloat(beforeTable.getValueAt(i, 2))));
+
+					// Setting After
+					FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
+					FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
+					FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
+					FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
+					FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, Math.max(returnFloat(afterTable.getValueAt(i, 5)), returnFloat(afterTable.getValueAt(i, 2))));
 				}
 				incidentData.dispose();
 		}
@@ -171,11 +167,11 @@ public class IncidentSeverityData extends JDialog
 				{ "<html><b>" + columnNames[0] + "</b></html>", "<html><b>" + columnNames[1] + "</b></html>",
 						"<html><b>" + columnNames[2] + "</b></html>", "<html><b>" + columnNames[3] + "</b></html>",
 						"<html><b>" + columnNames[4] + "</b></html>", "<html><b>" + columnNames[5] + "</b></html>" },
-				{ "<html>Shoulder Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>One Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>Two Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>Three Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>Four Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }
+				{ "<html>Shoulder Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>One Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>Two Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>Three Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>Four Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f }
 
 		};
 
@@ -186,6 +182,9 @@ public class IncidentSeverityData extends JDialog
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 					boolean hasFocus, int row, int column)
 			{
+				if (row > 0 && column > 0) {
+					value = formatter2.format(returnFloat(value));
+				}
 				Component rendererComp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
 						column);
 
@@ -220,41 +219,49 @@ public class IncidentSeverityData extends JDialog
 
 			public void setValueAt(Object aValue, int row, int column)
 			{
-				super.setValueAt(aValue, row, column);
-				if (afterTableEditing == false)
-				{
-					if (areaTypeVal == 0)
+				try {
+					Float.parseFloat(aValue.toString());
+					super.setValueAt(aValue, row, column);
+					if (row > 0 && (column == 1 || column == 4) && returnFloat(aValue) != returnFloat(afterTable.getValueAt(row,column))) {
+						afterTable.setValueAt(aValue, row, column);
+					}
+					if (afterTableEditing == false)
 					{
-						for (int i = 1; i < 5; i++)
+						if (areaTypeVal == 0)
 						{
-							float avgIncDur = returnFloat(getValueAt(i, 2));
-							avgIncDur = (float) (avgIncDur * 0.77);
-							afterTable.getModel().setValueAt(avgIncDur, i, 2);
-
-							float stdDev = returnFloat(getValueAt(i, 3));
-							stdDev = (float) (stdDev * 0.79);
-							afterTable.getModel().setValueAt(stdDev, i, 3);
-							float maxDur = (avgIncDur + 2 * stdDev);
-							afterTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
-
+							for (int i = 1; i <= 5; i++)
+							{
+								float avgIncDur = returnFloat(getValueAt(i, 2));
+								avgIncDur = (float) (avgIncDur * 0.77);
+								afterTable.getModel().setValueAt(avgIncDur, i, 2);
+	
+								float stdDev = returnFloat(getValueAt(i, 3));
+								stdDev = (float) (stdDev * 0.79);
+								afterTable.getModel().setValueAt(stdDev, i, 3);
+								float maxDur = (avgIncDur + 2 * stdDev);
+								afterTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
+	
+							}
+						}
+						else
+						{
+							for (int i = 1; i <= 5; i++)
+							{
+								float avgIncDur = returnFloat(getValueAt(i, 2));
+								avgIncDur = (float) (avgIncDur * 0.51);
+								afterTable.getModel().setValueAt(avgIncDur, i, 2);
+	
+								float stdDev = returnFloat(getValueAt(i, 3));
+								stdDev = (float) (stdDev * 0.64);
+								afterTable.getModel().setValueAt(stdDev, i, 3);
+								float maxDur = (avgIncDur + 2 * stdDev);
+								afterTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
+	
+							}
 						}
 					}
-					else
-					{
-						for (int i = 1; i < 5; i++)
-						{
-							float avgIncDur = returnFloat(getValueAt(i, 2));
-							avgIncDur = (float) (avgIncDur * 0.51);
-							afterTable.getModel().setValueAt(avgIncDur, i, 2);
-
-							float stdDev = returnFloat(getValueAt(i, 3));
-							stdDev = (float) (stdDev * 0.64);
-							afterTable.getModel().setValueAt(stdDev, i, 3);
-							float maxDur = (avgIncDur + 2 * stdDev);
-							afterTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
-
-						}
-					}
+				} catch (NumberFormatException e) {
+					// Do nothing, value is not float
 				}
 			}
 		};
@@ -299,11 +306,11 @@ public class IncidentSeverityData extends JDialog
 				{ "<html><b>" + columnNames[0] + "</b></html>", "<html><b>" + columnNames[1] + "</b></html>",
 						"<html><b>" + columnNames[2] + "</b></html>", "<html><b>" + columnNames[3] + "</b></html>",
 						"<html><b>" + columnNames[4] + "</b></html>", "<html><b>" + columnNames[5] + "</b></html>" },
-				{ "<html>Shoulder Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>One Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>Two Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>Three Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
-				{ "<html>Four Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }
+				{ "<html>Shoulder Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>One Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>Two Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>Three Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f },
+				{ "<html>Four Lane Closure</html>", 0.0f, 0.0f, 0.0f, 15.0f, 15.0f }
 
 		};
 
@@ -314,6 +321,9 @@ public class IncidentSeverityData extends JDialog
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 					boolean hasFocus, int row, int column)
 			{
+				if (row > 0 && column > 0 && value != null) {
+					value = formatter2.format(returnFloat(value));
+				}
 				Component rendererComp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
 						column);
 
@@ -348,40 +358,48 @@ public class IncidentSeverityData extends JDialog
 
 			public void setValueAt(Object aValue, int row, int column)
 			{
-				super.setValueAt(aValue, row, column);
-				if (beforeTableEditing == false)
-				{
-					if (areaTypeVal == 0)
+				try {
+					Float.parseFloat(aValue.toString());
+					super.setValueAt(aValue, row, column);
+					if (row > 0 && (column == 1 || column == 4) && returnFloat(aValue) != returnFloat(beforeTable.getValueAt(row,column))) {
+						beforeTable.setValueAt(aValue, row, column);
+					}
+					if (beforeTableEditing == false)
 					{
-						for (int i = 1; i < 5; i++)
+						if (areaTypeVal == 0)
 						{
-							float avgIncDur = returnFloat(getValueAt(i, 2));
-							avgIncDur = (float) (avgIncDur * 1.31);
-							beforeTable.getModel().setValueAt(avgIncDur, i, 2);
-
-							float stdDev = returnFloat(getValueAt(i, 3));
-							stdDev = (float) (stdDev * 1.26);
-							beforeTable.getModel().setValueAt(stdDev, i, 3);
-							float maxDur = (avgIncDur + 2 * stdDev);
-							beforeTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
+							for (int i = 1; i <= 5; i++)
+							{
+								float avgIncDur = returnFloat(getValueAt(i, 2));
+								avgIncDur = (float) (avgIncDur * 1.31);
+								beforeTable.getModel().setValueAt(avgIncDur, i, 2);
+	
+								float stdDev = returnFloat(getValueAt(i, 3));
+								stdDev = (float) (stdDev * 1.26);
+								beforeTable.getModel().setValueAt(stdDev, i, 3);
+								float maxDur = (avgIncDur + 2 * stdDev);
+								beforeTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
+							}
+						}
+						else
+						{
+							for (int i = 1; i <= 5; i++)
+							{
+								float avgIncDur = returnFloat(getValueAt(i, 2));
+								avgIncDur = (float) (avgIncDur * 1.97);
+								beforeTable.getModel().setValueAt(avgIncDur, i, 2);
+	
+								float stdDev = returnFloat(getValueAt(i, 3));
+								stdDev = (float) (avgIncDur * 1.56);
+								beforeTable.getModel().setValueAt(stdDev, i, 3);
+								float maxDur = (avgIncDur + 2 * stdDev);
+								beforeTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
+	
+							}
 						}
 					}
-					else
-					{
-						for (int i = 1; i < 5; i++)
-						{
-							float avgIncDur = returnFloat(getValueAt(i, 2));
-							avgIncDur = (float) (avgIncDur * 1.97);
-							beforeTable.getModel().setValueAt(avgIncDur, i, 2);
-
-							float stdDev = returnFloat(getValueAt(i, 3));
-							stdDev = (float) (avgIncDur * 1.56);
-							beforeTable.getModel().setValueAt(stdDev, i, 3);
-							float maxDur = (avgIncDur + 2 * stdDev);
-							beforeTable.getModel().setValueAt(Math.min(maxDur, 600), i, 5);
-
-						}
-					}
+				} catch (NumberFormatException e) {
+					// Do nothing, value is not float
 				}
 			}
 		};

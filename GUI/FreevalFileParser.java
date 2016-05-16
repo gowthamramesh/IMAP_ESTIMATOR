@@ -1020,7 +1020,7 @@ public class FreevalFileParser
 																						// an
 																						// incident
 																						// type
-			inc1.setIncidentDurMax(incidentType, durationInfoNoIMAP[incidentType][4]); // Sets
+			inc1.setIncidentDurMax(incidentType, Math.max(durationInfoNoIMAP[incidentType][4], 15.0f)); // Sets
 																						// the
 																						// maximum
 																						// duration
@@ -1058,7 +1058,7 @@ public class FreevalFileParser
 																							// an
 																							// incident
 																							// type
-			inc2.setIncidentDurMax(incidentType, durationInfoWithIMAP[incidentType][4]); // Sets
+			inc2.setIncidentDurMax(incidentType, Math.max(durationInfoWithIMAP[incidentType][4], 15.0f)); // Sets
 																							// the
 																							// maximum
 																							// duration
