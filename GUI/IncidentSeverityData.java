@@ -17,6 +17,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
@@ -104,23 +105,31 @@ public class IncidentSeverityData extends JDialog
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				// Setting information for both
-				for (int i = 1; i < 6; i++) {
-					// Setting Before
-					FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
-					FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
-					FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
-					FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
-					FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, Math.max(returnFloat(beforeTable.getValueAt(i, 5)), returnFloat(beforeTable.getValueAt(i, 2))));
-					// Setting After
-					FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
-					FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
-					FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
-					FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
-					FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, Math.max(returnFloat(afterTable.getValueAt(i, 5)), returnFloat(afterTable.getValueAt(i, 2))));
+				// Setting information for before
+				if (both.isSelected() || before.isSelected()) {
+					for (int i = 1; i < 6; i++) {
+						// Setting Before
+						FreevalFileParser.setIncidentDurationDistributionNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 1)));
+						FreevalFileParser.setIncidentDurationMeanNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 2)));
+						FreevalFileParser.setIncidentDurationStdDevNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 3)));
+						FreevalFileParser.setIncidentDurationMinNoIMAP(i-1, returnFloat(beforeTable.getValueAt(i, 4)));
+						FreevalFileParser.setIncidentDurationMaxNoIMAP(i-1, Math.max(returnFloat(beforeTable.getValueAt(i, 5)), returnFloat(beforeTable.getValueAt(i, 2))));
+					}
+				}
+				
+				// Setting information for after
+				if (both.isSelected() || after.isSelected()) {
+					for (int i = 1; i < 6; i++) {
+						// Setting After
+						FreevalFileParser.setIncidentDurationDistributionWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 1)));
+						FreevalFileParser.setIncidentDurationMeanWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 2)));
+						FreevalFileParser.setIncidentDurationStdDevWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 3)));
+						FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
+						FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, Math.max(returnFloat(afterTable.getValueAt(i, 5)), returnFloat(afterTable.getValueAt(i, 2))));
+					}
 				}
 				incidentData.dispose();
-			}
+		}
 		});
 		buttonPanel.add(setValues);
 		return buttonPanel;
@@ -162,9 +171,11 @@ public class IncidentSeverityData extends JDialog
 				{ "<html><b>" + columnNames[0] + "</b></html>", "<html><b>" + columnNames[1] + "</b></html>",
 						"<html><b>" + columnNames[2] + "</b></html>", "<html><b>" + columnNames[3] + "</b></html>",
 						"<html><b>" + columnNames[4] + "</b></html>", "<html><b>" + columnNames[5] + "</b></html>" },
-				{ "<html>Shoulder Closure</html>" }, { "<html>One Lane Closure</html>" },
-				{ "<html>Two Lane Closure</html>" }, { "<html>Three Lane Closure</html>" },
-				{ "<html>Four Lane Closure</html>" }
+				{ "<html>Shoulder Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>One Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>Two Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>Three Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>Four Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }
 
 		};
 
@@ -288,9 +299,11 @@ public class IncidentSeverityData extends JDialog
 				{ "<html><b>" + columnNames[0] + "</b></html>", "<html><b>" + columnNames[1] + "</b></html>",
 						"<html><b>" + columnNames[2] + "</b></html>", "<html><b>" + columnNames[3] + "</b></html>",
 						"<html><b>" + columnNames[4] + "</b></html>", "<html><b>" + columnNames[5] + "</b></html>" },
-				{ "<html>Shoulder Closure</html>" }, { "<html>One Lane Closure</html>" },
-				{ "<html>Two Lane Closure</html>" }, { "<html>Three Lane Closure</html>" },
-				{ "<html>Four Lane Closure</html>" }
+				{ "<html>Shoulder Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>One Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>Two Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>Three Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				{ "<html>Four Lane Closure</html>", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }
 
 		};
 
@@ -491,6 +504,43 @@ public class IncidentSeverityData extends JDialog
 			setDefaultValuesStateWide();
 		}
 		incidentData.setVisible(true);
+	}
+	
+	
+	// Not used, incomplete
+	private boolean verifyInputs() {
+		boolean verified = true;
+		float sumDist = 0.0f;
+		for (int i = 1; i < beforeTable.getRowCount(); i++) {
+		sumDist += returnFloat(beforeTable.getValueAt(i, 1));
+			for (int j = 1; j < beforeTable.getColumnCount(); j++) {
+				
+				
+			}
+		}
+		if (Math.abs(sumDist-100.0f)*Math.abs(sumDist-100.0f) >= 0.0001f) {
+			JOptionPane.showMessageDialog(null, 
+					"Please ensure that the incident distributions sum to 100 percent.", 
+					"Incident Distribution Error", JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+		
+		sumDist = 0.0f;
+		for (int i = 1; i < afterTable.getRowCount(); i++) {
+		sumDist += returnFloat(afterTable.getValueAt(i, 1));
+			for (int j = 1; j < afterTable.getColumnCount(); j++) {
+				
+				
+			}
+		}
+		if (Math.abs(sumDist-100.0f)*Math.abs(sumDist-100.0f) >= 0.0001f) {
+			JOptionPane.showMessageDialog(null, 
+					"Please ensure that the incident distributions sum to 100 percent.", 
+					"Incident Distribution Error", JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+		
+		return verified;
 	}
 
 	/**
