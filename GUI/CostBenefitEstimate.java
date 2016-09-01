@@ -19,20 +19,15 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -131,6 +126,8 @@ public class CostBenefitEstimate
 	private static final DecimalFormat formatter3 = new DecimalFormat("#,##0.000");
 	
 	private static final DecimalFormat formatter4 = new DecimalFormat("#,##0.0000");
+	
+	private static final double co2Factor = 8.887;  // Kilograms
 	
 	/**
 	 * Gets the estimation benefit panel.
@@ -277,13 +274,15 @@ public class CostBenefitEstimate
 						+ (noIMAPScenPerVMTV * gallonPerMileForLightVeh(noIMAPScenPerAvgSMS) * (1 - truckPercent))); // Replaced noIMAPScenPerVMTD with noIMAPScenPerVMTV
 				withIMAPFuel = ((withIMAPScenPerVMTV * gallonPerMileForTruckVeh(withIMAPScenPerAvgSMS) * truckPercent) // Replaced withIMAPScenPerVMTD with withIMAPScenPerVMTV
 						+ (withIMAPScenPerVMTV * gallonPerMileForLightVeh(withIMAPScenPerAvgSMS) * (1 - truckPercent))); // Replaced withIMAPScenPerVMTD with withIMAPScenPerVMTV
-				fuelSavings += beforeFuel - withIMAPFuel;
+				//fuelSavings += beforeFuel - withIMAPFuel;
 				totalFuelUseBeforeIMAP += beforeFuel;
 				totalFuelUseWithIMAP += withIMAPFuel;
 				totalVMTVBeforeIMAP += noIMAPScenPerVMTV;
 				totalVMTVWithIMAP += withIMAPScenPerVMTV;
 			}
 		}
+		// Fuel Savings needs to be scaled up by the VMTV of the With IMAP analysis
+		fuelSavings = CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGWithIMAP();
 	}
 
 	/**
@@ -328,23 +327,25 @@ public class CostBenefitEstimate
 		Object[][] data = { 
 				{ "Annual Days of Operation", annualDaysOfOperation },
 				{ "Delay Savings (veh-hr)", formatter0.format(delaySavings) },
-				{ "Delay Savings Benefit ($)", formatter0.format(delaySavingsCost) },
+				{ "Delay Savings ($)", formatter0.format(delaySavingsCost) },
 				//{ "FUEL CONSUMPTION IMPACT (GAL)", formatter0.format(fuelSavings) },
-				{ "Fuel Cost Impact ($)", formatter0.format(fuelSavingsCost) },
+				{ "Fuel Cost Savings ($)", formatter0.format(fuelSavingsCost) },
 				//{ "FUEL CONSUMPTION IMPACT PER VMT (GAL)", formatter2.format(fuelSavingsPerVMT) },
 				//{ "FUEL COST IMPACT PER VMT ($)", formatter2.format(fuelSavingsCostPerVMT) },
 				{ "Oper. Costs ($)", formatter0.format(imapOperationCost) },
 				{ "B/C Ratio", formatter2.format((delaySavingsCost / imapOperationCost)) } };
 		
 		Object[][] fuelData = {
-				{" ","<HTML><b>VMTV (veh-mi)","<HTML><b>Fuel Used (gal)", "<HTML><b>MPG"},
-				{"Before IMAP",formatter0.format(totalVMTVBeforeIMAP),formatter0.format(totalFuelUseBeforeIMAP), formatter2.format(totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP)},
-				{"With IMAP",formatter0.format(totalVMTVWithIMAP),formatter0.format(totalFuelUseWithIMAP), formatter2.format(totalVMTVWithIMAP / totalFuelUseWithIMAP)},
+				{" ","<HTML><b>VMTV (veh-mi)", "<HTML><b>MPG", "<HTML><b>Fuel Used (gal)"},
+				{"Before IMAP",formatter0.format(totalVMTVBeforeIMAP), formatter2.format(totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP), formatter0.format(totalVMTVWithIMAP / (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))},
+				{"With IMAP",formatter0.format(totalVMTVWithIMAP), formatter2.format(totalVMTVWithIMAP / totalFuelUseWithIMAP), formatter0.format(totalFuelUseWithIMAP)},
 				{" "," "," "," "},
 				{"% Difference",formatter3.format((totalVMTVWithIMAP - totalVMTVBeforeIMAP)/totalVMTVBeforeIMAP*100.0),
-					formatter3.format((totalFuelUseWithIMAP - totalFuelUseBeforeIMAP)/totalFuelUseBeforeIMAP*100.0), 
-					formatter3.format((((totalVMTVWithIMAP / totalFuelUseWithIMAP) - (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))/(totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))*100.0)},
-				{"Absolute Difference",formatter2.format(totalVMTVWithIMAP - totalVMTVBeforeIMAP),formatter2.format(totalFuelUseWithIMAP - totalFuelUseBeforeIMAP), formatter4.format((totalVMTVWithIMAP / totalFuelUseWithIMAP) - (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))}
+					formatter3.format((((totalVMTVWithIMAP / totalFuelUseWithIMAP) - (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))/(totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))*100.0),
+					formatter3.format((totalVMTVWithIMAP / (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP) - totalFuelUseWithIMAP)/(totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP * totalVMTVWithIMAP)*100.0)},
+				{"Absolute Difference",formatter2.format(totalVMTVWithIMAP - totalVMTVBeforeIMAP),
+						formatter4.format((totalVMTVWithIMAP / totalFuelUseWithIMAP) - (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP)),
+						formatter2.format(totalVMTVWithIMAP / (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP) - totalFuelUseWithIMAP)}
 				
 		};
 
@@ -437,8 +438,8 @@ public class CostBenefitEstimate
 		//fuelBreakdownTable.getColumnModel().getColumn(1).setMinWidth(110);
 		//fuelBreakdownTable.getColumnModel().getColumn(2).setMaxWidth(110);
 		//fuelBreakdownTable.getColumnModel().getColumn(2).setMinWidth(110);
-		fuelBreakdownTable.getColumnModel().getColumn(3).setMaxWidth(65);
-		fuelBreakdownTable.getColumnModel().getColumn(3).setMinWidth(65);
+		fuelBreakdownTable.getColumnModel().getColumn(3).setMaxWidth(130);
+		fuelBreakdownTable.getColumnModel().getColumn(3).setMinWidth(130);
 		fuelBreakdownTable.setRowSelectionAllowed(false);
 		fuelBreakdownTable.setCellSelectionEnabled(false);
 		fuelBreakdownTable.getTableHeader().setResizingAllowed(false);
@@ -750,5 +751,21 @@ public class CostBenefitEstimate
 	
 	public static double getTotalFuelUseWithIMAP() {
 		return totalFuelUseWithIMAP;
+	}
+	
+	public static double getMPGBeforeIMAP() {
+		return CostBenefitEstimate.getTotalVMTVBeforeIMAP()/CostBenefitEstimate.getTotalFuelUseBeforeIMAP();
+	}
+	
+	public static double getMPGWithIMAP() {
+		return CostBenefitEstimate.getTotalVMTVWithIMAP()/CostBenefitEstimate.getTotalFuelUseWithIMAP();
+	}
+	
+	public static double getCO2BeforeIMAP() {
+		return CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() * co2Factor;
+	}
+	
+	public static double getCO2WithIMAP() {
+		return CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGWithIMAP() * co2Factor;
 	}
 }

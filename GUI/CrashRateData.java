@@ -112,7 +112,7 @@ public class CrashRateData extends JDialog
 
 		c.gridx = 0;
 		c.gridy = 0;
-		JLabel fileNameLabel = new JLabel("Incident/crash ratio (insert 1.7-4");
+		JLabel fileNameLabel = new JLabel("Incident/crash ratio");
 		setupPanel.add(fileNameLabel, c);
 
 		c.gridx = 1;

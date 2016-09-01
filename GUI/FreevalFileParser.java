@@ -1616,32 +1616,40 @@ public class FreevalFileParser
 			bw.write("VMT at TTI>2:\t\t"+formatter2.format(rlNoImap.vmtat2)+"\t\t"+formatter2.format(rlWithImap.vmtat2)+"\r\n");
 			bw.write("\r\n");
 			bw.write("SAVINGS AND BENEFITS\r\n");
-			bw.write("Delay Savings (veh-hr):\t\t"+delaySavings+"\r\n");
-			bw.write("Delay Savings Benefi:\t\t"+"$"+delaySavingsBenefit+"\r\n");
-			bw.write("Fuel Consumption Impact (GAL):\t"+fuelSavings+"\r\n");
-			bw.write("Fuel Cost Impact:\t\t"+"$"+fuelSavingsBenefit+"\r\n");;
-			bw.write("Operation Cost:\t\t\t"+"$"+operationCost+"\r\n");
-			bw.write("B/C Ratio:\t\t\t"+bcRatio+ "\r\n");
+			bw.write("Delay Savings (veh-hr):\t\t\t"+delaySavings+"\r\n");
+			bw.write("Delay Savings ($):\t\t\t"+"$"+delaySavingsBenefit+"\r\n");
+			bw.write("Fuel Consumption Reduction (gal):\t"+fuelSavings+"\r\n");
+			bw.write("Fuel Cost Savings ($):\t\t\t"+"$"+fuelSavingsBenefit+"\r\n");;
+			bw.write("Operation Cost:\t\t\t\t"+"$"+operationCost+"\r\n");
+			bw.write("B/C Ratio:\t\t\t\t"+bcRatio+ "\r\n");
 			bw.write("\r\n");
-			bw.write("FUEL IMPACT BREAKDOWN\r\n");
-			bw.write("\t\t\tVMTV (veh-mi)\tFuel Used (gal)\tMPG\r\n");
+			bw.write("VEHICLE THROUGHPUT IMPACT\r\n");
+			bw.write("\t\t\tVMTV (veh-mi)\r\n");
+			bw.write("Before IMAP \t\t" +  formatter0.format(CostBenefitEstimate.getTotalVMTVBeforeIMAP()) + "\r\n");
+			bw.write("With IMAP \t\t" +  formatter0.format(CostBenefitEstimate.getTotalVMTVWithIMAP()) + "\r\n");
+			//bw.write("Percent Unment Demand\t\t\r\n");
+			bw.write("\r\n");
+			bw.write("FUEL AND EMISSIONS IMPACT BREAKDOWN\r\n");
+			bw.write("\t\t\tMPG\tFuel Used(gal)\tCO2* (kg)\r\n");
 			bw.write("Before IMAP\t\t" 
-					+ formatter0.format(CostBenefitEstimate.getTotalVMTVBeforeIMAP())+"\t"
-					+ formatter0.format(CostBenefitEstimate.getTotalFuelUseBeforeIMAP()) +"\t"
-					+ formatter2.format(CostBenefitEstimate.getTotalVMTVBeforeIMAP()/CostBenefitEstimate.getTotalFuelUseBeforeIMAP()) + "\r\n");
+					+ formatter2.format(CostBenefitEstimate.getMPGBeforeIMAP())+"\t"
+					+ formatter0.format(CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) +"\t" // Upscaling by with IMAP VMTV
+					+ formatter2.format(CostBenefitEstimate.getCO2BeforeIMAP()) + "\r\n");
 			bw.write("With IMAP\t\t"
-					+ formatter0.format(CostBenefitEstimate.getTotalVMTVWithIMAP())+"\t"
+					+ formatter2.format(CostBenefitEstimate.getMPGWithIMAP())+"\t"
 					+ formatter0.format(CostBenefitEstimate.getTotalFuelUseWithIMAP()) +"\t"
-					+ formatter2.format(CostBenefitEstimate.getTotalVMTVWithIMAP()/CostBenefitEstimate.getTotalFuelUseWithIMAP()) + "\r\n");
+					+ formatter2.format(CostBenefitEstimate.getCO2WithIMAP()) + "\r\n");
 			bw.write("% Difference\t\t"
-					+ formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP()-CostBenefitEstimate.getTotalVMTVBeforeIMAP())/CostBenefitEstimate.getTotalVMTVBeforeIMAP()*100.0)+"\t\t"
-					+ formatter3.format((CostBenefitEstimate.getTotalFuelUseWithIMAP()-CostBenefitEstimate.getTotalFuelUseBeforeIMAP())/CostBenefitEstimate.getTotalFuelUseBeforeIMAP()*100.0) + "\t\t"
-					+ formatter3.format(((CostBenefitEstimate.getTotalVMTVWithIMAP()/CostBenefitEstimate.getTotalFuelUseWithIMAP()) - (CostBenefitEstimate.getTotalVMTVBeforeIMAP()/CostBenefitEstimate.getTotalFuelUseBeforeIMAP()))*100.0) + "\r\n");
+					+ formatter3.format((CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())/CostBenefitEstimate.getMPGBeforeIMAP()*100.0)+"%\t"
+					+ formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP()) / (CostBenefitEstimate.getMPGBeforeIMAP() * CostBenefitEstimate.getTotalVMTVWithIMAP()) *100.0) + "%\t\t"
+					+ formatter3.format((CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP()) / CostBenefitEstimate.getCO2BeforeIMAP()*100.0) + "%\r\n");
 			bw.write("Absolute Difference\t" 
-					+ formatter2.format(CostBenefitEstimate.getTotalVMTVWithIMAP() - CostBenefitEstimate.getTotalVMTVBeforeIMAP()) + "\t"
-					+ formatter2.format(CostBenefitEstimate.getTotalFuelUseWithIMAP() - CostBenefitEstimate.getTotalFuelUseBeforeIMAP()) + "\t"
-					+ formatter4.format(CostBenefitEstimate.getTotalVMTVWithIMAP()/CostBenefitEstimate.getTotalFuelUseWithIMAP() - CostBenefitEstimate.getTotalVMTVBeforeIMAP()/CostBenefitEstimate.getTotalFuelUseBeforeIMAP()) + "\r\n");
-			
+					+ formatter4.format(Math.abs(CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())) + "\t"
+					+ formatter2.format(Math.abs(CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP())) + "\t"
+					+ formatter4.format(Math.abs(CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP())) + "\r\n");
+			bw.write("\r\n");
+			bw.write("*CO2 estimated as 8,887 grams of emissions per gallon of gasoline consumed.\r\n");
+			bw.write("*Source: www.epa.gov/energy/ghg-equivalencies-calculator-calculations-and-references");
 			bw.close();
 			
 		} catch (IOException e) {
