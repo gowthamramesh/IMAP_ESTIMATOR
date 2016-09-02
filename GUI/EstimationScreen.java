@@ -208,15 +208,15 @@ public class EstimationScreen
 		areaType.addItem("Urban");
 		areaType.addItem("Rural");
 
-		studyType.addItem("B/C for existing deployment");
-		studyType.addItem("B/C for proposed deployment");
+		studyType.addItem("B/C for existing IMAP deployment");
+		studyType.addItem("B/C for proposed IMAP deployment");
 
 		incidentRate.addItem("Site Specific - Incident Rate");
 		incidentRate.addItem("Site Specific - Crash Rate");
-		incidentRate.addItem("Statewide");
+		incidentRate.addItem("Statewide Default");
 
 		incidentSeverity.addItem("Site Specific                         ");
-		incidentSeverity.addItem("Statewide");
+		incidentSeverity.addItem("Statewide Default");
 
 		changeIncidentRate.addActionListener(new ActionListener()
 		{
@@ -295,8 +295,8 @@ public class EstimationScreen
 			public void actionPerformed(ActionEvent e)
 			{
 				// Assign necessary information to FreevalFileParser
-				boolean selectSeedFile = FreevalFileParser.selectSeedFile();
-				if (!selectSeedFile)
+				//boolean selectSeedFile = FreevalFileParser.selectSeedFile();
+				if (!FreevalFileParser.seedSelected)  // !selectSeedFile
 				{
 					return;
 				}

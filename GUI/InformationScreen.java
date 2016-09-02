@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -236,7 +237,8 @@ public class InformationScreen
 		annualOperDaysField.setMinimumSize(new Dimension(textFieldWidth, 20));
 		noImapTrucksField.setMinimumSize(new Dimension(textFieldWidth, 20));
 		centerlineMilesField.setMinimumSize(new Dimension(textFieldWidth, 20));
-
+		centerlineMilesField.setText(String.format("%.2f", FreevalFileParser.getSeedFacilityLength()));
+		
 		// Adding all text fields
 		c.gridx = 2;
 		c.gridy = 0;
@@ -305,26 +307,98 @@ public class InformationScreen
 	 */
 	private static void populateComboBox()
 	{
-		for (int i = 0; i < 24; i++)
-		{
-			operFromHour.addItem(Integer.toString(i));
-			operToHour.addItem(Integer.toString(i));
+		//for (int i = FreevalFileParser.getSeedStartHour(); i <= FreevalFileParser.getSeedEndHour(); i++) {
+		//	operFromHour.addItem(Integer.toString(i));
+		//	operToHour.addItem(Integer.toString(i));
+		//}
+		int startHour = FreevalFileParser.getSeedStartHour();
+		int endHour = FreevalFileParser.getSeedEndHour();
+		int startMin = FreevalFileParser.getSeedStartMin();
+		int endMin = FreevalFileParser.getSeedEndMin();
+		int numHours;
+		if (startHour == endHour && startMin == endMin) {
+			numHours = 24;
+		} else if (startHour > endHour) {
+			numHours = endHour - startHour + 24;
+		} else {
+			numHours = endHour - startHour;
 		}
-
+		for (int i=0; i <= Math.min(23, numHours); i++) {
+			operFromHour.addItem(Integer.toString((startHour + i) % 24));
+			operToHour.addItem(Integer.toString((startHour + i) % 24));
+		}
+		
+		operFromHour.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean sameStartHour = Integer.parseInt(operFromHour.getSelectedItem().toString()) == FreevalFileParser.getSeedStartHour();
+				boolean invalidStartMin = Integer.parseInt(operFromMin.getSelectedItem().toString()) < FreevalFileParser.getSeedStartMin();
+				if (sameStartHour && invalidStartMin) {
+					JOptionPane.showMessageDialog(null, "The operation start time cannot be before the start time of the seed facility study period.","Warning: Invalid Start Time", JOptionPane.WARNING_MESSAGE);
+					operFromHour.setSelectedIndex(0);
+					operFromMin.setSelectedIndex(FreevalFileParser.getSeedStartMin() / 15);
+				}
+			}
+		});
+		
+		operToHour.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean sameEndHour = Integer.parseInt(operToHour.getSelectedItem().toString()) == FreevalFileParser.getSeedEndHour();
+				boolean invalidEndMin = Integer.parseInt(operToMin.getSelectedItem().toString()) > FreevalFileParser.getSeedEndMin();
+				if (sameEndHour && invalidEndMin) {
+					JOptionPane.showMessageDialog(null, "The operation end time cannot be after the end time of the seed facility study period.","Warning: Invalid End Time", JOptionPane.WARNING_MESSAGE);
+					operToHour.setSelectedIndex(operToHour.getItemCount() - 1);
+					operToMin.setSelectedIndex(FreevalFileParser.getSeedEndMin() / 15);
+				}
+			}
+		});
+		
+		
 		operFromMin.addItem("0");
 		operFromMin.addItem("15");
 		operFromMin.addItem("30");
 		operFromMin.addItem("45");
-
+		operFromMin.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					boolean sameStartHour = Integer.parseInt(operFromHour.getSelectedItem().toString()) == FreevalFileParser.getSeedStartHour();
+					boolean invalidStartMin = Integer.parseInt(operFromMin.getSelectedItem().toString()) < FreevalFileParser.getSeedStartMin();
+					if (sameStartHour && invalidStartMin) {
+						JOptionPane.showMessageDialog(null, "The operation start time cannot be before the start time of the seed facility study period.","Warning: Invalid Start Time", JOptionPane.WARNING_MESSAGE);
+						operFromHour.setSelectedIndex(0);
+						operFromMin.setSelectedIndex(FreevalFileParser.getSeedStartMin() / 15);
+					}
+				}
+		});
+		
+		
 		operToMin.addItem("0");
 		operToMin.addItem("15");
 		operToMin.addItem("30");
 		operToMin.addItem("45");
+		operToMin.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean sameEndHour = Integer.parseInt(operToHour.getSelectedItem().toString()) == FreevalFileParser.getSeedEndHour();
+				boolean invalidEndMin = Integer.parseInt(operToMin.getSelectedItem().toString()) > FreevalFileParser.getSeedEndMin();
+				if (sameEndHour && invalidEndMin) {
+					JOptionPane.showMessageDialog(null, "The operation end time cannot be after the end time of the seed facility study period.","Warning: Invalid End Time", JOptionPane.WARNING_MESSAGE);
+					operToHour.setSelectedIndex(operToHour.getItemCount() - 1);
+					operToMin.setSelectedIndex(FreevalFileParser.getSeedEndMin() / 15);
+				}
+			}
+		});
+		
 
-		operFromHour.setSelectedIndex(8);
-		operToHour.setSelectedIndex(17);
-		operFromMin.setSelectedIndex(3);
-		operToMin.setSelectedIndex(3);
+		//operFromHour.setSelectedIndex(8);
+		//operToHour.setSelectedIndex(17);
+		//operFromMin.setSelectedIndex(3);
+		//operToMin.setSelectedIndex(3);
+		operFromHour.setSelectedIndex(0);
+		operToHour.setSelectedIndex(operToHour.getItemCount() - 1);
+		operFromMin.setSelectedIndex(FreevalFileParser.getSeedStartMin() / 15);
+		operToMin.setSelectedIndex(FreevalFileParser.getSeedEndMin() / 15);
 
 	}
 
@@ -342,6 +416,11 @@ public class InformationScreen
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				int startHour = Integer.parseInt(operFromHour.getSelectedItem().toString());
+				int startMin = Integer.parseInt(operFromMin.getSelectedItem().toString());
+				int endHour = Integer.parseInt(operToHour.getSelectedItem().toString());
+				int endMin = Integer.parseInt(operToMin.getSelectedItem().toString());
+				FreevalFileParser.updateSeedStudyPeriods(startHour, startMin, endHour, endMin);
 				Main.changePanel(myID + 1);
 			}
 		});
@@ -380,18 +459,27 @@ public class InformationScreen
 	 *
 	 * @return the operation hours
 	 */
-	public static String getOperationHours()
-	{
-		int noOfHours = operToHour.getSelectedIndex() - operFromHour.getSelectedIndex();
-		int noOfMin = 0;
-		noOfMin = operToMin.getSelectedIndex() - operFromMin.getSelectedIndex();
-		if (operToMin.getSelectedIndex() < operFromMin.getSelectedIndex())
-		{
-			noOfHours--;
-			noOfMin = 4 + noOfMin;
-
+	public static String getOperationHours() {
+		boolean is24Hour = (operToHour.getSelectedIndex() == operFromHour.getSelectedIndex()) && (operToMin.getSelectedIndex() == operFromMin.getSelectedIndex());
+		if (is24Hour) {
+			return String.format("%.2f", 24.0f);
+		} else {
+			
+			int noOfHours = Integer.parseInt(operToHour.getSelectedItem().toString()) - Integer.parseInt(operFromHour.getSelectedItem().toString());
+			if (noOfHours < 0) {
+				noOfHours += 24;
+			}
+			int noOfMin = Integer.parseInt(operToMin.getSelectedItem().toString()) - Integer.parseInt(operFromMin.getSelectedItem().toString());
+			//noOfMin = operToMin.getSelectedIndex() - operFromMin.getSelectedIndex();
+			//if (operToMin.getSelectedIndex() < operFromMin.getSelectedIndex())
+			//{
+			//	noOfHours--;
+			//	noOfMin = 4 + noOfMin;
+			//
+			//}
+			//return String.format("%.2f",(noOfHours + (noOfMin * 15 / 60.0f)));
+			return String.format("%.2f",(noOfHours + (noOfMin / 60.0f)));
 		}
-		return String.format("%.2f",(noOfHours + (noOfMin * 15 / 60.0f)));
 	}
 
 	/**
@@ -444,16 +532,26 @@ public class InformationScreen
 	 */
 	public static float getOperationHoursInt()
 	{
-		int noOfHours = operToHour.getSelectedIndex() - operFromHour.getSelectedIndex();
-		int noOfMin = 0;
-		noOfMin = operToMin.getSelectedIndex() - operFromMin.getSelectedIndex();
-		if (operToMin.getSelectedIndex() < operFromMin.getSelectedIndex())
-		{
-			noOfHours--;
-			noOfMin = 4 + noOfMin;
-
+		//int noOfHours = operToHour.getSelectedIndex() - operFromHour.getSelectedIndex();
+		//int noOfMin = 0;
+		//noOfMin = operToMin.getSelectedIndex() - operFromMin.getSelectedIndex();
+		//if (operToMin.getSelectedIndex() < operFromMin.getSelectedIndex())
+		//{
+		//	noOfHours--;
+		//	noOfMin = 4 + noOfMin;
+		//}
+		//return (noOfHours + noOfMin / 4);
+		boolean is24Hour = (operToHour.getSelectedIndex() == operFromHour.getSelectedIndex()) && (operToMin.getSelectedIndex() == operFromMin.getSelectedIndex());
+		if (is24Hour) {
+			return 24;
+		} else {
+			int noOfHours = Integer.parseInt(operToHour.getSelectedItem().toString()) - Integer.parseInt(operFromHour.getSelectedItem().toString());
+			if (noOfHours < 0) {
+				noOfHours += 24;
+			}
+			int noOfMin = Integer.parseInt(operToMin.getSelectedItem().toString()) - Integer.parseInt(operFromMin.getSelectedItem().toString());
+			return (noOfHours + (noOfMin / 60.0f));
 		}
-		return (noOfHours + noOfMin / 4);
 	}
 
 	/**

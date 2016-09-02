@@ -41,6 +41,7 @@ import javax.swing.filechooser.FileFilter;
 import coreEngine.Seed;
 import coreEngine.Helper.CEConst;
 import coreEngine.Helper.CEDate;
+import coreEngine.Helper.CETime;
 import coreEngine.Helper.ASCIIAdapter.ASCIISeedFileAdapter_GPMLFormat;
 import coreEngine.Helper.ASCIIAdapter.ASCIISeedFileAdapter_RLFormat;
 import coreEngine.reliabilityAnalysis.ScenarioGenerator;
@@ -57,7 +58,10 @@ import coreEngine.reliabilityAnalysis.DataStruct.WorkZone;
  */
 public class FreevalFileParser
 {
-
+	/**
+	 * Holds the source seed facility
+	 */
+	private static Seed sourceSeed;
 	/** The seed1. */
 	/*
 	 * Seed to hold Reliability run without IMAP
@@ -168,6 +172,10 @@ public class FreevalFileParser
 	
 	private static final DecimalFormat formatter4 = new DecimalFormat("#,##0.0000");
 
+	public static boolean seedSelected = false;
+	
+	private static File seedFile;
+	
 	/**
 	 * Method to open the seed facility from a ASCII (.txt) file.
 	 *
@@ -175,46 +183,55 @@ public class FreevalFileParser
 	 *            File location (ASCII) of the seed facility.
 	 * @return true, if successful
 	 */
-	private static boolean setSeedFacilityFileASCII(File file)
-	{
-
+	private static boolean setSeedFacilityFileASCII(File file, boolean subSeeds) {
 		boolean success = false;
-		try
-		{
+		try {
 			Scanner input = new Scanner(file);
 			String firstLine = input.nextLine();
 			input.close();
 			// choose correct ASCII adapter based on ASCII input file format
-			if (firstLine.startsWith("<"))
-			{
+			if (firstLine.startsWith("<")) {
 				ASCIISeedFileAdapter_GPMLFormat textSeed = new ASCIISeedFileAdapter_GPMLFormat();
-				seed1 = textSeed.importFromASCII(file.getAbsolutePath());
-				seed2 = textSeed.importFromASCII(file.getAbsolutePath());
-				if (seed1 != null && seed2 != null)
-				{
-					seed1.setValue(CEConst.IDS_SEED_FILE_NAME, null);
-					seed2.setValue(CEConst.IDS_SEED_FILE_NAME, null);
-					success = true;
+				if (!subSeeds) {
+					sourceSeed = textSeed.importFromASCII(file.getAbsolutePath());
+					if (sourceSeed != null) {
+						sourceSeed.setValue(CEConst.IDS_SEED_FILE_NAME, null);
+						success = true;
+					} else {
+						return false;
+					}
+				} else {
+					seed1 = textSeed.importFromASCII(file.getAbsolutePath());
+					seed2 = textSeed.importFromASCII(file.getAbsolutePath());
+					if (seed1 != null && seed2 != null) {
+						seed1.setValue(CEConst.IDS_SEED_FILE_NAME, null);
+						seed2.setValue(CEConst.IDS_SEED_FILE_NAME, null);
+						success = true;
+					} else {
+						return false;
+					}
 				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
+				
+			} else {
 				ASCIISeedFileAdapter_RLFormat textSeed = new ASCIISeedFileAdapter_RLFormat();
-				seed1 = textSeed.importFromFile(file.getAbsolutePath());
-				seed2 = textSeed.importFromFile(file.getAbsolutePath());
-				if (seed1 != null && seed2 != null)
-				{
-					seed1.setValue(CEConst.IDS_SEED_FILE_NAME, null);
-					seed2.setValue(CEConst.IDS_SEED_FILE_NAME, null);
-					success = true;
-				}
-				else
-				{
-					return false;
+				if (!subSeeds) {
+					sourceSeed = textSeed.importFromFile(file.getAbsolutePath());
+					if (sourceSeed != null) {
+						sourceSeed.setValue(CEConst.IDS_SEED_FILE_NAME, null);
+						success = true;
+					} else {
+						return false;
+					}
+				} else {
+					seed1 = textSeed.importFromFile(file.getAbsolutePath());
+					seed2 = textSeed.importFromFile(file.getAbsolutePath());
+					if (seed1 != null && seed2 != null) {
+						seed1.setValue(CEConst.IDS_SEED_FILE_NAME, null);
+						seed2.setValue(CEConst.IDS_SEED_FILE_NAME, null);
+						success = true;
+					} else {
+						return false;
+					}
 				}
 			}
 		}
@@ -234,39 +251,46 @@ public class FreevalFileParser
 	 *            File location (SEED) of the seed facility.
 	 * @return true, if successful
 	 */
-	private static boolean setSeedFacilityFileSEED(File file)
+	private static boolean setSeedFacilityFileSEED(File file, boolean subSeeds)
 	{
 
 		boolean success = false;
 		String openFileName = file.getAbsolutePath();
 
 		// Open seed from file
-		try
-		{
-			FileInputStream fis = new FileInputStream(openFileName);
-			GZIPInputStream gzis = new GZIPInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(gzis);
-			FileInputStream fis1 = new FileInputStream(openFileName);
-			GZIPInputStream gzis1 = new GZIPInputStream(fis1);
-			ObjectInputStream ois1 = new ObjectInputStream(gzis1);
-			seed1 = (Seed) ois.readObject();
-			seed2 = (Seed) ois1.readObject();
-			seed1.resetSeedToInputOnly();
-			seed2.resetSeedToInputOnly();
-			ois.close();
-			ois1.close();
-			seed1.setValue(CEConst.IDS_SEED_FILE_NAME, openFileName);
-			seed2.setValue(CEConst.IDS_SEED_FILE_NAME,
-					openFileName.substring(0, openFileName.lastIndexOf(".")) + "_IMAP" + ".seed");
+		try {
+			if (!subSeeds) {
+				FileInputStream fisSrc = new FileInputStream(openFileName);
+				GZIPInputStream gzisSrc = new GZIPInputStream(fisSrc);
+				ObjectInputStream oisSrc = new ObjectInputStream(gzisSrc);
+				sourceSeed = (Seed) oisSrc.readObject();
+				sourceSeed.resetSeedToInputOnly();
+				oisSrc.close();
+				sourceSeed.setValue(CEConst.IDS_SEED_FILE_NAME, openFileName);
+			} else {
+				FileInputStream fis1 = new FileInputStream(openFileName);
+				GZIPInputStream gzis1 = new GZIPInputStream(fis1);
+				ObjectInputStream ois1 = new ObjectInputStream(gzis1);
+				FileInputStream fis2 = new FileInputStream(openFileName);
+				GZIPInputStream gzis2 = new GZIPInputStream(fis2);
+				ObjectInputStream ois2 = new ObjectInputStream(gzis2);
+				seed1 = (Seed) ois1.readObject();
+				seed2 = (Seed) ois2.readObject();
+				seed1.resetSeedToInputOnly();
+				seed2.resetSeedToInputOnly();
+				ois1.close();
+				ois2.close();
+				seed1.setValue(CEConst.IDS_SEED_FILE_NAME, 
+						openFileName.substring(0, openFileName.lastIndexOf(".")) + "_BeforeIMAP" + ".seed");
+				seed2.setValue(CEConst.IDS_SEED_FILE_NAME,
+						openFileName.substring(0, openFileName.lastIndexOf(".")) + "_WithIMAP" + ".seed");
+			}
 			success = true;
-		}
-		catch (IOException | ClassNotFoundException e)
-		{
+		} catch (IOException | ClassNotFoundException e) {
 			System.out.println(e);
 			JOptionPane.showMessageDialog(null, "Something went wrong opening the seed file.",
 					"Error: Seed File Invalid", JOptionPane.ERROR_MESSAGE);
 		}
-
 		return success;
 
 	}
@@ -279,6 +303,7 @@ public class FreevalFileParser
 	public static boolean selectSeedFile()
 	{
 		JFileChooser fc = new JFileChooser(); // TODO Specify initial directory
+		fc.setDialogTitle("Select Seed Facility File");
 		fc.setFileFilter(new FileFilter()
 		{
 			@Override
@@ -296,20 +321,18 @@ public class FreevalFileParser
 
 		int returnVal = fc.showOpenDialog(null);
 
-		if (returnVal == JFileChooser.APPROVE_OPTION)
-		{
-			if (fc.getSelectedFile().getName().endsWith(".txt"))
-			{
-				return setSeedFacilityFileASCII(fc.getSelectedFile());
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			seedFile = fc.getSelectedFile();
+			if (fc.getSelectedFile().getName().endsWith(".txt")) {
+				seedSelected = setSeedFacilityFileASCII(fc.getSelectedFile(), false);
+				return seedSelected;
+			} else {
+				seedSelected = setSeedFacilityFileSEED(fc.getSelectedFile(), false);
+				return seedSelected;
 			}
-			else
-			{
-				return setSeedFacilityFileSEED(fc.getSelectedFile());
-			}
-		}
-		else
-		{
-			return false; // No file chosen
+		} else {
+			seedSelected = false;
+			return seedSelected; // No file chosen
 		}
 	}
 
@@ -1552,7 +1575,7 @@ public class FreevalFileParser
 			bw.write("\r\n");
 			// Cost Information
 			bw.write("COST INFORMATION"+"\r\n");
-			bw.write("Cost for Labor:\t\t\t"+"$"+laborCost+"\r\n");
+			bw.write("Cost for Labor/hr:\t\t"+"$"+laborCost+"\r\n");
 			bw.write("Cost for Truck Operation/hr:"+sep_str+"$"+truckOpCost+"\r\n");
 			bw.write("Other Fixed Costs:\t\t"+"$"+fixedCost+"\r\n");
 			bw.write("Hours of Operation:\t\t"+hoursOp1+" ("+hoursOp2+" hrs)"+"\r\n");
@@ -1581,14 +1604,14 @@ public class FreevalFileParser
 				bw.write("Nov\t" + incidentRatesNoIMAP[0]+"\t"+incidentRatesWithIMAP[10] + "\r\n");
 				bw.write("Dec\t" + incidentRatesNoIMAP[0]+"\t"+incidentRatesWithIMAP[11] + "\r\n");
 			} else {
-				bw.write("Crash Rate:\t\t"+crashRate+"\r\n");
+				bw.write("Crash Rate:\t\t"+crashRate+" (crashes per 100 million VMT)\r\n");
 				bw.write("Incident/Crash Ratio:"+sep_str+incCrashRatio+"\r\n");
 			}
 			bw.write(""+"\r\n");
 			// Source of Incident Severity and Duration Characteristics
 			bw.write("SOURCE OF INCIDENT SEVERITY AND DURATION CHARACTERISTICS"+"\r\n");
 			bw.write(""+"\r\n");
-			bw.write("Before IMAP\t\tDistribution and Durations"+"\r\n");
+			bw.write("Before IMAP\t\tDistribution and Durations (minutes)"+"\r\n");
 			bw.write("Incident Severity\t%\tMean\tStDev\tMin\tMax"+"\r\n");
 			bw.write("Shoulder Closure\t"+shoulderInfoBefore+"\r\n");
 			bw.write("One Lane Closure\t"+onelcInfoBefore+"\r\n");
@@ -1596,7 +1619,7 @@ public class FreevalFileParser
 			bw.write("Three Lane Closure\t"+threelcInfoBefore+"\r\n");
 			bw.write("Four Lane Closure\t"+fourlcInfoBefore+"\r\n");
 			bw.write(""+"\r\n");
-			bw.write("With IMAP\t\tDistribution and Durations"+"\r\n");
+			bw.write("With IMAP\t\tDistribution and Durations (minutes)"+"\r\n");
 			bw.write("Incident Severity\t%\tMean\tStDev\tMin\tMax"+"\r\n");
 			bw.write("Shoulder Closure\t"+shoulderInfoAfter+"\r\n");
 			bw.write("One Lane Closure\t"+onelcInfoAfter+"\r\n");
@@ -1616,7 +1639,7 @@ public class FreevalFileParser
 			bw.write("VMT at TTI>2:\t\t"+formatter2.format(rlNoImap.vmtat2)+"\t\t"+formatter2.format(rlWithImap.vmtat2)+"\r\n");
 			bw.write("\r\n");
 			bw.write("SAVINGS AND BENEFITS\r\n");
-			bw.write("Delay Savings (veh-hr):\t\t\t"+delaySavings+"\r\n");
+			bw.write("Delay Savings (veh-hr):\t\t"+delaySavings+"\r\n");
 			bw.write("Delay Savings ($):\t\t\t"+"$"+delaySavingsBenefit+"\r\n");
 			bw.write("Fuel Consumption Reduction (gal):\t"+fuelSavings+"\r\n");
 			bw.write("Fuel Cost Savings ($):\t\t\t"+"$"+fuelSavingsBenefit+"\r\n");;
@@ -1627,26 +1650,27 @@ public class FreevalFileParser
 			bw.write("\t\t\tVMTV (veh-mi)\r\n");
 			bw.write("Before IMAP \t\t" +  formatter0.format(CostBenefitEstimate.getTotalVMTVBeforeIMAP()) + "\r\n");
 			bw.write("With IMAP \t\t" +  formatter0.format(CostBenefitEstimate.getTotalVMTVWithIMAP()) + "\r\n");
+			bw.write("% Difference\t\t" + formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP() - CostBenefitEstimate.getTotalVMTVBeforeIMAP())/CostBenefitEstimate.getTotalVMTVBeforeIMAP() * 100.0)+"%\r\n");
 			//bw.write("Percent Unment Demand\t\t\r\n");
 			bw.write("\r\n");
 			bw.write("FUEL AND EMISSIONS IMPACT BREAKDOWN\r\n");
-			bw.write("\t\t\tMPG\tFuel Used(gal)\tCO2* (kg)\r\n");
+			bw.write("\t\t\tMPG\t\tFuel Used(gal)\t\tCO2* (metric tons)\r\n");
 			bw.write("Before IMAP\t\t" 
-					+ formatter2.format(CostBenefitEstimate.getMPGBeforeIMAP())+"\t"
-					+ formatter0.format(CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) +"\t" // Upscaling by with IMAP VMTV
-					+ formatter2.format(CostBenefitEstimate.getCO2BeforeIMAP()) + "\r\n");
+					+ formatter2.format(CostBenefitEstimate.getMPGBeforeIMAP())+"\t\t"
+					+ formatter0.format(CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) +"\t\t" // Upscaling by with IMAP VMTV
+					+ formatter0.format(CostBenefitEstimate.getCO2BeforeIMAP() / 1000.0) + "\r\n");
 			bw.write("With IMAP\t\t"
-					+ formatter2.format(CostBenefitEstimate.getMPGWithIMAP())+"\t"
-					+ formatter0.format(CostBenefitEstimate.getTotalFuelUseWithIMAP()) +"\t"
-					+ formatter2.format(CostBenefitEstimate.getCO2WithIMAP()) + "\r\n");
+					+ formatter2.format(CostBenefitEstimate.getMPGWithIMAP())+"\t\t"
+					+ formatter0.format(CostBenefitEstimate.getTotalFuelUseWithIMAP()) +"\t\t"
+					+ formatter0.format(CostBenefitEstimate.getCO2WithIMAP() / 1000.0) + "\r\n");
 			bw.write("% Difference\t\t"
-					+ formatter3.format((CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())/CostBenefitEstimate.getMPGBeforeIMAP()*100.0)+"%\t"
-					+ formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP()) / (CostBenefitEstimate.getMPGBeforeIMAP() * CostBenefitEstimate.getTotalVMTVWithIMAP()) *100.0) + "%\t\t"
+					+ formatter3.format((CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())/CostBenefitEstimate.getMPGBeforeIMAP()*100.0)+"%\t\t"
+					+ formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP()) / (CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) *100.0) + "%\t\t\t"
 					+ formatter3.format((CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP()) / CostBenefitEstimate.getCO2BeforeIMAP()*100.0) + "%\r\n");
 			bw.write("Absolute Difference\t" 
-					+ formatter4.format(Math.abs(CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())) + "\t"
-					+ formatter2.format(Math.abs(CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP())) + "\t"
-					+ formatter4.format(Math.abs(CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP())) + "\r\n");
+					+ formatter2.format(Math.abs(CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())) + "\t\t"
+					+ formatter2.format(Math.abs(CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP())) + "\t\t"
+					+ formatter0.format(Math.abs(CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP())) + "\r\n");
 			bw.write("\r\n");
 			bw.write("*CO2 estimated as 8,887 grams of emissions per gallon of gasoline consumed.\r\n");
 			bw.write("*Source: www.epa.gov/energy/ghg-equivalencies-calculator-calculations-and-references");
@@ -1789,6 +1813,86 @@ public class FreevalFileParser
 	
 	public static float getScenarioPeriodAvgSMSWithIMAP(int scen, int per) {
 		return seed2.getValueFloat(CEConst.IDS_P_SPACE_MEAN_SPEED, 0, per, scen, -1);
+	}
+	
+	public static int getSeedStartHour() {
+		if (sourceSeed != null) {
+			return sourceSeed.getStartTime().hour;
+		} else {
+			return 0;
+		}
+	}
+	
+	public static int getSeedStartMin() {
+		if (sourceSeed != null) {
+			return sourceSeed.getStartTime().minute;
+		} else {
+			return 0;
+		}
+	}
+	
+	public static int getSeedEndHour() {
+		if (sourceSeed != null) {
+			return sourceSeed.getEndTime().hour;
+		} else {
+			return 0;
+		}
+	}
+	
+	public static int getSeedEndMin() {
+		if (sourceSeed != null) {
+			return sourceSeed.getEndTime().minute;
+		} else {
+			return 0;
+		}
+	}
+	
+	public static float getSeedFacilityLength() {
+		return sourceSeed.getValueFloat(CEConst.IDS_TOTAL_LENGTH_MI);
+	}
+	
+	public static void updateSeedStudyPeriods(int startHour, int startMin, int endHour, int endMin) {
+		// Note: The adjusted seed study period will always be a subset of the source seed's study period
+		boolean seedsOpened;
+		// Creating the seed1 and seed2
+		if (seedFile.getName().endsWith(".txt")) {
+			seedsOpened = setSeedFacilityFileASCII(seedFile, true);
+		} else {
+			seedsOpened = setSeedFacilityFileSEED(seedFile, true);
+		}
+		// Adjusting study periods
+		CETime srcStart = sourceSeed.getStartTime();
+		CETime newStart = new CETime(startHour, startMin);
+		CETime srcEnd = sourceSeed.getEndTime();
+		CETime newEnd = new CETime(endHour, endMin);
+		int periodsToRemoveFromStart = 0;
+		if (srcStart.isBefore(newStart)) {
+			periodsToRemoveFromStart = (newStart.hour - srcStart.hour) * 4;
+			periodsToRemoveFromStart += (newStart.minute - srcStart.minute) / 15;
+		} else if (srcStart.isAfter(newStart)) {
+			periodsToRemoveFromStart = (newStart.hour - srcStart.hour + 24) * 4;
+			periodsToRemoveFromStart += (newStart.minute - srcStart.minute) / 15;
+		} else {
+			// Do nothing to start periods
+		}
+		//System.out.println("Periods From Start " + String.valueOf(periodsToRemoveFromStart));
+		
+		int periodsToRemoveFromEnd = 0;
+		if (newEnd.isBefore(srcEnd)) {
+			periodsToRemoveFromEnd = (srcEnd.hour - newEnd.hour) * 4;
+			periodsToRemoveFromEnd += (srcEnd.minute - newEnd.minute) / 15;
+		} else if (newEnd.isAfter(srcEnd)) {
+			periodsToRemoveFromEnd = (srcEnd.hour - newEnd.hour + 24) * 4;
+			periodsToRemoveFromEnd += (srcEnd.minute - newEnd.minute) / 15;
+		} else {
+			// Do nothing to end periods
+		}
+		//System.out.println("Periods From End " + String.valueOf(periodsToRemoveFromEnd));
+		
+		seed1.delPeriod(periodsToRemoveFromStart, true);
+		seed2.delPeriod(periodsToRemoveFromStart, true);
+		seed1.delPeriod(periodsToRemoveFromEnd, false);
+		seed2.delPeriod(periodsToRemoveFromEnd, false);
 	}
 	
 	private static boolean createRLOutputFile(File file, Seed seed) {

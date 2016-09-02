@@ -277,6 +277,11 @@ public class SetupPanel
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				boolean selectSeedFile = FreevalFileParser.selectSeedFile();
+				if (!selectSeedFile)
+				{
+					return;
+				}
 				Main.changePanel(myID + 1);
 			}
 		});

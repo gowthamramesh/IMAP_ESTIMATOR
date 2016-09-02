@@ -25,6 +25,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EtchedBorder;
 
 // TODO: Auto-generated Javadoc
@@ -69,6 +71,12 @@ public class Main extends JFrame
 	 */
 	public Main()
 	{
+		try {
+            // Set System L&F
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            // handle exception
+        }
 		this.setTitle("IMAP Benefit/Cost Estimation tool");
 		//List<Image> icons = new ArrayList<>();
 		//icons.add(new ImageIcon(getClass().getResource("ncdot.png")).getImage());
@@ -83,8 +91,8 @@ public class Main extends JFrame
 	private void initComponents()
 	{
 		mainPanel = SetupPanel.getMainPanel();
-		inforPanel = InformationScreen.getInforPanel();
-		estimationPanel = EstimationScreen.getEstimationPanel();
+		//inforPanel = InformationScreen.getInforPanel();
+		//estimationPanel = EstimationScreen.getEstimationPanel();
 		// benefitPanel = CostBenefitEstimate.getEstimationBenefitPanel();
 
 		basePanel = new JPanel();
@@ -165,9 +173,11 @@ public class Main extends JFrame
 				contentPanel.add(mainPanel);
 				break;
 			case 1:
+				inforPanel = InformationScreen.getInforPanel();
 				contentPanel.add(inforPanel);
 				break;
 			case 2:
+				estimationPanel = EstimationScreen.getEstimationPanel();
 				contentPanel.add(estimationPanel);
 				break;
 			case 3:

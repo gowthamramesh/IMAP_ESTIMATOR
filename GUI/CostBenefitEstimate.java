@@ -434,12 +434,12 @@ public class CostBenefitEstimate
 		fuelBreakdownTable.getColumnModel().getColumn(3).setCellRenderer(renderer);
 		fuelBreakdownTable.getColumnModel().getColumn(0).setMaxWidth(130);
 		fuelBreakdownTable.getColumnModel().getColumn(0).setMinWidth(130);
-		//fuelBreakdownTable.getColumnModel().getColumn(1).setMaxWidth(110);
-		//fuelBreakdownTable.getColumnModel().getColumn(1).setMinWidth(110);
-		//fuelBreakdownTable.getColumnModel().getColumn(2).setMaxWidth(110);
-		//fuelBreakdownTable.getColumnModel().getColumn(2).setMinWidth(110);
-		fuelBreakdownTable.getColumnModel().getColumn(3).setMaxWidth(130);
-		fuelBreakdownTable.getColumnModel().getColumn(3).setMinWidth(130);
+		fuelBreakdownTable.getColumnModel().getColumn(1).setMaxWidth(110);
+		fuelBreakdownTable.getColumnModel().getColumn(1).setMinWidth(110);
+		fuelBreakdownTable.getColumnModel().getColumn(2).setMaxWidth(75);
+		fuelBreakdownTable.getColumnModel().getColumn(2).setMinWidth(75);
+		fuelBreakdownTable.getColumnModel().getColumn(3).setMaxWidth(110);
+		fuelBreakdownTable.getColumnModel().getColumn(3).setMinWidth(110);
 		fuelBreakdownTable.setRowSelectionAllowed(false);
 		fuelBreakdownTable.setCellSelectionEnabled(false);
 		fuelBreakdownTable.getTableHeader().setResizingAllowed(false);
@@ -706,23 +706,23 @@ public class CostBenefitEstimate
 	}
 	
 	public static String getDelaySavingsString() {
-		return formatter2.format(delaySavings);
+		return formatter0.format(delaySavings);
 	}
 	
 	public static String getDelaySavingsBenefitString() {
-		return formatter2.format(delaySavingsCost);
+		return formatter0.format(delaySavingsCost);
 	}
 	
 	public static String getFuelSavingsString() {
-		return formatter2.format(fuelSavings);
+		return formatter0.format(fuelSavings);
 	}
 	
 	public static String getFuelSavingsBenefitString() {
-		return formatter2.format(fuelSavingsCost);
+		return formatter0.format(fuelSavingsCost);
 	}
 	
 	public static String getOperationCostString() {
-		return formatter2.format(imapOperationCost);
+		return formatter0.format(imapOperationCost);
 	}
 	
 	public static String getBCRatioString() {
