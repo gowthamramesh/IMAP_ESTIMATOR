@@ -20,6 +20,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Scanner;
@@ -48,7 +49,6 @@ import coreEngine.reliabilityAnalysis.ScenarioGenerator;
 import coreEngine.reliabilityAnalysis.DataStruct.DemandData;
 import coreEngine.reliabilityAnalysis.DataStruct.IncidentData;
 import coreEngine.reliabilityAnalysis.DataStruct.IncidentEvent;
-import coreEngine.reliabilityAnalysis.DataStruct.Scenario;
 import coreEngine.reliabilityAnalysis.DataStruct.WeatherEvent;
 import coreEngine.reliabilityAnalysis.DataStruct.WorkZone;
 
@@ -861,6 +861,55 @@ public class FreevalFileParser
 			total_SMS+= seed2.getValueFloat(CEConst.IDS_SP_SPACE_MEAN_SPEED, 0, 0, scen+1, -1);
 		}
 		return total_SMS;
+	}
+	
+	public static void setCrashRateAndRatio(float crashRate, float crashRatio) {
+		FreevalFileParser.setCrashRateRatioNoIMAP(crashRatio);
+		FreevalFileParser.setCrashRateRatioWithIMAP(crashRatio);
+		float[] crashRateArray = new float[12];
+		Arrays.fill(crashRateArray,crashRate);
+		FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateArray);
+		FreevalFileParser.setCrashRateFrequenciesWithIMAP(crashRateArray);
+	}
+	
+	public static void assignIncidentSeverityDataNoIMAP(float val, int incType, int valType) {
+		switch (valType) {
+			case 1:
+				FreevalFileParser.setIncidentDurationDistributionNoIMAP(incType - 1, val);
+				break;
+			case 2:
+				FreevalFileParser.setIncidentDurationMeanNoIMAP(incType - 1, val);
+				break;
+			case 3:
+				FreevalFileParser.setIncidentDurationStdDevNoIMAP(incType - 1, val);
+				break;
+			case 4:
+				FreevalFileParser.setIncidentDurationMinNoIMAP(incType - 1, val);
+				break;
+			case 5:
+				FreevalFileParser.setIncidentDurationMaxNoIMAP(incType - 1, val);
+				break;
+		}
+	}
+	
+	public static void assignIncidentSeverityDataWithIMAP(float val, int incType, int valType) {
+		switch (valType) {
+			case 1:
+				FreevalFileParser.setIncidentDurationDistributionWithIMAP(incType - 1, val);
+				break;
+			case 2:
+				FreevalFileParser.setIncidentDurationMeanWithIMAP(incType - 1, val);
+				break;
+			case 3:
+				FreevalFileParser.setIncidentDurationStdDevWithIMAP(incType - 1, val);
+				break;
+			case 4:
+				FreevalFileParser.setIncidentDurationMinWithIMAP(incType - 1, val);
+				break;
+			case 5:
+				FreevalFileParser.setIncidentDurationMaxWithIMAP(incType - 1, val);
+				break;
+		}
 	}
 	
 	private static ArrayList<CEDate> getHolidayList() {

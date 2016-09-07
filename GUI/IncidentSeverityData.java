@@ -99,15 +99,12 @@ public class IncidentSeverityData extends JDialog
 	 *
 	 * @return the button panel
 	 */
-	private JPanel getButtonPanel()
-	{
+	private JPanel getButtonPanel() {
 		JPanel buttonPanel = new JPanel();
 		JButton setValues = new JButton("Continue");
-		setValues.addActionListener(new ActionListener()
-		{
+		setValues.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				// Setting information for both
 				for (int i = 1; i < 6; i++) {
 					// Setting Before
@@ -124,8 +121,9 @@ public class IncidentSeverityData extends JDialog
 					FreevalFileParser.setIncidentDurationMinWithIMAP(i-1, returnFloat(afterTable.getValueAt(i, 4)));
 					FreevalFileParser.setIncidentDurationMaxWithIMAP(i-1, Math.max(returnFloat(afterTable.getValueAt(i, 5)), returnFloat(afterTable.getValueAt(i, 2))));
 				}
+				EstimationScreen.setIncidentRateDataIsSet(true);
 				incidentData.dispose();
-		}
+			}
 		});
 		buttonPanel.add(setValues);
 		return buttonPanel;
@@ -136,8 +134,7 @@ public class IncidentSeverityData extends JDialog
 	 *
 	 * @return the incident table
 	 */
-	private JPanel getIncidentTable()
-	{
+	private JPanel getIncidentTable() {
 		JPanel incidentSevPanel = new JPanel();
 		incidentSevPanel.setPreferredSize(new Dimension(900, 300));
 		incidentSevPanel.setLayout(new BoxLayout(incidentSevPanel, BoxLayout.X_AXIS));
@@ -432,8 +429,7 @@ public class IncidentSeverityData extends JDialog
 	 *
 	 * @return the radio panel
 	 */
-	private JPanel getRadioPanel()
-	{
+	private JPanel getRadioPanel() {
 		JPanel radioPanel = new JPanel();
 		radioPanel.setPreferredSize(new Dimension(500, 50));
 		radioPanel.setMaximumSize(new Dimension(500, 50));
@@ -447,18 +443,13 @@ public class IncidentSeverityData extends JDialog
 		radioPanel.add(before);
 		radioPanel.add(after);
 
-		after.addActionListener(new ActionListener()
-		{
-
+		after.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (after.isSelected())
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (after.isSelected()) {
 					beforeTableEditing = false;
 					afterTableEditing = true;
-					if (isStateWideVal == 1)
-					{
+					if (isStateWideVal == 1) {
 						beforeTableEditing = true;
 						afterTableEditing = true;
 						both.setSelected(true);
@@ -472,36 +463,26 @@ public class IncidentSeverityData extends JDialog
 		{
 
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (before.isSelected())
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (before.isSelected()) {
 					beforeTableEditing = true;
 					afterTableEditing = false;
-					if (isStateWideVal == 1)
-					{
+					if (isStateWideVal == 1) {
 						beforeTableEditing = true;
 						afterTableEditing = true;
 						both.setSelected(true);
 					}
 				}
 			}
-
 		});
-
-		both.addActionListener(new ActionListener()
-		{
-
+		both.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (both.isSelected())
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (both.isSelected()) {
 					beforeTableEditing = true;
 					afterTableEditing = true;
 				}
 			}
-
 		});
 
 		return radioPanel;
@@ -513,8 +494,7 @@ public class IncidentSeverityData extends JDialog
 	 * @param areaType the area type
 	 * @param isStateWide the is state wide
 	 */
-	public void displayIncidentTable(int areaType, int isStateWide)
-	{
+	public void displayIncidentTable(int areaType, int isStateWide) {
 		areaTypeVal = areaType;
 		isStateWideVal = isStateWide;
 		if (isStateWideVal == 1)
@@ -564,11 +544,8 @@ public class IncidentSeverityData extends JDialog
 	/**
 	 * Sets the default values state wide.
 	 */
-	private void setDefaultValuesStateWide()
-	{
-		if (areaTypeVal == 0)
-		{
-
+	private void setDefaultValuesStateWide() {
+		if (areaTypeVal == 0) {
 			beforeTable.getModel().setValueAt(52.9, 1, 1);
 			beforeTable.getModel().setValueAt(97.2, 1, 2);
 			beforeTable.getModel().setValueAt(88.3, 1, 3);
@@ -620,10 +597,7 @@ public class IncidentSeverityData extends JDialog
 			afterTable.getModel().setValueAt(171.8, 5, 3);
 			afterTable.getModel().setValueAt(15.0, 5, 4);
 			afterTable.getModel().setValueAt(516.3, 5, 5);
-
-		}
-		else
-		{
+		} else {
 			beforeTable.getModel().setValueAt(37.4, 1, 1);
 			beforeTable.getModel().setValueAt(177.1, 1, 2);
 			beforeTable.getModel().setValueAt(150.1, 1, 3);
@@ -684,33 +658,131 @@ public class IncidentSeverityData extends JDialog
 	 * @param val the val
 	 * @return the float
 	 */
-	public float returnFloat(Object val)
-	{
+	public float returnFloat(Object val) {
 		float value = 0;
-		if (val instanceof Float)
-		{
+		if (val instanceof Float) {
 			value = (float) val;
-
 		}
-		else if (val instanceof String)
-		{
-			if (((String) val).trim().length() == 0)
-			{
+		else if (val instanceof String) {
+			if (((String) val).trim().length() == 0) {
 				value = 0;
-			}
-			else
-			{
+			} else {
 				value = Float.parseFloat((String) val);
 			}
 		}
-		else if (val instanceof Integer)
-		{
+		else if (val instanceof Integer) {
 			value = (int) val;
-		}
-		else if (val instanceof Double)
-		{
+		} else if (val instanceof Double) {
 			value = (float) (double) val;
 		}
 		return value;
+	}
+	
+	public static void assignStateDefaultSeveritiesToAnalysis(int areaType) {
+		if (areaType == 0) {
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(52.9f, 1, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(97.2f, 1, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(88.3f, 1, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 1, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(273.9f, 1, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(38.1f, 2, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(81.6f, 2, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(86.8f, 2, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 2, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(255.2f, 2, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(7.5f, 3, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(109.0f, 3, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(111.1f, 3, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 3, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(331.3f, 3, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(1.2f, 4, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(120.0f, 4, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(110.5f, 4, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 4, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(341.0f, 4, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(0.3f, 5, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(226.2f, 5, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(216.5f, 5, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 5, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(600.0f, 5, 5);
+			
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(52.9f, 1, 1); // 52.9
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(74.2f, 1, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(70.1f, 1, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 1, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(214.4f, 1, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(38.1f, 2, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(62.3f, 2, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(68.9f, 2, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 2, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(200.2f, 2, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(7.5f, 3, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(83.2f, 3, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(88.2f, 3, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 3, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(259.6f, 3, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(1.2f, 4, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(91.6f, 4, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(87.7f, 4, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 4, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(267.0f, 4, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(0.3f, 5, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(172.7f, 5, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(171.8f, 5, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 5, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(516.3f, 5, 5);
+		} else {
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(37.4f, 1, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(177.1f, 1, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(150.1f, 1, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 1, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(477.2f, 1, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(52.5f, 2, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(180.8f, 2, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(181.6f, 2, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 2, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(544.0f, 2, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(8.8f, 3, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(201.5f, 3, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(181.4f, 3, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 3, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(564.4f, 3, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(1.4f, 4, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(279.7f, 4, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(239.3f, 4, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 4, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(600.0f, 4, 5);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(0.0f, 5, 1);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(279.7f, 5, 2);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(239.9f, 5, 3);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(15.0f, 5, 4);
+			FreevalFileParser.assignIncidentSeverityDataNoIMAP(600.0f, 5, 5);
+			
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(37.4f, 1, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(89.9f, 1, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(96.2f, 1, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 1, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(214.4f, 1, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(52.5f, 2, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(91.8f, 2, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(116.4f, 2, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 2, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(200.2f, 2, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(8.8f, 3, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(102.3f, 3, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(116.3f, 3, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 3, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(259.6f, 3, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(1.4f, 4, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(142.0f, 4, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(153.4f, 4, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 4, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(267.0f, 4, 5);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(0.0f, 5, 1);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(142.0f, 5, 2);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(153.4f, 5, 3);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(15.0f, 5, 4);
+			FreevalFileParser.assignIncidentSeverityDataWithIMAP(516.3f, 5, 5);
+		}
 	}
 }

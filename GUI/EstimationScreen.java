@@ -4,7 +4,6 @@
 
 package GUI;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,6 +16,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 // TODO: Auto-generated Javadoc
@@ -41,9 +41,6 @@ public class EstimationScreen
 	/** The incident severity. */
 	private static JComboBox<String> incidentSeverity = new JComboBox<String>();
 
-	/** The freeval file. */
-	private static JComboBox<String> freevalFile = new JComboBox<String>();
-
 	/** The change incident rate. */
 	private static JButton changeIncidentRate = new JButton("...");
 
@@ -67,7 +64,21 @@ public class EstimationScreen
 
 	/** The incident sev data. */
 	private static IncidentSeverityData incidentSevData;
-
+	
+	/** Boolean indicating if the incident/crash rate data has been set */
+	private static boolean incidentRateDataIsSet = false;
+	
+	/** Boolean indicating if the incident severity has been set */
+	private static boolean incidentSeverityDataIsSet = false;
+	
+	private static final float stateDefaultUrbanCrashRate = 90.0f;
+	
+	private static final float stateDefaultUrbanCrashRatio = 2.0f;
+	
+	private static final float stateDefaultRuralCrashRate = 60.0f;
+	
+	private static final float stateDefaultRuralCrashRatio = 2.0f;
+	
 	/**
 	 * Gets the estimation panel.
 	 *
@@ -156,7 +167,7 @@ public class EstimationScreen
 
 		c.gridx = 0;
 		c.gridy = 8;
-		JLabel annualDaysLabel = new JLabel("Freeval file selection");
+		//JLabel annualDaysLabel = new JLabel("Freeval file selection");
 		// setupPanel.add(annualDaysLabel, c);
 
 		c.gridx = 0;
@@ -215,17 +226,14 @@ public class EstimationScreen
 		incidentRate.addItem("Site Specific - Crash Rate");
 		incidentRate.addItem("Statewide Default");
 
-		incidentSeverity.addItem("Site Specific                         ");
+		incidentSeverity.addItem("Site Specific");
 		incidentSeverity.addItem("Statewide Default");
 
-		changeIncidentRate.addActionListener(new ActionListener()
-		{
+		changeIncidentRate.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				switch (incidentRate.getSelectedIndex())
-				{
+			public void actionPerformed(ActionEvent e) {
+				switch (incidentRate.getSelectedIndex()) {
 					case 0:
 						incidentData.displayIncidentTable();
 						break;
@@ -233,12 +241,10 @@ public class EstimationScreen
 						crashRateData.displayCrashRateData(-1, -1);
 						break;
 					case 2:
-						if (areaType.getSelectedIndex() == 0)
-						{
+						if (areaType.getSelectedIndex() == 0) {
 							crashRateData.displayCrashRateData(2, 90);
 						}
-						else
-						{
+						else {
 							crashRateData.displayCrashRateData(2, 60);
 						}
 						break;
@@ -246,38 +252,14 @@ public class EstimationScreen
 			}
 		});
 
-		changeIncidentSev.addActionListener(new ActionListener()
-		{
+		changeIncidentSev.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				incidentSevData.displayIncidentTable(areaType.getSelectedIndex(), incidentSeverity.getSelectedIndex());
 			}
 		});
 
-	}
-
-	/**
-	 * Gets the info table.
-	 *
-	 * @return the info table
-	 */
-	private static JPanel getinfoTable()
-	{
-		JPanel containerPanel = new JPanel();
-		prevButton.addActionListener(new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				Main.changePanel(myID + 1);
-			}
-		});
-
-		containerPanel.add(prevButton);
-		return containerPanel;
 	}
 
 	/**
@@ -294,12 +276,48 @@ public class EstimationScreen
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				// Assign necessary information to FreevalFileParser
-				//boolean selectSeedFile = FreevalFileParser.selectSeedFile();
-				if (!FreevalFileParser.seedSelected)  // !selectSeedFile
-				{
+				// Ensuring a valid seed file has been selected
+				if (!FreevalFileParser.seedSelected)  {
 					return;
 				}
+				
+				// Checking to see if incident/crash rate data has been entered
+				if (!incidentRateDataIsSet) {
+					if (incidentRate.getSelectedIndex() == 2) {
+						// Use Statewide-Default data
+						float crashRate, crashRatio;
+						if (areaType.getSelectedIndex() == 0) {
+							crashRate = stateDefaultUrbanCrashRate;
+							crashRatio = stateDefaultUrbanCrashRatio;
+						} else {
+							crashRate =  stateDefaultRuralCrashRate;
+							crashRatio =  stateDefaultRuralCrashRatio;
+						}
+						FreevalFileParser.setIncidentRatesUsed(false);
+						FreevalFileParser.setCrashRateAndRatio(crashRate, crashRatio);
+						EstimationScreen.setIncidentRateDataIsSet(true);						
+					} else {
+						JOptionPane.showMessageDialog(null, 
+								"Please enter the site specific incident or crash rate information before proceeding.",
+								"Warning: No Incident or Crash Rate Data Entered",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+				}
+				
+				// Checking to see if incident/crash severity data has been entered
+				if (!incidentSeverityDataIsSet) {
+					if (incidentSeverity.getSelectedIndex() == 1) {
+						IncidentSeverityData.assignStateDefaultSeveritiesToAnalysis(areaType.getSelectedIndex());
+					} else {
+						JOptionPane.showMessageDialog(null, 
+								"Please enter the site specific incident and crash severity information before proceeding.",
+								"Warning: No Incident or Crash Severity Data Entered",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+				}
+				
 				// FreevalFileParser.setRngSeed(rngSeed); // Activate to set
 				// random number generator seed
 				FreevalFileParser.setActiveDays(InformationScreen.getDaysActive()); // Setting active days
@@ -307,14 +325,12 @@ public class EstimationScreen
 				FreevalFileParser.setTruckPercentage(5); // Activate to set
 															// truck percentage
 				// Check before or after study
-				if (studyType.getSelectedIndex() == 0)
-				{
+				if (studyType.getSelectedIndex() == 0) {
 					// Before Study
 					// FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateFrequencies);
 					// FreevalFileParser.setCrashRateRatioNoIMAP(crashRateRatio);
 				}
-				else
-				{
+				else {
 					// After study
 					// FreevalFileParser.setCrashRateFrequencies(crashRateFrequencies);
 					// FreevalFileParser.setCrashRateRatioWithIMAP(crashRateRatio);
@@ -323,12 +339,9 @@ public class EstimationScreen
 			}
 		});
 
-		prevButton.addActionListener(new ActionListener()
-		{
-
+		prevButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				Main.changePanel(myID - 1);
 			}
 		});
@@ -348,6 +361,14 @@ public class EstimationScreen
 	
 	public static String getIncidentRateType() {
 		return incidentRate.getSelectedItem().toString();
+	}
+	
+	public static void setIncidentRateDataIsSet(boolean val) {
+		incidentRateDataIsSet = val;
+	}
+	
+	public static void setIncidentSeverityDataIsSet(boolean val) {
+		incidentSeverityDataIsSet = val;
 	}
 	
 }

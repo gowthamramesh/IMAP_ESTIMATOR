@@ -82,12 +82,16 @@ public class CrashRateData extends JDialog
 			{
 				// Assigning crash rate data to FreevalFileParser
 				FreevalFileParser.setIncidentRatesUsed(false);
-				FreevalFileParser.setCrashRateRatioNoIMAP(Float.parseFloat(crashRatioField.getText()));
-				FreevalFileParser.setCrashRateRatioWithIMAP(Float.parseFloat(crashRatioField.getText()));
-				float[] crashRateArray = new float[12];
-				Arrays.fill(crashRateArray, Float.parseFloat(crashRateField.getText()));
-				FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateArray);
-				FreevalFileParser.setCrashRateFrequenciesWithIMAP(crashRateArray);
+				float crashRate = Float.parseFloat(crashRateField.getText());
+				float crashRatio = Float.parseFloat(crashRatioField.getText());
+				FreevalFileParser.setCrashRateAndRatio(crashRate, crashRatio);
+				//FreevalFileParser.setCrashRateRatioNoIMAP(Float.parseFloat(crashRatioField.getText()));
+				//FreevalFileParser.setCrashRateRatioWithIMAP(Float.parseFloat(crashRatioField.getText()));
+				//float[] crashRateArray = new float[12];
+				//Arrays.fill(crashRateArray, Float.parseFloat(crashRateField.getText()));
+				//FreevalFileParser.setCrashRateFrequenciesNoIMAP(crashRateArray);
+				//FreevalFileParser.setCrashRateFrequenciesWithIMAP(crashRateArray);
+				EstimationScreen.setIncidentRateDataIsSet(true);
 				crashData.dispose();
 			}
 		});

@@ -123,6 +123,7 @@ public class IncidentRateData extends JDialog
 					FreevalFileParser.setIncidentRatesUsed(true);
 					FreevalFileParser.setIncidentFrequenciesWithIMAP(afterArr);
 				}
+				EstimationScreen.setIncidentRateDataIsSet(true);
 				incidentData.dispose();
 			}
 		});
