@@ -1714,12 +1714,12 @@ public class FreevalFileParser
 					+ formatter0.format(CostBenefitEstimate.getCO2WithIMAP() / 1000.0) + "\r\n");
 			bw.write("% Difference\t\t"
 					+ formatter3.format((CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())/CostBenefitEstimate.getMPGBeforeIMAP()*100.0)+"%\t\t"
-					+ formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP()) / (CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) *100.0) + "%\t\t\t"
-					+ formatter3.format((CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP()) / CostBenefitEstimate.getCO2BeforeIMAP()*100.0) + "%\r\n");
+					+ formatter3.format(-1.0f * (CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP()) / (CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) *100.0) + "%\t\t\t"
+					+ formatter3.format(-1.0f * (CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP()) / CostBenefitEstimate.getCO2BeforeIMAP()*100.0) + "%\r\n");
 			bw.write("Absolute Difference\t" 
 					+ formatter2.format(Math.abs(CostBenefitEstimate.getMPGWithIMAP() - CostBenefitEstimate.getMPGBeforeIMAP())) + "\t\t"
-					+ formatter2.format(Math.abs(CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP())) + "\t\t"
-					+ formatter0.format(Math.abs(CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP())) + "\r\n");
+					+ formatter2.format(-1.0f * (CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP())) + " \t\t"
+					+ formatter2.format(-1.0f * (CostBenefitEstimate.getCO2BeforeIMAP() - CostBenefitEstimate.getCO2WithIMAP())/ 1000.0) + "\r\n");
 			bw.write("\r\n");
 			bw.write("*CO2 estimated as 8,887 grams of emissions per gallon of gasoline consumed.\r\n");
 			bw.write("*Source: www.epa.gov/energy/ghg-equivalencies-calculator-calculations-and-references");

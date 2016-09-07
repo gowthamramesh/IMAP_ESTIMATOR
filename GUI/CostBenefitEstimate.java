@@ -342,7 +342,7 @@ public class CostBenefitEstimate
 					formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP()) / (CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) *100.0)},
 				{"Absolute Difference",formatter2.format(totalVMTVWithIMAP - totalVMTVBeforeIMAP),
 						formatter4.format((totalVMTVWithIMAP / totalFuelUseWithIMAP) - (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP)),
-						formatter2.format(totalVMTVWithIMAP / (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP) - totalFuelUseWithIMAP)}
+						formatter2.format(-1.0 * (totalVMTVWithIMAP / (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP) - totalFuelUseWithIMAP))}
 				
 		};
 
