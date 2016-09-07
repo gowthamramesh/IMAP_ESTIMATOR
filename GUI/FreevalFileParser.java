@@ -1688,7 +1688,7 @@ public class FreevalFileParser
 			bw.write("VMT at TTI>2:\t\t"+formatter2.format(rlNoImap.vmtat2)+"\t\t"+formatter2.format(rlWithImap.vmtat2)+"\r\n");
 			bw.write("\r\n");
 			bw.write("SAVINGS AND BENEFITS\r\n");
-			bw.write("Delay Savings (veh-hr):\t\t"+delaySavings+"\r\n");
+			bw.write("Delay Savings (veh-hr):\t\t\t"+delaySavings+"\r\n");
 			bw.write("Delay Savings ($):\t\t\t"+"$"+delaySavingsBenefit+"\r\n");
 			bw.write("Fuel Consumption Reduction (gal):\t"+fuelSavings+"\r\n");
 			bw.write("Fuel Cost Savings ($):\t\t\t"+"$"+fuelSavingsBenefit+"\r\n");;
