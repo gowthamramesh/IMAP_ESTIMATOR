@@ -29,7 +29,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CostBenefitEstimate.
  */
@@ -41,8 +40,6 @@ public class CostBenefitEstimate
 
 	/** The labor cost field. */
 	private static JTextField laborCostField = new JTextField("15");
-
-	private static JTextField fuelPrice = new JTextField("1.99");
 
 	/** The truck cost field. */
 	private static JTextField truckCostField = new JTextField("30");
@@ -255,7 +252,7 @@ public class CostBenefitEstimate
 		//float gPerMileTotalRLSpeedWithout = FreevalFileParser.getgPerMileTotalSpeedWithout();
 		fuelSavings = 0;
 		//float noIMAPScenAvgSMS, noIMAPScenVMTD, withIMAPScenAvgSMS, withIMAPScenVMTD;
-		double noIMAPScenPerAvgSMS, noIMAPScenPerVMTD, noIMAPScenPerVMTV, withIMAPScenPerAvgSMS, withIMAPScenPerVMTD, withIMAPScenPerVMTV;
+		double noIMAPScenPerAvgSMS, noIMAPScenPerVMTV, withIMAPScenPerAvgSMS, withIMAPScenPerVMTV; //noImapScenPerVMTD, withIMAPScenPerVMTD
 		double beforeFuel, withIMAPFuel;
 		totalFuelUseBeforeIMAP = totalFuelUseWithIMAP = totalVMTVBeforeIMAP = totalVMTVWithIMAP = 0.0;
 		for (int scen = 1; scen <= FreevalFileParser.getNumberScenarios(); scen++) {  // Index starts at 1 (and not 0) to correctly access scenarios (0 is base scenario, not an RL scenario)
@@ -265,10 +262,10 @@ public class CostBenefitEstimate
 			//withIMAPScenVMTD = FreevalFileParser.getScenarioVMTDWithIMAP(scen);
 			for (int period = 0; period < FreevalFileParser.getNumberPeriods(); period++) {
 				noIMAPScenPerAvgSMS = FreevalFileParser.getScenarioPeriodAvgSMSBeforeIMAP(scen, period);
-				noIMAPScenPerVMTD = FreevalFileParser.getScenarioPeriodVMTDBeforeIMAP(scen, period);
+				//noIMAPScenPerVMTD = FreevalFileParser.getScenarioPeriodVMTDBeforeIMAP(scen, period);
 				noIMAPScenPerVMTV = FreevalFileParser.getScenarioPeriodVMTVBeforeIMAP(scen, period);
 				withIMAPScenPerAvgSMS = FreevalFileParser.getScenarioPeriodAvgSMSWithIMAP(scen, period);
-				withIMAPScenPerVMTD = FreevalFileParser.getScenarioPeriodVMTDWithIMAP(scen, period);
+				//withIMAPScenPerVMTD = FreevalFileParser.getScenarioPeriodVMTDWithIMAP(scen, period);
 				withIMAPScenPerVMTV = FreevalFileParser.getScenarioPeriodVMTVWithIMAP(scen, period);
 				beforeFuel = ((noIMAPScenPerVMTV * gallonPerMileForTruckVeh(noIMAPScenPerAvgSMS) * truckPercent)  // Replaced noIMAPScenPerVMTD with noIMAPScenPerVMTV
 						+ (noIMAPScenPerVMTV * gallonPerMileForLightVeh(noIMAPScenPerAvgSMS) * (1 - truckPercent))); // Replaced noIMAPScenPerVMTD with noIMAPScenPerVMTV
@@ -319,10 +316,10 @@ public class CostBenefitEstimate
 		fuelColumnNames[2] = "Fuel Used (gal)" ;
 		fuelColumnNames[3] = "MPG";
 		
-		double fuelSavingsPerVMT = (totalFuelUseBeforeIMAP / totalVMTVBeforeIMAP) - (totalFuelUseWithIMAP / totalVMTVWithIMAP);
+		//double fuelSavingsPerVMT = (totalFuelUseBeforeIMAP / totalVMTVBeforeIMAP) - (totalFuelUseWithIMAP / totalVMTVWithIMAP);
 		//System.out.println(String.valueOf(totalFuelUseBeforeIMAP / totalVMTVBeforeIMAP));
 		//System.out.println(String.valueOf(totalFuelUseWithIMAP / totalVMTVWithIMAP));
-		double fuelSavingsCostPerVMT = fuelSavingsPerVMT * Float.parseFloat(InformationScreen.getFuelPrice());
+		//double fuelSavingsCostPerVMT = fuelSavingsPerVMT * Float.parseFloat(InformationScreen.getFuelPrice());
 		
 		Object[][] data = { 
 				{ "Annual Days of Operation", annualDaysOfOperation },
@@ -342,7 +339,7 @@ public class CostBenefitEstimate
 				{" "," "," "," "},
 				{"% Difference",formatter3.format((totalVMTVWithIMAP - totalVMTVBeforeIMAP)/totalVMTVBeforeIMAP*100.0),
 					formatter3.format((((totalVMTVWithIMAP / totalFuelUseWithIMAP) - (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))/(totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP))*100.0),
-					formatter3.format((totalVMTVWithIMAP / (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP) - totalFuelUseWithIMAP)/(totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP * totalVMTVWithIMAP)*100.0)},
+					formatter3.format((CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP() - CostBenefitEstimate.getTotalFuelUseWithIMAP()) / (CostBenefitEstimate.getTotalVMTVWithIMAP() / CostBenefitEstimate.getMPGBeforeIMAP()) *100.0)},
 				{"Absolute Difference",formatter2.format(totalVMTVWithIMAP - totalVMTVBeforeIMAP),
 						formatter4.format((totalVMTVWithIMAP / totalFuelUseWithIMAP) - (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP)),
 						formatter2.format(totalVMTVWithIMAP / (totalVMTVBeforeIMAP / totalFuelUseBeforeIMAP) - totalFuelUseWithIMAP)}
